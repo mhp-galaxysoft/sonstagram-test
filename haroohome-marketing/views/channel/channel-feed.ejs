@@ -1,0 +1,40 @@
+                <%- include('./main') %>
+                <script>
+                    $('.visit-lnb-2').addClass('visit-lnb-active')
+                </script>
+                <div class="channel-feed visit-com-tab visit-lnb-tab2" id="feed-list"></div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+<script>
+    const feedContents = document.getElementById('feed-list')
+</script>
+<script>
+    // 페이지네이션
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/channel/channel-feed-list/<%= info.chnl_pk %>?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            feedContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    // 피드 자세히 보기
+    let resData
+    function getFeedDetail(feed_pk) {
+        axios.get('/channel/main/' + <%= info.chnl_pk %> + /feed/ + feed_pk)
+            .then(function(res) {
+                resData = feedContents.innerHTML
+                feedContents.innerHTML = res.data
+            })
+    }
+    function back(){
+        feedContents.innerHTML = resData
+    }
+</script>

@@ -1,0 +1,340 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/total-admin.css">
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+</head>
+
+<body>
+    <div class="total-admin">
+        <%- include("total-admin-head") %>
+        <div class="total-admin-user">
+            <div class="user-manage">
+                <h3>유저관리</h3>
+                <button type="button" id="user-stop-modal-btn" class="user-widthdraw-btn">계정 중지</button>
+            </div>
+            <!-- 유저관리 테이블 -->
+            <div class="user-table">
+                <div class="user-search-wrap">
+                    <h4>유저유형</h4>
+                    <div class="user-search-topbar">
+                        <select id="user-type" class="user-category">
+                            <option value="">전체</option>
+                            <option value="NORMAL">일반</option>
+                            <option value="CHANNEL-ADMIN">채널관리자</option>
+                        </select>
+                        <select id="user-nick-type" class="user-category nick-category">
+                            <option value="NICKNAME">닉네임</option>
+                            <option value="NAME">이름</option>
+                            <option value="EMAIL">이메일</option>
+                        </select>
+                        <input id="user-search-text" class="user-search" type="text">
+                        <button type="button" id="search-btn" class="total-search-btn">검색</button>
+                    </div>
+                </div>
+                <div id="user-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<!-- 계정 정보 모달 -->
+<div class="modal fade" id="user-info-modal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog user-info-modal">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="admin-user-header" style="font-weight: bold;">틴트누나 계정정보</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body info-body">
+                <table class="table info-table">
+                    <tbody id="user-info-tbody">
+                        <tr>
+                            <th scope="row">프로필사진</th>
+                            <td>
+                                <img id="admin-user-img" src="/images/user-mypage/profile-img.png" alt="" >
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">이름</th>
+                            <td>
+                                <div id="admin-user-name" class="liveedit-user-txt"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">아이디</th>
+                            <td>
+                                <div id="admin-user-id" class="liveedit-user-txt"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">휴대폰번호</th>
+                            <td>
+                                <div id="admin-user-tel" class="liveedit-user-txt"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">주소</th>
+                            <td>
+                                <div id="admin-user-addr" class="liveedit-user-txt"></div>
+                            </td>
+                        </tr>
+                        <tr class="admin-channel-row">
+                            <th scope="row">채널 장르</th>
+                            <td>
+                                <div id="admin-channel-category" class="liveedit-user-txt"></div>
+                            </td>
+                        </tr>
+                        <tr class="admin-channel-row">
+                            <th scope="row">자사 쇼핑몰</th>
+                            <td>
+                                <div id="admin-user-mall">
+                                    <p class="admin-user-mall-url"></p>
+                                    <p class="admin-user-mall-url"></p>
+                                    <p class="admin-user-mall-url"></p>
+                                    <p class="admin-user-mall-url"></p>
+                                    <p class="admin-user-mall-url"></p>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="info-change-btn" data-dismiss="modal">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 사용권한 중지 -->
+<div class="modal fade" id="user-stop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header liveend-header">
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title liveend-h5" id="staticBackdropLabel">현재 유저의 사용권한을 중지 시키겠습니까?</h5>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button id="user-stop-btn" type="button" data-dismiss="modal" data-toggle="modal" data-target="#addVoddrop" class="btn liveend-agree">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-open .modal {
+    }
+    .liveend-dialog {
+        max-width: 690px;
+        margin: 18em auto;
+    }
+    .liveend-header {
+        border: none;
+        padding-top: 30px;
+        text-align: center;
+        display: block;
+    }
+    .liveend-h5 {
+        font-weight: bold;
+        /*text-indent: 190px;*/
+    }
+    .liveend-header .liveend-close {
+        padding: 0 1rem;
+    }
+    .liveend-footer {
+        border: none;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .btn:hover {
+        color: #fff;
+    }
+    .liveend-agree {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #e73828;
+        font-size: 16px;
+        padding: 0;
+    }
+    .liveend-cancel {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #606060;
+        font-size: 16px;
+        padding: 0;
+    }
+</style>
+<!-- 스크롤 스타일 -->
+<style>
+    .table-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script src="/js/regexp.js"></script>
+<script>
+    const   userContents        = document.getElementById('user-list')
+    let     sortType            = document.getElementById('user-type')
+    let     userNickType        = document.getElementById('user-nick-type')
+    const   searchBtn           = document.getElementById('search-btn')
+    const   userSearchText      = document.getElementById('user-search-text')
+    let     orderType
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        if(!orderType) orderType = 'LATEST'
+        let sort = sortType.options[sortType.selectedIndex].value
+        let keywordType = userNickType.options[userNickType.selectedIndex].value
+        let keyword = userSearchText.value
+        const url = '/total-admin/user-list?' + 'pageNo=' + page + '&sort=' + sort + '&keywordType=' + keywordType + '&keyword=' + keyword + '&orderType=' + orderType
+
+        axios.get(url).then(function(res){
+            userContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    function changeOrderType(pageNo) {
+        if(orderType === 'LATEST') {
+            orderType = 'OLDEST';
+        } else {
+            orderType = 'LATEST';
+        }
+
+        getList(pageNo)
+    }
+
+    sortType.addEventListener('change', function(){
+        getList(1)
+    })
+    searchBtn.addEventListener('click', function(){
+        getList(1)
+    })
+    userSearchText.addEventListener('keydown', enterSearch)
+
+    const adminUserHeader   = document.getElementById('admin-user-header')
+    const adminUserImg      = document.getElementById('admin-user-img')
+    const adminUserName     = document.getElementById('admin-user-name')
+    const adminUserId       = document.getElementById('admin-user-id')
+    const adminUserTel      = document.getElementById('admin-user-tel')
+    const adminUserAddr     = document.getElementById('admin-user-addr')
+    const adminChannelCategory = document.getElementById('admin-channel-category')
+    const adminChannelRow   = document.getElementsByClassName('admin-channel-row')
+    const adminUserMall     = document.getElementById('admin-user-mall')
+    const adminUserMallUrl  = document.getElementsByClassName('admin-user-mall-url')
+
+    function showMemberDetail(mem_pk) {
+        const url = '/total-admin/user/detail?' + 'mem_pk=' + mem_pk
+        axios.get(url).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'FAIL':
+                    alert("서버에 이상이 생겼습니다.")
+                    break
+                case 'SUCCESS':
+                    const user = res.data.user
+
+                    adminUserHeader.innerText= user.mem_name + '님의 계정정보'
+                    adminUserImg.src         = user.mem_img
+                    adminUserName.innerText  = user.mem_name
+                    adminUserId.innerText    = user.mem_id
+                    adminUserTel.innerText   = user.mem_tel
+                    adminUserAddr.innerText  = user.mem_addr
+
+                    for(let i = 0; i < adminChannelRow.length; i++){
+                        adminChannelRow[i].style.display = 'none'
+                    }
+
+                    if(user.user_type === 'channelAdmin'){
+                        adminChannelCategory.innerText = user.chnl_category
+                        for(let i = 0; i < adminChannelRow.length; i++){
+                            adminChannelRow[i].style.display = 'table-row'
+                        }
+
+                        const chnlUrlSet = user.chnl_shop_url.split(',')
+                        for(let i = 0; i < chnlUrlSet.length; i++) {
+                            adminUserMallUrl[i].innerText = chnlUrlSet[i]
+                            adminUserMallUrl[i].style.display = 'block'
+                        }
+                        for(let i = chnlUrlSet.length; i < 5; i++){
+                            adminUserMallUrl[i].style.display = 'none'
+                        }
+                    }
+
+                    $('#user-info-modal').modal('show')
+                    break
+            }
+        })
+    }
+</script>
+
+<!--유저 계정 중지-->
+<script>
+    let selectedUser = []
+    const userStopModalBtn = document.getElementById('user-stop-modal-btn')
+    userStopModalBtn.addEventListener('click',function(){
+        const checkboxes = $.makeArray($('input[type=checkbox]'))
+        selectedUser = $.map(checkboxes,function(checkbox){
+            if(checkbox.checked){
+                return checkbox.getAttribute('pk')
+            }
+        })
+
+        // 유저를 선택하지 않았을 때
+        if(selectedUser.length === 0) {
+            alert('유저를 선택해주세요.')
+            return false
+        }
+        else{
+            $('#user-stop').modal('show')
+        }
+    })
+
+    const userStopBtn = document.getElementById('user-stop-btn')
+    userStopBtn.addEventListener('click',function(){
+        userStopBtn.disabled = true
+        axios.delete('/total-admin/user',{ data : { selectedUser } }).then(function(res){
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert('해당 계정이 사용 중지되었습니다.')
+                    userStopBtn.disabled = false
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    userStopBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            userStopBtn.disabled = false
+        })
+    })
+</script>

@@ -1,0 +1,100 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2" style="margin: 0;">배송 관리</h2>
+                    </div>
+                    <div class="admin-create-body" style="padding: 0;">
+                         <ul class="customer-manage-lnb">
+                            <li class="ct-mn-active">
+                                <a href="/channel-admin/refund">환불교환관리</a>
+                            </li>
+                            <li>
+                                <a href="/channel-admin/invoice">송장번호입력</a>
+                            </li>
+                         </ul>
+                        <div id="delivery-manage-list"></div>
+                    </div>
+                </div>
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    const refundContents    = document.getElementById('delivery-manage-list')
+    const refundRejectBtn   = document.getElementById('btn-refund-reject')
+    const agreeRefundBtn    = document.getElementById('btn-refund-agree')
+    const agreeExchangeBtn  = document.getElementById('btn-exchange-agree')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/channel-admin/refund-list?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            refundContents.innerHTML = res.data
+        }).catch(function (err){
+            console.error(err)
+        })
+    }
+
+    function clickRejectBtn(inquiry_pk) {
+        axios.post('/channel-admin/inquiry/reject/' + inquiry_pk).then(function(res) {
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    alert('거절되었습니다.')
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    function clickAgreeRefund(inquiry_pk) {
+        axios.post('/channel-admin/refund/agree/' + inquiry_pk).then(function(res) {
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    alert('승인되었습니다.')
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    function clickAgreeExchange(inquiry_pk) {
+        axios.post('/channel-admin/exchange/agree/' + inquiry_pk).then(function(res) {
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    alert('승인되었습니다.')
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>

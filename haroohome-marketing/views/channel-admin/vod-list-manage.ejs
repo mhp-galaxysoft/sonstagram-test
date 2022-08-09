@@ -1,0 +1,68 @@
+<div class="admin-contents-body">
+    <% if(live){ %>
+        <div class="live-slide">
+            <a href="/broadcast/live/<%= live.live_pk %>">
+                <div class="live-slide-img">
+                    <img src="<%= live.live_thumbnail %>">
+                    <span class="live-span">현재 <%= live.live_ccu %>명 시청중</span>
+                </div>
+                <h4 class="live-slide-tit"><%= live.live_title %></h4>
+                <div class="live-slide-ui">
+                    <span class="ui-img">
+                        <img src="<%= user.mem_img %>">
+                    </span>
+                    <h5><%= user.mem_nickname %></h5>
+                    <%if(live.factory_img) { %>
+                        <span class="ui-pactory-logo">
+                                <img src="<%= live.factory_img %>">
+                            </span>
+                    <% } %>
+                </div>
+            </a>
+        </div>
+    <% } %>
+    <% for(let i= 0; i < vods.length; i++){ %>
+        <div class="live-slide">
+            <div class="live-slide-img">
+                <img src="<%= vods[i].live_thumbnail %>">
+                <span class="accrue-span">누적 <%= vods[i].vod_viewer %>명 시청</span>
+                <span class="time-span"><%= vods[i].vod_length %></span>
+                <div class="live-slide-vod">
+                    <button id="vod-show-btn" type="button" class="vod-replay" onclick="showVod(<%= vods[i].vod_pk %>)">방송보기</button>
+                    <button id="vod-delete-btn" type="button" class="vod-delete" onclick="deleteVod(this, <%= vods[i].vod_pk %>)">삭제하기</button>
+                </div>
+            </div>
+            <h4 class="live-slide-tit"><%= vods[i].live_title%></h4>
+            <div class="live-slide-ui">
+                <div class="ui-img">
+                    <img src="<%= vods[i].mem_img %>">
+                </div>
+                <h5><%= vods[i].mem_nickname %></h5>
+                <%if(vods[i].factory_img) { %>
+                    <span class="ui-pactory-logo">
+                        <img src="<%= vods[i].factory_img %>">
+                    </span>
+                <% } %>
+            </div>
+        </div>
+    <% } %>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

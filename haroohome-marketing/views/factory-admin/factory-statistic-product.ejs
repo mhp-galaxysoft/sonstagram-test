@@ -1,0 +1,158 @@
+<link rel="stylesheet" href="/css/factory-admin.css">
+<script src = "https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<%- include("../include/head") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="factory-wrap">
+            <%- include("../include/mypage/factory-mypage-profile") %>
+            <% for ( let i = 0; i < product.length; i++ ) {%>
+            <div id="tab<%=i%>" class="user-contents">
+                <div class="user-lnbwrap">
+                    <h3 class="channel-chart-h3">통계 설정</h3>
+                </div>
+                <div class="channel-chart-inner">
+                    <div class="channel-chart-top">
+                        <h3>상품 선택</h3>
+                        <div class="channel-chart-select">
+                            <div class="chart-select">현재 0 개 선택</div>
+                            <em style="font-style:unset; margin: 0 4px;">&#47;</em>
+                            <div class="channel-select"><%= product.length%>개 채널 통계 설정</div>
+                        </div>
+                    </div>
+                    <div class="channel-chart-list-wrap">
+                        <div class="channel-chart-user">
+                            <div class="chart-list-img">
+                                <img src="<%= product[i][0].mem_img%>">
+                            </div>
+                            <h4 class="chart-list-name"><%= product[i][0].mem_nickname %></h4>
+                        </div>
+                        <div class="channel-chart-pd-wrap">
+                            <% if(product[i][0].product_name){%>
+                            <ul class="chart-pd-list">
+                                <% for ( let j = 0; j < product[i].length; j++ ) {%>
+                                <li product_pk="<%= product[i][j].product_pk %>">
+                                    <div class="chart-pd-img">
+                                        <img src="<%= product[i][j].product_img %>">
+                                    </div>
+                                    <div class="chart-pd-info">
+                                        <h3><%= product[i][j].product_name %></h3>
+                                        <p><%= product[i][j].product_price %></p>
+                                    </div>
+                                </li>
+                                <% } %>
+                            </ul>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="s-channel-select-btn">
+                        <button id="reset-btn" type="button" class="chart-btn-reset margin-unset">초기화</button>
+                        <div class="chart-btn-wrap s-chart-btn-wrap margin-unset">
+                            <% if (product.length === 1 ) {%>
+                            <button id=done-btn0 type="button" class="s-channel-btn-done">통계 설정 완료</button>
+                            <% } else { %>
+                            <button type="button" id="next-btn<%=i%>" class="chart-btn-select">다음 채널</button>
+                            <% } %>
+                            <a href="javascript:void(0)" id="back-btn<%=i%>" class="chart-btn-close">뒤로</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+<script>
+    $(function() {
+        $('.chart-pd-list > li').on('click', function() {
+            $(this).toggleClass('add-channel').siblings().removeClass('add-channel')
+            const addProduct = document.getElementsByClassName('add-channel')
+            for(let i = 0 ; i < chartSelect.length; i++) {
+                chartSelect[i].innerText = '현재 ' + addProduct.length + '개 선택'
+            }
+        })
+    })
+</script>
+<script>
+    const chartSelect = document.getElementsByClassName('chart-select')
+    const resetBtn = document.getElementById('reset-btn')
+    const backBtn0 = document.getElementById('back-btn0')
+    backBtn0.onclick = function(){
+        location.href = '/factory-admin/statistic'
+    }
+    resetBtn.onclick = function(){
+        location.href = '/factory-admin/statistic'
+    }
+
+
+    // 처음 제외한 탭
+    <% for( let i = 1; i < product.length; i++ ) { %>
+    const productTab<%=i%> = document.getElementById('tab<%=i%>')
+    productTab<%=i%>.style.display = 'none'
+    const nextBtn<%=i%> = document.getElementById('next-btn<%=i%>')
+
+    <% if( i === product.length-1 ){ %>
+    nextBtn<%=i%>.className = 's-channel-btn-done'
+    nextBtn<%=i%>.innerText = '통계 설정 완료'
+    nextBtn<%=i%>.onclick = function(){
+        statisticSave()
+    }
+    <% } else {%>
+    nextBtn<%=i%>.onclick = function(){
+        productTab<%=i%>.style.display = 'none'
+        productTab<%=i+1%>.style.display = 'block'
+    }
+    <% } %>
+
+    const backBtn<%=i%> = document.getElementById('back-btn<%=i%>')
+    backBtn<%=i%>.onclick = function(){
+        productTab<%=i%>.style.display = 'none'
+        productTab<%=i-1%>.style.display = 'block'
+    }
+    <% } %>
+
+    // 처음 채널 상품 탭
+    const nextBtn0      = document.getElementById('next-btn0')
+    const doneBtn0      = document.getElementById('done-btn0')
+    const productTab0   = document.getElementById('tab0')
+
+    productTab0.style.display = 'none'
+    if (nextBtn0) {
+        nextBtn0.onclick = function () {
+            productTab0.style.display = 'none'
+            productTab1.style.display = 'block'
+        }
+    } else if(doneBtn0) {
+        doneBtn0.onclick = function(){
+            statisticSave()
+        }
+    }
+
+    productTab0.style.display = 'block'
+</script>
+<script>
+    let products
+    function statisticSave() {
+        let selectedProducts = document.getElementsByClassName('add-channel')
+        selectedProducts = Array.prototype.slice.call(selectedProducts)
+        products = selectedProducts.map(function(product){ return product.getAttribute('product_pk')}).join(',')
+        axios.post('/factory-admin/statistic/save/', {
+            statistic_products : products
+        }).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    location.href = '/factory-admin/main'
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch( function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>

@@ -1,0 +1,41 @@
+<%- include("./search") %>
+<script>
+    $('.channel-lnb-tab4').addClass('channel-lnb-active')
+</script>
+                <div class="search-article">
+                    <h2>VOD 영상</h2>
+                    <ul class="search-pd-list">
+                        <% for( let i = 0; i < vod.length; i++) {%>
+                        <li>
+                            <div class="m-pd-img">
+                                <div class="pd-img"><img src="<%= vod[i].live_thumbnail %>"></div>
+                            </div>
+                            <div class="live-video-info">
+                                <span class="live-video-tag" style="background: #606060;">VOD</span>
+                                <p class="live-video-txt"><%= vod[i].live_title%></p>
+                            </div>
+                            <a href="/broadcast/vod/<%= vod[i].vod_pk %>" class="pd-channel-btn" style="background: #e73828;">영상보기</a>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </div>
+</body>
+</html>
+<!-- 스크롤 스타일 -->
+<style>
+    .search-pd-list::-webkit-scrollbar {
+        width: 7px;
+    }
+    .search-pd-list::-webkit-scrollbar-track {
+        background: none;
+    }
+    .search-pd-list::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script>
+</script>

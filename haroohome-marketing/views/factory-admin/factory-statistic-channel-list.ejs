@@ -1,0 +1,31 @@
+<div class="user-lnbwrap">
+    <h3 class="channel-chart-h3">통계 설정</h3>
+</div>
+<div class="channel-chart-inner">
+    <div class="channel-chart-top">
+        <h3>채널 선택</h3>
+        <div class="channel-chart-select">
+            <div id="chart-select" class="chart-select">현재 0개 선택</div>
+            <em style="font-style:unset; margin: 0 4px;">&#47;</em>
+            <div class="channel-select"><%= channel.length %>개 채널 통계 설정</div>
+        </div>
+    </div>
+    <div class="channel-chart-list-wrap">
+        <ul class="channel-chart-list">
+            <% for( let i = 0 ; i < channel.length; i++) { %>
+                <li chnl_pk="<%= channel[i].chnl_pk %>">
+                    <div class="chart-list-img">
+                        <img src="<%= channel[i].mem_img %>">
+                    </div>
+                    <h4 class="chart-list-name"><%= channel[i].mem_nickname %></h4>
+                </li>
+            <% } %>
+        </ul>
+    </div>
+    <div class="s-channel-select-btn">
+        <div class="channel-select-wrap">
+            <button type="button" id="channel-btn" class="channel-btn-select">채널 선택</button>
+            <a href="/factory-admin/main" class="channel-btn-close">닫기</a>
+        </div>
+    </div>
+</div>

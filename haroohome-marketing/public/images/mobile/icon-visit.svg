@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48">
+    <defs>
+        <style>
+            .cls-2{fill:#fff;stroke:#fff;stroke-width:1.5px}
+        </style>
+    </defs>
+    <g id="그룹_2951" transform="translate(-394 -471)">
+        <rect id="NoPath_-_복사본_9_" width="48" height="48" fill="#ffd252" rx="5" transform="translate(394 471)"/>
+        <g id="home" transform="translate(406.186 484.468)">
+            <g id="그룹_288">
+                <g id="그룹_287">
+                    <path id="패스_187" d="M23.378 36.117l-11.2-8.2a.614.614 0 0 0-.725 0l-11.2 8.2a.614.614 0 1 0 .725.991l10.838-7.935 10.838 7.935a.614.614 0 0 0 .725-.991z" class="cls-2" transform="translate(.001 -27.797)"/>
+                </g>
+            </g>
+            <g id="그룹_290" transform="translate(2.605 7.018)">
+                <g id="그룹_289">
+                    <path id="패스_188" d="M74.257 230.388l-.466 2.645-.148-2.033v12.2h-4.912v-5.33a3.07 3.07 0 0 0-6.14 0v5.33H57.68V231a.614.614 0 1 0-1.228 0v12.817a.614.614 0 0 0 .614.614h6.139a.614.614 0 0 0 .612-.566.461.461 0 0 0 0-.048v-5.947a1.842 1.842 0 1 1 3.684 0v5.948a.452.452 0 0 0 0 .047.614.614 0 0 0 .612.567h6.139a.614.614 0 0 0 .614-.614V231a.614.614 0 0 0-.609-.612z" class="cls-2" transform="translate(-56.452 -230.388)"/>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

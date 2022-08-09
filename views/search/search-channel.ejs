@@ -1,0 +1,64 @@
+<%- include("./search") %>
+<script>
+    $('.channel-lnb-tab2').addClass('channel-lnb-active')
+</script>
+                <div class="search-article">
+                    <h2>라이브 채널</h2>
+                    <ul class="search-pd-list">
+                        <% for (let i = 0; i < channels.length; i++) {%>
+                        <li>
+                            <div class="pd-img"><img src="<%= channels[i].mem_img %>"></div>
+                            <div class="search-live-info">
+                                <h3 class="search-live-name"><%= channels[i].mem_nickname %></h3>
+                                <% if(channels[i].factory_img) { %>
+                                    <div class="search-live-factory">
+                                        <!--                                    <img src="/images/user-mypage/factory-logo.png" alt=""/>-->
+                                        <img src="<%= channels[i].factory_img %>" alt=""/>
+                                    </div>
+                                <% } %>
+                            </div>
+                            <div class="search-live-txt"><%= channels[i].chnl_info %></div>
+                            <a href="/channel/main/<%= channels[i].chnl_pk %>/live" class="pd-channel-btn">채널보기</a>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+                <div style="width:100%; margin: 0 0 50px 0; background: #fff; border-radius: 0 0 5px 5px;">
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <% if(yn_prev === 1) { %>
+                                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="searchChannel(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+                            <% } %>
+                            <% for(let page = startPage; page <= endPage; page++) { %>
+                                <% if(page == pageNo) { %>
+                                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="searchChannel(<%= page %>)"><%= page %></a></li>
+                                <% } else { %>
+                                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="searchChannel(<%= page %>)"><%= page %></a></li>
+                                <% } %>
+                            <% } %>
+                            <% if(yn_next === 1) { %>
+                                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="searchChannel(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+                            <% } %>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </div>
+</body>
+</html>
+<!-- 스크롤 스타일 -->
+<style>
+    .search-pd-list::-webkit-scrollbar {
+        width: 7px;
+    }
+    .search-pd-list::-webkit-scrollbar-track {
+        background: none;
+    }
+    .search-pd-list::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script>
+</script>

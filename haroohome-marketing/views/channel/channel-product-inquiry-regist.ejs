@@ -1,0 +1,90 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/channel.css">
+<%- include('./main') %>
+            <div class="channel-picture visit-com-tab visit-lnb-tab1">
+                <!-- 상품 후기 배너 -->
+                <div class="recent-review">
+                    <div class="recent-product-img"><img src="<%= product[0].product_img %>" alt=""></div>
+                    <div class="recent-product-text">
+                        <div class="recent-product-title">
+                            <p><%= product[0].product_name %></p>
+                        </div>
+                        <div class="recent-product-title recent-product-price">
+                            <p><%= product[0].product_price %>원</p>
+                        </div>
+                    </div>
+                    <div class="review-product-right">
+                        <button type="button" class="review-write-btn">상품 문의 작성하기</button>
+                        <button type="button" class="review-prev-btn" onclick="location.href='/channel/main/<%= product[0].chnl_pk %>/product/<%= product_pk %>/inquiry'">
+                            <img src="/images/channel/left-arrow.svg" alt="">
+                        </button>
+                    </div>
+                </div>
+                <!-- 문의 등록 -->
+                <div class="review-regist">
+                    <p>문의 등록</p>
+                    <div class="review-write-box">
+                        <textarea id="inquiry-text" class="reg_exp" limitsize="500"></textarea>
+                    </div>
+                    <div class="inquiry-regist-btn">
+                        <button type="button" id="save-btn">문의 등록</button>
+                    </div>
+                </div>
+                <div id="channel-live-list"></div>
+            </div>
+            <div class="channel-feed visit-com-tab visit-lnb-tab2" id="channel-feed-list">
+            </div>
+            <div class="channel-product visit-com-tab visit-lnb-tab3" id="channel-product-list">
+            </div>
+        </div>
+    </div>
+    </div>
+    <%- include("../include/common-footer") %>
+</body>
+</html>
+<script>
+    const inquiryText = document.getElementById('inquiry-text')
+
+    function checkValues(){
+        if(!inquiryText.value){
+            alert("문의 내용을 입력하세요")
+            inquiryText.focus()
+            return false
+        }
+
+        saveInquiryInfo()
+    }
+
+    function saveInquiryInfo(){
+        saveBtn.disabled = true
+        const inquiryContents = inquiryText.value
+
+        const info = {
+            inquiry_contents : inquiryContents,
+            product_pk : '<%= product_pk %>'
+        }
+
+        axios.post('/inquiry', info).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    alert('문의 등록이 완료되었습니다.')
+                    saveBtn.disabled = false
+                    location.href = "/channel/main/<%=product[0].chnl_pk%>/product/<%=product[0].product_pk%>/inquiry"
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    saveBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다')
+            saveBtn.disabled = false
+        })
+    }
+
+    const saveBtn = document.getElementById('save-btn')
+    saveBtn.addEventListener('click',checkValues)
+
+
+</script>

@@ -1,0 +1,141 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2" style="margin: 0;">고객 관리</h2>
+                    </div>
+                    <div class="admin-create-body" style="padding: 0;">
+                         <ul class="customer-manage-lnb">
+                            <li>
+                                <a href="/channel-admin/customer-manage">후기내역</a>
+                            </li>
+                            <li class="ct-mn-active">
+                                <a href="/channel-admin/customer-inquiry">1:1 문의</a>
+                            </li>
+                         </ul>
+                         <div class="customer-manage-comment">
+                            <table class="table channel-cm-table" style="margin-bottom: 0;">
+                                <thead>
+                                    <tr>
+                                        <th style="width: 10%;">정보</th>
+                                        <th style="width: 10%;">상품명</th>
+                                        <th class="mobile-none" style="width: 43%;">문의글</th>
+                                        <th class="mobile-none" style="width: 12%;">닉네임</th>
+                                        <th style="width: 12%;">날짜</th>
+                                        <th class="mobile-none" style="width: 12%;">답변여부</th>
+                                    </tr>
+                                </thead>
+                            </table>
+                            <div id="inquiry-list"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script src="/js/regexp.js"></script>
+<script>
+    $('.ct-inquiry-lists a').on('click',function() {
+        // $('.ct-inquiry-lists').toggleClass('inquiry-replay-on')
+        // $(this).closest('')
+    })
+    const inquiryContents = document.getElementById('inquiry-list')
+    const inquirySaveBtn  = document.getElementById('save-btn')
+    let answerText;
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/channel-admin/customer-inquiry/list?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            inquiryContents.innerHTML = res.data
+            // 질문 클릭 시 답변 보여주기
+            $(function() {
+                $('.iq-question a').on('click',function() {
+                    $(this).parent().siblings('.iq-reply').toggleClass('on-reply')
+                })
+            })
+        }).catch(function (err){
+            console.error(err)
+        })
+    }
+
+    function checkValues(elem, inquiry_pk, index) {
+        answerText = document.getElementById('answer-text'+index).value
+        if(!answerText){
+            alert('답변 내용을 입력하세요.')
+            return false
+        }
+        saveAnswerInfo(elem, inquiry_pk, index)
+    }
+
+
+
+    function saveAnswerInfo(elem, inquiry_pk, index){
+        elem.disabled = true
+        const answerContents = answerText
+        const info = {
+            response_contents : answerContents,
+            inquiry_pk : inquiry_pk
+        }
+        axios.put('/inquiry/answer', info ).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    const {answer} = res.data
+                    const iqAnswer = document.getElementById('iq-answer'+index)
+                    const iqReplyIp = document.getElementById('iq-reply-ip'+index)
+                    const iqDay = document.getElementById('iq-day'+index)
+                    const iqBtnWrap = document.getElementById('iq-btn-wrap'+index)
+                    iqAnswer.innerText = "답변완료"
+
+                    iqReplyIp.className = "iq-product-con"
+                    iqReplyIp.innerHTML = ""
+                    const iqReplyCon = document.createElement('div')
+                    iqReplyCon.className = "iq-reply-con"
+                    iqReplyCon.innerText = answer.response_contents
+                    iqReplyIp.appendChild(iqReplyCon)
+
+                    iqDay.innerText = answer.res_create_time
+
+                    iqBtnWrap.style.display = "none"
+                    elem.disabled = false
+                    alert('답변 등록이 완료되었습니다.')
+                    break
+                case 'FAIL':
+                    elem.disabled = false
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            elem.disabled = false
+            alert('서버에 이상이 생겼습니다')
+        })
+    }
+</script>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .customer-manage-comment::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .customer-manage-comment::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .customer-manage-comment::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>

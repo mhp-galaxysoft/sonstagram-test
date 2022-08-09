@@ -1,0 +1,165 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/tutorial.css">
+<link rel="stylesheet" href="/css/user-mypage.css">
+</head>
+    <body>
+        <div class="tutorial-body">
+            <div class="tutorial-joinner">
+                <div class="tutorial-head">
+                    <h1 class="tutorial-logo">
+                        <img src="/images/tutorial/live-logo.svg">
+                    </h1>
+                </div>
+                <div class="tutorial-joinbox">
+                    <h2><%= user.mem_name %> 님의 채널 신청 정보</h2>
+                    <table class="table plan-channel">
+                        <tbody id="channel-table">
+                            <tr>
+                                <th scope="row">채널 장르</th>
+                                <td>
+                                    <select id="plan-channel-type" class="paln-channel-selectbox">
+                                        <% for(let i = 0; i < category.length; i++){ %>
+                                        <option value="<%= category[i].category_pk%>"><%= category[i].category_name%></option>
+                                        <% } %>
+                                     </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="vertical-align: top;">채널 설명</th>
+                                <td>
+                                    <textarea id="plan-channel-info" class="plan-channel-txt reg_exp" limitsize="200" reg_type="string"></textarea>
+                                </td>
+                            </tr>
+                            <tr class="my-mall">
+                                <th scope="row">자사 쇼핑몰 주소</th>
+                                <td>
+                                    <input type="text" class="plan-channel-url reg_exp" limitsize="100" reg_type="url" placeholder="url을 입력하세요">
+                                </td>
+                            </tr>
+                        </tbody>
+                        <tbody id="plan-cn-addshop-table">
+                            <tr>
+                                <td class="plan-cn-addshop">
+                                    <button type="button" class="plan-cn-urlbtn" style="position:absolute;">+ 자사 쇼핑몰 주소 추가하기</button>
+                                </td>
+                                <td class="plan-cn-addshop"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="join-wrap">
+                        <% if(user.flag_pumkin === 0) { %>
+                        <button class="join_clearBtn" onclick="location.href='/auth/logout'" style="float: left; background: #606060;">로그아웃</button>
+                        <% } else { %>
+                        <button class="join_clearBtn" onclick="location.href='/pumkin/logout'" style="float: left; background: #606060;">로그아웃</button>
+                        <% } %>
+                        <button id="join-channel-btn" class="join_clearBtn" style="float: right;">채널신청</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script src="/js/regexp.js"></script>
+<script src="/js/double-enter-check.js"></script>
+<script>
+    const regUrl = RegExp(/^(((http(s?))\:\/\/)?)([0-9a-zA-Z\-]+\.)+[a-zA-Z]{2,6}(\:[0-9]+)?(\/\S*)?/)
+
+    function addMallDiv(){
+
+        const mallTable = document.getElementById('channel-table')
+        const mallDiv = document.createElement('tr')
+        mallDiv.className = 'my-mall'
+
+        const mallTh = document.createElement('th')
+        mallTh.setAttribute('scope','row')
+        mallTh.innerText = '자사 쇼핑몰 주소'
+
+        const mallTd = document.createElement('td')
+
+        const mallInput = document.createElement('input')
+        mallInput.setAttribute('type','text')
+        mallInput.setAttribute('placeholder', 'url을 입력하세요')
+        mallInput.className = 'plan-channel-url'
+
+        mallInput.onkeyup = function(){
+            if(mallInput.value.length > 100){
+                alert("입력은 최대 100글자까지 가능합니다.")
+                mallInput.value = mallInput.value.substr(0, 100)
+            }
+        }
+
+        const mallImg = document.createElement('img')
+        mallImg.className = 'shop-remove-btn'
+        mallImg.setAttribute('src', '/images/user-mypage/x-button.svg')
+        mallImg.addEventListener('click', function(){
+            let parent = this.parentNode.parentNode
+            parent.remove()
+            }
+        )
+
+        mallTd.appendChild(mallInput)
+        mallTd.appendChild(mallImg)
+        mallDiv.appendChild(mallTh)
+        mallDiv.appendChild(mallTd)
+        mallTable.appendChild(mallDiv)
+
+    }
+
+    const addMallBtn = document.getElementById('plan-cn-addshop-table')
+    addMallBtn.addEventListener('click',function(){
+        const chnlUrl = document.getElementsByClassName('plan-channel-url')
+        if(chnlUrl.length < 5)
+            addMallDiv()
+        else
+            alert("최대 5개까지 추가 가능합니다.")
+    })
+</script>
+<script>
+
+    function joinChannel(){
+        const chnlType = document.getElementById('plan-channel-type')
+        const chnlInfo = document.getElementById('plan-channel-info')
+        const chnlUrl = document.getElementsByClassName('plan-channel-url')
+        const chnlUrlSet = Array.prototype.slice.call(chnlUrl)
+        let chnl_shop_url = chnlUrlSet.map(url=>url.value)
+        if(!chnlInfo.value){
+            alert("채널 설명 문구를 작성해주세요.")
+            chnlInfo.focus()
+            return false
+        }
+
+        for(let url of chnl_shop_url){
+            if(!url){
+                alert("자사 쇼핑몰 주소를 1개 이상 입력해주세요.")
+                url.focus()
+                return false
+            }
+        }
+        chnl_shop_url = chnl_shop_url.join(',')
+        if(doubleEnterCheck()) return false
+
+        axios.post('/channel-admin/join',{
+            category_pk : chnlType.options[chnlType.selectedIndex].value,
+            chnl_info : chnlInfo.value,
+            chnl_shop_url : chnl_shop_url
+        }).then(function(res){
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert("채널 신청이 완료되었습니다. \n채널 관리자가 되신 것을 환영합니다.")
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert("서버에 이상이 생겼습니다.")
+            doubleEnterFlag = false
+        })
+    }
+
+    const joinBtn = document.getElementById('join-channel-btn')
+    joinBtn.addEventListener('click',joinChannel)
+</script>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="102" height="102" viewBox="0 0 102 102">
+    <defs>
+        <filter id="타원_101" width="102" height="102" x="0" y="0" filterUnits="userSpaceOnUse">
+            <feOffset/>
+            <feGaussianBlur result="blur" stdDeviation="7.5"/>
+            <feFlood flood-opacity=".102"/>
+            <feComposite in2="blur" operator="in"/>
+            <feComposite in="SourceGraphic"/>
+        </filter>
+        <style>
+            .cls-2{fill:#d25e5e}
+        </style>
+    </defs>
+    <g id="그룹_2931" transform="translate(-1792.5 -2633.5)">
+        <g filter="url(#타원_101)" transform="translate(1792.5 2633.5)">
+            <circle id="타원_101-2" cx="28.5" cy="28.5" r="28.5" fill="#fff" transform="translate(22.5 22.5)"/>
+        </g>
+        <path id="left-arrow_1_" d="M.8 6.4h4.857L.221 1.227A.712.712 0 1 1 1.2.2l6.211 5.91A1.423 1.423 0 0 1 7.4 8.135l-6.2 5.9a.712.712 0 1 1-.982-1.03L5.68 7.828H.8A.712.712 0 1 1 .8 6.4z" class="cls-2" transform="rotate(-90 2256.042 419.659)"/>
+        <text id="TOP" fill="#d25e5e" font-family="NotoSansCJKkr-Black, Noto Sans CJK KR" font-size="14px" font-weight="800" letter-spacing="0.01em" transform="translate(1829 2698)">
+            <tspan x="0" y="0">TOP</tspan>
+        </text>
+        <circle id="타원_102" cx=".5" cy=".5" r=".5" class="cls-2" transform="translate(1843 2677)"/>
+        <circle id="타원_103" cx=".5" cy=".5" r=".5" class="cls-2" transform="translate(1843 2679)"/>
+        <circle id="타원_104" cx=".5" cy=".5" r=".5" class="cls-2" transform="translate(1843 2681)"/>
+    </g>
+</svg>

@@ -1,0 +1,314 @@
+/* 튜토리얼 로그인 페이지  */
+body {
+    background: #fff1f1 ;
+    height: 100%;
+}
+.tutorial-body {
+    width: 100%;
+    height: 967px;
+    background: url(/images/tutorial/live-bg.svg) no-repeat 50% 50%;
+}
+.pumkin-tutorial-body {
+    width: 100%;
+    height: 967px;
+    background: url(/images/pumkin/live-bg.png) no-repeat 50% 50%;
+}
+.tutorial-inner {
+    width: 475px;
+    height: 100%;
+    margin: 0 auto;
+    padding-top: 100px;
+}
+.tutorial-head {
+    text-align: center;
+}
+.tutorial-logo {
+    display: inline-block;
+}
+.tutorial-head-p {
+    font-family: 'TmonMonsori',sans-serif;
+    font-size: 1.5em;
+    color: #f27070;
+    margin: 10px 0;
+}
+.tutorial-box {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin-top: 10px;
+}
+.tutorial-boxin {
+    padding: 35px 40px 30px;
+    overflow: hidden;
+}
+.tutorial-h2 {
+    text-align: center;
+    font-size: 1em;
+    margin-bottom: 30px;
+}
+.tutorial-password,
+.tutorial-name {
+    width: 100%;
+    height: 45px;
+    border: 1px solid #e5e5e5;
+    padding-left: 15px;
+    margin-bottom: 20px;
+}
+.tutorial-login {
+    display: block;
+    font-weight: bold;
+    width: 100%;
+    line-height: 45px;
+    background: #f27070;
+    text-align: center;
+    color: #fff;
+    margin: 10px 0;
+}
+.tutorial-span {
+    font-size: 0.75em;
+    float: left;
+}
+.tutorial-find {
+    float: right;
+    color: #f27070;
+    font-size: 0.75em;
+}
+.tutorial-find:hover {
+    color: #f27070;
+}
+.tutorial-joinUs {
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
+    padding: 30px 40px;
+}
+.tutorial-joinUs p {
+    font-size: 0.875em;
+}
+.tutorial-joinBtn {
+    display: block;
+    width: 100%;
+    line-height: 45px;
+    background: #e73828;
+    text-align: center;
+    color: #fff;
+    margin: 20px 0 0 0;
+}
+
+/* 튜토리얼 회원가입 페이지 */
+
+.tutorial-joinner {
+    max-width: 1120px;
+    height: 100%;
+    margin: 0 auto;
+    padding-top: 100px;
+}
+.tutorial-joinbox {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin-top: 10px;
+    position: relative;
+    padding: 40px 90px;
+}
+.tutorial-joinbox h2 {
+    font-size: 1.5em;
+    font-family: 'TmonMonsori',sans-serif;
+    color: #f27070;
+    text-align: center;
+    margin-bottom: 30px;
+}
+.tutorial-back {
+    display: block;
+    width: 45px;
+    height: 45px;
+    border-radius: 5px;
+    position: absolute;
+    left: 20px;
+    top: 20px;
+    background: url(/images/tutorial/icon-backarrow.svg) no-repeat 50% #e5e5e5;
+}
+.tutorial-joinbox table {
+    border-top: 1px solid #ebebeb;
+}
+.tutorial-table {
+    margin-top: 30px;
+}
+.tutorial-table th {
+    width: 20%;
+    background: #f9f9f9;
+    font-size: 0.875em;
+    padding: 0.85em 20px;
+}
+.tutorial-table td {
+    font-size: 0.875em;
+    padding: 6px 20px;
+}
+.tutorial-table-ip {
+    width: 40%;
+    height: 28px;
+    border: 1px solid #e5e5e5;
+    padding-left: 5px;
+    margin-right: 5px;
+}
+.tuto-table-help {
+    color: #bbb;
+    font-weight: 300;
+    font-size: 0.875em;
+}
+input[ type="checkbox" ] + label {
+    width: 210px;
+    height: 20px;
+    background: url(/images/tutorial/icon-checkbox.svg) no-repeat 0 2px;
+    cursor: pointer;
+    margin-left: 5px;
+    vertical-align: middle;
+    text-indent: 23px;
+    font-size: 0.75em;
+    line-height: 19px;
+    font-weight: normal;
+}
+input[ type="checkbox" ]:checked + label {
+    background: url(/images/tutorial/icon-checkbox-ed.svg) no-repeat 0 2px;
+}
+.tuto-checkip {
+    display: none;
+}
+.tuto-join-span {
+    font-size: 0.75em;
+    color: #bbb;
+    margin: 5px 0;
+    line-height: 1.5;
+    font-weight: 300;
+}
+.join-wrap {
+    width: 60%;
+    height: 110px;
+    margin: 0 auto;
+    background: #fff;
+}
+.join_clearBtn {
+    width: 230px;
+    line-height: 44px;
+    display: block;
+    text-align: center;
+    background: #e73828;
+    color: #fff;
+    font-size: 1em;
+    margin: 4em auto 0;
+    font-weight: bold;
+}
+.join_clearBtn:hover {
+    color: #fff;
+}
+.tutorial-home {
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+.tutorial-homeBtn {
+    display: block;
+    width: 45px;
+    height: 45px;
+    background: #e5e5e5;
+    border-radius: 10px;
+    padding-top: 10px;
+}
+.tutorial-id-ck {
+    background: #f27070;
+    font-size: 12px;
+    border-radius: 3px;
+    text-align: center;
+    color: #fff;
+    width: 116px;
+    height: 28px;
+    line-height: 28px;
+    margin-right: 5px;
+}
+
+/* 모바일 반응형 */
+@media all and (max-width:767px) {
+    .tutorial-inner {
+        width: auto;
+    }
+    .tutorial-box {
+        width: 90%;
+        margin: 20px auto;
+    }
+    .tutorial-h2,
+    .tutorial-head-p {
+        display: none;
+    }
+    .tutorial-span {
+        float: left;
+        width: 100%;
+        text-align: center;
+        font-size: 16px;
+        margin: 10px 0;
+    }
+    .tutorial-find {
+        font-size: 16px;
+        width: 100%;
+        text-align: center;
+    }
+    .tutorial-joinUs p {
+        font-size: 16px;
+    }
+    .tutorial-joinbox {
+        width: 90%;
+        padding: 40px 0;
+        margin: 10px auto;
+    }
+    .tutorial-table th {
+        width: 30%;
+        padding: 0.85em 5px 0.85em 10px;
+    }
+    .tutorial-table-ip {
+        width: 90%;
+        border: none
+    }
+    .tutorial-joinbox h2 {
+        font-size: 18px;
+    }
+    /*.tutorial-back {
+        left: 50%;
+        transform: translateX(-50%);
+        top: auto;
+        bottom: -80px;
+    }*/
+    .tutorial-joinbox h2 {
+        margin-bottom: 20px;
+        margin-top: 40px;
+    }
+    .tutorial-table {
+        margin-top: 20px;
+    }
+    .tutorial-body {
+        height: 967px;
+    }
+    .tuto-join-span,
+    .tuto-table-help {
+        display: none;
+    }
+    .input[ type="checkbox" ] + label {
+        margin: 3px 0 0 5px;
+    }
+    .tutorial-table td {
+        padding: 6px 20px 6px 10px;
+    }
+    .tutorial-id-ck {
+        margin-top: 10px;
+    }
+    input[ type="checkbox" ] + label {
+        width: 180px;
+    }
+    .join-wrap {
+        width: 80%;
+        overflow: hidden;
+    }
+    .join_clearBtn {
+        width: 45%;
+    }
+}

@@ -1,0 +1,755 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/total-admin.css">
+</head>
+
+<body>
+    <div class="total-admin">
+        <%- include("total-admin-head") %>
+        <div class="total-admin-user">
+            <div class="user-manage">
+                <h3>팩토리 계정</h3>
+                <div class="factory-btn-wrap">
+                    <button type="button" data-toggle="modal" data-target="#factory-create-modal" class="factory-create-btn" id="new-factory-btn" onclick="initFactoryInfo()">팩토리 계정 생성</button>
+                    <button type="button" data-toggle="modal" id="factory-stop-modal-btn" class="factory-widthdraw-btn">팩토리 중지</button>
+                </div>
+            </div>
+            <!-- 유저관리 테이블 -->
+            <div class="user-table">
+                <div class="user-search-wrap">
+                    <div class="user-search-topbar">
+                        <select id="factory-nick-type" class="user-category nick-category">
+                            <option value="NAME">기업명</option>
+                            <option value="REPNAME">대표자명</option>
+                            <option value="EMAIL">이메일</option>
+                        </select>
+                        <input id="factory-search-text" class="user-search" type="text">
+                        <!-- <button id="user-search-btn" type="button" class="user-search-btn"></a> -->
+                        <button type="button" id="total-search-btn" class="total-search-btn">검색</button>
+                    </div>
+                </div>
+                <div id="factory-contents"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
+
+<!-- 계정 생성 모달 -->
+<div class="modal fade" id="factory-create-modal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog user-info-modal">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="staticBackdropLabel">팩토리 관리자 생성</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body info-body">
+                <table class="table info-table">
+                    <tbody id="user-info-tbody">
+                    <tr>
+                        <th scope="row">프로필사진</th>
+                        <td>
+                            <img id="create-factory-profile-img" src="/images/user-mypage/profile-img.png" alt="">
+                        </td>
+                        <input id="create-img-input" type="file" accept=".gif, .jpg, .png, .jpeg" style="display: none"/>
+                    </tr>
+                    <tr>
+                        <th scope="row">기업명</th>
+                        <td>
+                            <input type="text" id="create-factory-name" class="liveedit-table-url reg_exp" limitsize="30" reg_type="name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">대표자명</th>
+                        <td>
+                            <input type="text" id="create-factory-repname" class="liveedit-table-url reg_exp" limitsize="20" reg_type="name">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">아이디</th>
+                        <td>
+                            <input type="text" id="create-factory-id" class="liveedit-table-url reg_exp" limitsize="30" reg_type="id">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">비밀번호</th>
+                        <td>
+                            <input type="password" id="create-factory-pw" class="liveedit-table-url reg_exp" limitsize="100" reg_type="password">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">비밀번호 확인</th>
+                        <td>
+                            <input type="password" id="create-factory-pw-check" class="liveedit-table-url">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">이메일</th>
+                        <td>
+                            <input type="text" id="create-factory-email" class="liveedit-table-url reg_exp" limitsize="200" reg_type="email">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">휴대폰 번호</th>
+                        <td>
+                            <input type="text" id="create-factory-tel" class="liveedit-table-url reg_exp" limitsize="30" reg_type="phone">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">본사 주소</th>
+                        <td>
+                            <input type="text" id="create-factory-addr" class="liveedit-table-url reg_exp" limitsize="100" reg_type="string">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">파일</th>
+                        <td>
+                            <input id="create-business-input" type="file" accept=".gif, .jpg, .png, .jpeg"/>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="create-factory-btn" class="info-change-btn">생성하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 계정 정보 모달 -->
+<div class="modal fade" id="factory-info-modal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog user-info-modal">
+        <div class="modal-content">
+            <div class="modal-header ">
+                <h5 class="modal-title" id="update-factory-header">팩토리정보</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body info-body">
+                <table class="table info-table">
+                    <tbody id="user-info-tbody">
+                        <tr>
+                            <th scope="row">프로필사진</th>
+                            <td>
+                                <img id="update-factory-profile-img" src="/images/user-mypage/profile-img.png" alt="">
+                            </td>
+                            <input id="update-img-input" type="file" accept=".gif, .jpg, .png, .jpeg" style="display: none"/>
+                        </tr>
+                        <tr>
+                            <th scope="row">기업명</th>
+                            <td>
+                                <input type="text" id="update-factory-name" class="liveedit-table-url reg_exp" limitsize="30" reg_type="name">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">대표자명</th>
+                            <td>
+                                <input type="text" id="update-factory-repname" class="liveedit-table-url reg_exp" limitsize="20" reg_type="name">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">아이디</th>
+                            <td>
+                                <input type="text" id="update-factory-id" class="liveedit-table-url reg_exp" limitsize="30" reg_type="id">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">비밀번호</th>
+                            <td>
+                                <input type="password" id="update-factory-pw" class="liveedit-table-url reg_exp" limitsize="100" reg_type="password">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">비밀번호 확인</th>
+                            <td>
+                                <input type="password" id="update-factory-pw-check" class="liveedit-table-url">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">이메일</th>
+                            <td>
+                                <input type="text" id="update-factory-email" class="liveedit-table-url reg_exp" limitsize="200" reg_type="email">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">휴대폰 번호</th>
+                            <td>
+                                <input type="text" id="update-factory-tel" class="liveedit-table-url reg_exp" limitsize="30" reg_type="phone">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">본사 주소</th>
+                            <td>
+                                <input type="text" id="update-factory-addr" class="liveedit-table-url reg_exp" limitsize="100" reg_type="string">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">사업자 등록증</th>
+                            <td>
+                                <input id="update-business-input" type="file" accept=".gif, .jpg, .png, .jpeg"/>
+                                <a id="update-business-down-btn" href="#" download>다운로드</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" id="info-change-btn" class="info-change-btn">수정하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .table-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+
+<!-- 사용권한 중지 -->
+<div class="modal fade" id="factory-stop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header liveend-header">
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h5 class="modal-title liveend-h5" id="staticBackdropLabel">현재 팩토리 관리자의 사용권한을 중지 시키겠습니까?</h5>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button id="factory-stop-btn" type="button" data-dismiss="modal" data-toggle="modal" data-target="#addVoddrop" class="btn liveend-agree">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-open .modal {
+    }
+    .liveend-dialog {
+        max-width: 690px;
+        margin: 18em auto;
+    }
+    .liveend-header {
+        border: none;
+        padding-top: 30px;
+        text-align: center;
+        display: block;
+    }
+    .liveend-h5 {
+        font-weight: bold;
+        /*text-indent: 190px;*/
+    }
+    .liveend-header .liveend-close {
+        padding: 0 1rem;
+    }
+    .liveend-footer {
+        border: none;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .btn:hover {
+        color: #fff;
+    }
+    .liveend-agree {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #e73828;
+        font-size: 16px;
+        padding: 0;
+    }
+    .liveend-cancel {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #606060;
+        font-size: 16px;
+        padding: 0;
+    }
+</style>
+
+<script src="/js/regexp.js"></script>
+<script>
+    const factoryContents   = document.getElementById('factory-contents')
+    const factorySearchText = document.getElementById('factory-search-text')
+    const factoryNickType   = document.getElementById('factory-nick-type')
+    const totalSearchBtn    = document.getElementById('total-search-btn')
+    const defaultProfile = '/images/user-mypage/profile-img.png'
+    let   orderType
+</script>
+
+<!-- 리스트, 검색 기능-->
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        if(!orderType) orderType = 'LATEST'
+        let keyword = factorySearchText.value
+        let keywordType = factoryNickType.options[factoryNickType.selectedIndex].value
+        const url = '/total-admin/factory-list?' + 'pageNo=' + page + '&keywordType=' + keywordType + '&keyword=' + keyword + '&orderType=' + orderType
+
+        axios.get(url).then(function(res){
+            factoryContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    function changeOrderType(pageNo) {
+        if(orderType === 'LATEST') {
+            orderType = 'OLDEST'
+        } else {
+            orderType = 'LATEST'
+        }
+
+        getList(pageNo)
+    }
+
+    totalSearchBtn.addEventListener('click', function(){
+        getList(1)
+    })
+    factorySearchText.addEventListener('keydown', enterSearch)
+</script>
+
+<!-- 팩토리 계정 생성 -->
+<script>
+    const createFactoryImg      = document.getElementById('create-factory-profile-img')
+    const createImgInput        = document.getElementById('create-img-input')
+    const createFactoryName     = document.getElementById('create-factory-name')
+    const createFactoryRepName  = document.getElementById('create-factory-repname')
+    const createFactoryId       = document.getElementById('create-factory-id')
+    const createFactoryPw       = document.getElementById('create-factory-pw')
+    const createFactoryPwCheck  = document.getElementById('create-factory-pw-check')
+    const createFactoryEmail    = document.getElementById('create-factory-email')
+    const createFactoryTel      = document.getElementById('create-factory-tel')
+    const createFactoryAddr     = document.getElementById('create-factory-addr')
+    const createBusinessInput   = document.getElementById('create-business-input')
+
+    const createFactoryBtn      = document.getElementById('create-factory-btn')
+    createFactoryBtn.addEventListener('click', createCheckValues)
+
+    const newFactoryBtn      = document.getElementById('new-factory-btn')
+    newFactoryBtn.addEventListener('click', initFactoryInfo)
+
+    //사진 click
+    createFactoryImg.addEventListener('click',function(e){
+        e.preventDefault()
+        createImgInput.click()
+    })
+
+    //사진 바뀌었을 때
+    function readURL(input, imgElement) {
+        if (input.files && input.files[0]) {
+            if(!/\.(gif|jpg|jpeg|png)$/i.test(input.files[0].name)){
+                if(imgElement){
+                    resetImg(input, imgElement)
+                }
+                alert('사진 형식의 파일만 가능합니다.')
+                return false
+            }
+            const reader = new FileReader()
+            if(imgElement){
+                reader.onload = function (e) {
+                    imgElement.setAttribute('src', e.target.result)
+                }
+            }
+            reader.readAsDataURL(input.files[0])
+        }
+    }
+    createImgInput.addEventListener('change',function(){
+        readURL(this, createFactoryImg)
+    })
+    createBusinessInput.addEventListener('change',function(){
+        readURL(this)
+    })
+
+    // 사진 초기화
+    function resetImg(input, imgElement){
+        imgElement.setAttribute('src', defaultProfile)
+        input.value = ""
+    }
+
+    function initFactoryInfo() {
+        resetImg(createImgInput, createFactoryImg)
+        createFactoryName.value = ''
+        createFactoryRepName.value = ''
+        createFactoryId.value = ''
+        createFactoryPw.value = ''
+        createFactoryPwCheck.value = ''
+        createFactoryEmail.value = ''
+        createFactoryTel.value = ''
+        createFactoryAddr.value = ''
+        createBusinessInput.value = ''
+    }
+
+    // 입력란 전체 기입 유무 확인
+    function createCheckValues(){
+        if(!createFactoryName.value){
+            alert("기업명을 입력하세요.")
+            createFactoryName.focus()
+            return false
+        }
+        else if(!createFactoryRepName.value){
+            alert("대표자명을 입력하세요.")
+            createFactoryRepName.focus()
+            return false
+        }
+        else if(!createFactoryId.value){
+            alert("아이디를 입력하세요.")
+            createFactoryId.focus()
+            return false
+        }
+        else if(!createFactoryPw.value){
+            alert("비밀번호를 입력하세요.")
+            createFactoryPw.focus()
+            return false
+        }
+        else if(createFactoryPw.value !== createFactoryPwCheck.value){
+            alert("비밀번호가 일치하지 않습니다.")
+            createFactoryPw.value = ""
+            createFactoryPwCheck.value = ""
+            createFactoryPw.focus()
+            return false
+        }
+        else if(!createFactoryEmail.value){
+            alert("이메일을 입력하세요.")
+            createFactoryEmail.focus()
+            return false
+        }
+        else if(!createFactoryTel.value){
+            alert("휴대폰 번호를 입력하세요.")
+            createFactoryTel.focus()
+            return false
+        }
+        else if(!createFactoryAddr.value){
+            alert("본사 주소를 입력하세요.")
+            createFactoryAddr.focus()
+            return false
+        }
+        else if(!createBusinessInput.value){
+            alert("사업자 등록증을 등록하세요.")
+            return false
+        }
+
+        createFactory()
+    }
+
+    function createFactory() {
+        createFactoryBtn.disabled = true
+        // 팩토리 계정 생성
+        const info = {
+            factory_name     : createFactoryName.value,
+            factory_repname  : createFactoryRepName.value,
+            factory_id       : createFactoryId.value,
+            factory_password : createFactoryPw.value,
+            factory_email    : createFactoryEmail.value,
+            factory_tel      : createFactoryTel.value,
+            factory_headaddr : createFactoryAddr.value
+        }
+
+        const formData = new FormData()
+        const file = createImgInput.files[0]
+        const file_business = createBusinessInput.files[0]
+        formData.append('info', JSON.stringify(info))
+        if(file) {
+            formData.append('img', file)
+        }
+        formData.append('business', file_business)
+
+        axios.post('/total-admin/factory' , formData,{
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function(res){
+            const flag = res.data.state
+            switch (flag){
+                case 'SUCCESS' :
+                    alert('팩토리 관리자 계정이 생성되었습니다.')
+                    createFactoryBtn.disabled = false
+                    location.reload()
+                    break
+                case 'ID' :
+                    alert('이미 존재하는 아이디 입니다.')
+                    createFactoryBtn.disabled = false
+                    break
+                case 'EMAIL' :
+                    alert('이미 존재하는 이메일 입니다.')
+                    createFactoryBtn.disabled = false
+                    break
+                case 'FAIL' :
+                    alert('서버에 이상이 생겼습니다.')
+                    createFactoryBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            createFactoryBtn.disabled = false
+        })
+    }
+</script>
+
+<!-- 팩토리 계정 수정 -->
+<script>
+    const updateFactoryHeader    = document.getElementById('update-factory-header')
+    const updateFactoryImg       = document.getElementById('update-factory-profile-img')
+    const updateImgInput         = document.getElementById('update-img-input')
+    const updateFactoryName      = document.getElementById('update-factory-name')
+    const updateFactoryRepName   = document.getElementById('update-factory-repname')
+    const updateFactoryId        = document.getElementById('update-factory-id')
+    const updateFactoryPw        = document.getElementById('update-factory-pw')
+    const updateFactoryPwCheck   = document.getElementById('update-factory-pw-check')
+    const updateFactoryEmail     = document.getElementById('update-factory-email')
+    const updateFactoryTel       = document.getElementById('update-factory-tel')
+    const updateFactoryAddr      = document.getElementById('update-factory-addr')
+    const updateBusinessInput    = document.getElementById('update-business-input')
+    let updateFactoryPk
+
+    const infoChangeBtn = document.getElementById('info-change-btn')
+    infoChangeBtn.addEventListener('click', updateCheckValues)
+
+    //사진 click
+    updateFactoryImg.addEventListener('click',function(e){
+        e.preventDefault()
+        updateImgInput.click()
+    })
+
+    updateImgInput.addEventListener('change',function(){
+        readURL(this, updateFactoryImg)
+    })
+    updateBusinessInput.addEventListener('change',function(){
+        readURL(this)
+    })
+
+    function showFactoryDetail(factory_pk) {
+        const url = '/total-admin/factory/detail?' + 'factory_pk=' + factory_pk
+        axios.get(url).then(function(res){
+            const state = res.data.state
+            const factory = res.data.factory
+            switch (state){
+                case 'SUCCESS':
+                    updateFactoryHeader.innerText= factory.factory_name + '의 팩토리 계정정보'
+                    updateFactoryImg.src         = factory.factory_img
+                    updateFactoryName.value      = factory.factory_name
+                    updateFactoryRepName.value   = factory.factory_repname
+                    updateFactoryId.value        = factory.factory_id
+                    updateFactoryEmail.value     = factory.factory_email
+                    updateFactoryTel.value       = factory.factory_tel
+                    updateFactoryAddr.value      = factory.factory_headaddr
+                    updateFactoryPk              = factory_pk
+                    $("#update-business-down-btn").attr('href',factory.factory_business)
+
+                    updateFactoryImg.disabled = false
+                    updateFactoryName.disabled = false
+                    updateFactoryRepName.disabled = false
+                    updateFactoryId.disabled = false
+                    updateFactoryEmail.disabled = false
+                    updateFactoryTel.disabled = false
+                    updateFactoryAddr.disabled = false
+                    updateFactoryPw.disabled = false
+                    updateFactoryPwCheck.disabled = false
+                    updateBusinessInput.disabled = false
+
+                    infoChangeBtn.disabled = false
+
+                    $('#factory-info-modal').modal('show')
+                    break
+                case 'DELETE':
+                    updateFactoryHeader.innerText= factory.factory_name + '의 팩토리 계정정보'
+                    updateFactoryImg.src         = factory.factory_img
+                    updateFactoryName.value      = factory.factory_name
+                    updateFactoryRepName.value   = factory.factory_repname
+                    updateFactoryId.value        = factory.factory_id
+                    updateFactoryEmail.value     = factory.factory_email
+                    updateFactoryTel.value       = factory.factory_tel
+                    updateFactoryAddr.value      = factory.factory_headaddr
+                    updateFactoryPk              = factory_pk
+
+                    updateFactoryImg.disabled = true
+                    updateFactoryName.disabled = true
+                    updateFactoryRepName.disabled = true
+                    updateFactoryId.disabled = true
+                    updateFactoryEmail.disabled = true
+                    updateFactoryTel.disabled = true
+                    updateFactoryAddr.disabled = true
+                    updateFactoryPw.disabled = true
+                    updateFactoryPwCheck.disabled = true
+                    updateBusinessInput.disabled = true
+
+                    infoChangeBtn.disabled = true
+                    $('#factory-info-modal').modal('show')
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+        })
+    }
+
+    function updateCheckValues() {
+        if(!updateFactoryName.value){
+            alert("기업명을 입력하세요.")
+            updateFactoryName.focus()
+            return false
+        }
+        else if(!updateFactoryRepName.value){
+            alert("대표자명을 입력하세요.")
+            updateFactoryRepName.focus()
+            return false
+        }
+        else if(!updateFactoryId.value){
+            alert("아이디를 입력하세요.")
+            updateFactoryId.focus()
+            return false
+        }
+        else if(updateFactoryPw.value !== updateFactoryPwCheck.value){
+            alert("비밀번호가 일치하지 않습니다.")
+            updateFactoryPw.value = ''
+            updateFactoryPwCheck.value = ''
+            updateFactoryPw.focus()
+            return false
+        }
+        else if(!updateFactoryEmail.value){
+            alert("이메일을 입력하세요.")
+            createFactoryEmail.focus()
+            return false
+        }
+        else if(!updateFactoryTel.value){
+            alert("휴대폰 번호를 입력하세요.")
+            updateFactoryTel.focus()
+            return false
+        }
+        else if(!updateFactoryAddr.value){
+            alert("본사 주소를 입력하세요.")
+            updateFactoryAddr.focus()
+            return false
+        }
+        updateFactoryDetail()
+    }
+
+    function updateFactoryDetail() {
+        infoChangeBtn.disabled = true
+
+        // 팩토리 계정 업데이트
+        const info = {
+            factory_pk       : updateFactoryPk,
+            factory_name     : updateFactoryName.value,
+            factory_repname  : updateFactoryRepName.value,
+            factory_id       : updateFactoryId.value,
+            factory_email    : updateFactoryEmail.value,
+            factory_tel      : updateFactoryTel.value,
+            factory_headaddr : updateFactoryAddr.value
+        }
+        if(updateFactoryPw.value){
+            info.factory_password = updateFactoryPw.value
+        }
+
+        const formData = new FormData()
+        const file = updateImgInput.files[0]
+        const file_business = updateBusinessInput.files[0]
+        formData.append('factory_info', JSON.stringify(info))
+        if(file) formData.append('img', file)
+        if(file_business) formData.append('business', file_business)
+
+        axios.put('/total-admin/factory', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function(res){
+            const flag = res.data.state
+            switch (flag){
+                case 'SUCCESS' :
+                    alert('팩토리 관리자 계정이 수정되었습니다.')
+                    infoChangeBtn.disabled = false
+                    location.reload()
+                    break
+                case 'ID' :
+                    alert('이미 존재하는 아이디 입니다.')
+                    infoChangeBtn.disabled = false
+                    break
+                case 'EMAIL' :
+                    alert('이미 존재하는 이메일 입니다.')
+                    infoChangeBtn.disabled = false
+                    break
+                case 'FAIL' :
+                    alert('서버에 이상이 생겼습니다.')
+                    infoChangeBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            infoChangeBtn.disabled = false
+        })
+    }
+</script>
+
+<!--팩토리 계정 중지-->
+<script>
+    let selectedFactory = []
+    const factoryStopModalBtn = document.getElementById('factory-stop-modal-btn')
+    factoryStopModalBtn.addEventListener('click',function(){
+        const checkboxes = $.makeArray($('input[type=checkbox]'))
+        selectedFactory = $.map(checkboxes,function(checkbox){
+            if(checkbox.checked){
+                return checkbox.getAttribute('pk')
+            }
+        })
+
+        // 팩토리를 선택하지 않았을 때
+        if(selectedFactory.length === 0) {
+            alert('팩토리 계정을 선택해주세요.')
+            return false
+        }
+        else{
+            $('#factory-stop').modal('show')
+        }
+    })
+
+    const factoryStopBtn = document.getElementById('factory-stop-btn')
+    factoryStopBtn.addEventListener('click',function(){
+        axios.delete('/total-admin/factory',{ data : {selectedFactory}}).then(function(res){
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert('해당 팩토리 계정이 사용 중지되었습니다.')
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+        })
+    })
+</script>

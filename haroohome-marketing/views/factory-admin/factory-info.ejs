@@ -1,0 +1,215 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <div class="user-body">
+            <%- include("../include/admin-header") %>
+            <div class="user-mypage">
+                <h2>마이페이지</h2>
+                <div class="user-edit">
+                    <h3>회원정보 수정</h3>
+                    <table class="table tutorial-table">
+                        <tbody>
+                            <tr>
+                                <th>프로필사진</th>
+                                <td class="tuto-img-reset-td">
+                                    <input type="file" id="change-img-btn" class="tutorial-table-img" style="display:none;" accept=".gif, .jpg, .png, .jpeg">
+                                    <img id="factory-img" class="profile-img tutorial-table-img" src="<%= user.factory_img %>" placeholder="프로필 이미지" alt=""/>
+                                    <div class="tuto-img-reset-div">
+                                        <div id="img-reset-btn" class="tuto-img-reset">기본 프로필로 변경</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e5e5;">
+                                <th>팩토리명</th>
+                                <td>
+                                    <input type="text" id="factory-name" class="tutorial-table-ip reg_exp" limitsize="100" reg_type="name" placeholder="팩토리명" readonly>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table tutorial-table">
+                        <tbody>
+                            <tr>
+                                <th>대표자명</th>
+                                <td>
+                                    <input type="text" id="factory-rep-name" class="tutorial-table-ip reg_exp" value="" limitsize="20" reg_type="name" placeholder="이름">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>이메일</th>
+                                <td>
+                                    <input type="text" id="factory-email" class="tutorial-table-ip reg_exp" limitsize="100" reg_type="email" placeholder="이메일">
+                                    <input id="tutoCheck" class="tuto-checkip" type="checkbox">
+                                    <label for="tutoCheck" class="tutorial-table-check">정보메일 수신하겠습니다.</label>
+                                    <p class="tuto-join-span">이메일 수신에 동의하시면 여러가지 할인혜택과 각종 이벤트 정보를 받아보실 수 있습니다.<br>
+                                        회원가입관련, 주문 배송관련 등의 메일은 수신동의와 상관없이 모든 회원에게 발송됩니다.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>휴대폰번호</th>
+                                <td>
+                                    <input type="tel" id="factory-tel" class="tutorial-table-ip reg_exp" limitsize="30" reg_type="phone" placeholder="휴대폰번호">
+                                    <input id="tutoCheck-ph" class="tuto-checkip" type="checkbox">
+                                    <label for="tutoCheck-ph" class="tutorial-table-check">SMS를 수신하겠습니다.</label>
+                                    <p class="tuto-join-span">SMS 수신에 동의하시면 여러가지 할인혜택과 각종 이벤트 정보를 받아보실 수 있습니다.<br>
+                                        회원가입관련, 주문 배송관련 등의 메일은 수신동의와 상관없이 모든 회원에게 발송됩니다.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e5e5;">
+                                <th>본사 주소</th>
+                                <td>
+                                    <input type="text" id="factory-addr" class="tutorial-table-ip reg_exp" limitsize="200" reg_type="string" placeholder="주소">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="user-edit-btn">
+                        <button id="edit-button" class="user-edit-save">저장하기</button>
+                        <a href="/factory-admin/main" class="user-edit-cancle">취소</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    const factoryImg      = document.getElementById('factory-img')
+    const factoryName     = document.getElementById('factory-name')
+    const factoryRepName  = document.getElementById('factory-rep-name')
+    const factoryEmail    = document.getElementById('factory-email')
+    const factoryTel      = document.getElementById('factory-tel')
+    const factoryAddr     = document.getElementById('factory-addr')
+    const acptEmail       = document.getElementById('tutoCheck')
+    const acptSMS         = document.getElementById('tutoCheck-ph')
+</script>
+<script>
+    //변경된 사진 미리보기
+    const changeImgBtn = document.getElementById('change-img-btn')
+    const imgResetBtn = document.getElementById('img-reset-btn')
+
+    //사진 click
+    factoryImg.addEventListener('click',function(e){
+        e.preventDefault()
+        changeImgBtn.click()
+    })
+
+    //사진 바뀌었을 때
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            if(!/\.(gif|jpg|jpeg|png)$/i.test(input.files[0].name)){
+                resetImg()
+                alert('사진 형식의 파일만 가능합니다.')
+                return false
+            }
+            const reader = new FileReader()
+            reader.onload = function (e) {
+                factoryImg.setAttribute('src', e.target.result)
+            }
+            reader.readAsDataURL(input.files[0])
+        }
+    }
+    changeImgBtn.addEventListener('change',function(){
+        readURL(this)
+    })
+
+    // 사진 초기화
+    function resetImg(){
+        factoryImg.setAttribute('src', defaultProfile)
+        changeImgBtn.value = ""
+    }
+    imgResetBtn.addEventListener('click',resetImg)
+
+    // 초기화
+    function init(){
+        factoryName.value = '<%= user.factory_name %>'
+        factoryRepName.value = '<%= user.factory_repname %>'
+        factoryEmail.value = '<%= user.factory_email %>'
+        factoryTel.value = '<%= user.factory_tel %>'
+        factoryAddr.value = '<%= user.factory_headaddr %>'
+        acptEmail.checked = '<%= user.flag_acpt_email %>' == 1 ? true : false
+        acptSMS.checked = '<%= user.flag_acpt_sms %>' == 1 ? true : false
+    }
+
+    function checkValues(){
+        const reg_email = RegExp(/^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i) //이메일
+        if(!factoryRepName.value){
+            alert("대표자명을 입력하세요")
+            factoryRepName.focus()
+            return false
+        }
+        if(!factoryEmail.value){
+            alert("이메일을 입력하세요")
+            factoryEmail.focus()
+            return false
+        }
+        if(reg_email.test(factoryEmail.value)){
+            alert("정확한 이메일 형식으로 입력하세요.")
+            factoryEmail.focus()
+            return false
+        }
+        if(!factoryTel.value){
+            alert("전화번호를 입력하세요")
+            factoryTel.focus()
+            return false
+        }
+        if(!factoryAddr.value){
+            alert("본사 주소를 입력하세요")
+            factoryAddr.focus()
+            return false
+        }
+        editInfo()
+    }
+
+    function editInfo() {
+        editBtn.disabled = true
+        const info = {
+            factory_repname  : factoryRepName.value,
+            factory_email    : factoryEmail.value,
+            factory_tel      : factoryTel.value,
+            factory_headaddr : factoryAddr.value,
+            flag_acpt_email  : acptEmail.checked ? 1 : 0,
+            flag_acpt_sms    : acptSMS.checked ? 1 : 0
+        }
+        const formData = new FormData()
+        const file = changeImgBtn.files[0]
+        if(factoryImg.getAttribute('src') === defaultProfile){
+            info.factory_img = '/images/user-mypage/profile-img.png'
+        }
+        formData.append('info', JSON.stringify(info))
+        formData.append('img', file)
+
+        axios.put('/factory-admin/info', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    editBtn.disabled = false
+                    alert('정보가 수정되었습니다.')
+                    location.reload()
+                    break
+                case 'FAIL':
+                    editBtn.disabled = false
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            editBtn.disabled = false
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>
+
+<script>
+    window.onpageshow = init
+    const editBtn = document.getElementById('edit-button')
+    editBtn.addEventListener('click', checkValues)
+
+</script>

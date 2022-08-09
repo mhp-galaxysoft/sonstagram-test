@@ -1,0 +1,452 @@
+        <%- include("../include/head") %>
+        <link rel="stylesheet" href="/css/broadcast.css">
+        <link rel="stylesheet" href="/css/dd.css">
+        <style>
+            footer {
+                padding-right: 548px;
+            }
+        </style>
+        <script src="/js/jquery.dd.min.js"></script>
+        <link href="https://unpkg.com/video.js/dist/video-js.css" rel="stylesheet">
+        <link href="https://unpkg.com/@videojs/themes@1/dist/forest/index.css" rel="stylesheet">
+        <style>
+            /* 방송 화면 */
+            .video-js{
+                position: static;
+            }
+            #my-video{
+                width : inherit;
+                height: inherit;
+            }
+            .vjs-theme-forest{
+                --vjs-theme-forest--primary: #f27070;
+                --vjs-theme-forest--secondary: #fff;
+            }
+            .video-js .vjs-control-bar{
+                background: rgba(43,51,63,.7);
+                margin-bottom : 0;
+            }
+        </style>
+    </head>
+    <body>
+    <% if(user && user.user_type === 'user'){ %>
+    <%- include("../include/common-header") %>
+    <%} else { %>
+    <%- include("../include/admin-header") %>
+    <% } %>
+    <div class="broadcast-body">
+        <div id="broadcast-livechat" class="broadcast-livechat">
+            <div class="livechat-head">
+                <img src="/images/broadcast/icon-live.svg">
+                <h2 class="livechat-head-h2">라이브 채팅</h2>
+            </div>
+            <div id="chat-log-area" class="livechat-txtarea">
+                <% for(let i = 0; i < chats.length; i++){ %>
+                    <div class="livechat-txtwrap">
+                        <div class="livechat-txt">
+                            <div class="livechat-txt-img">
+                                <img src="<%= chats[i].mem_img %>">
+                            </div>
+                            <h4 class="livechat-send-tag"><%= chats[i].mem_nickname %></h4>
+                            <p class="livechat-comment"><%= chats[i].chat_contents %></p>
+                        </div>
+                    </div>
+                <%} %>
+            </div>
+        </div>
+        <div class="broadcast-screen-wrap">
+            <div class="broadcast-screen">
+                <video-js id="my_video" class="video-js vjs-theme-forest" controls preload="auto" muted = "muted"></video-js>
+                <script src="https://unpkg.com/video.js/dist/video.js"></script>
+                <script src="https://unpkg.com/@videojs/http-streaming/dist/videojs-http-streaming.js"></script>
+                <script>
+                    let player = videojs('my_video')
+                    player.src({
+                        src: 'http://jwp.link:1935/<%= vod.stream_application %>/livefactory<%=vod.live_quality%>.<%= vod.vod_version%>/playlist.m3u8?DVR',
+                        type: 'application/x-mpegURL',
+                        handleManifestRedirects : true,
+                        liveui: true,
+                        blacklistDuration : 1
+                    })
+                    player.ready(function(){
+                        player.play()
+                    })
+                </script>
+                <style>
+                    #my_video{
+                        width: inherit;
+                        height: inherit;
+                    }
+                    .vjs-theme-fantasy .vjs-big-play-button{
+                        color : #f27070
+                    }
+                    .vjs-theme-fantasy .vjs-play-progress, .vjs-theme-fantasy .vjs-play-progress:before{
+                        background: #f5abab;
+                    }
+                </style>
+            </div>
+        </div>
+        <div class="broadcast-wraper">
+            <div class="broadcast-inner clearfix">
+                <div class="broadcast-topinfo clearfix">
+                    <div class="clearfix" style="float: left; width: 80%;">
+                        <div class="bdc-topinfo-img">
+                            <img src="<%= vod.mem_img %>">
+                        </div>
+                        <span>
+                            <a href="/channel/main/<%= vod.chnl_pk %>/live"><%= vod.mem_nickname %></a>
+                            <% if(vod.factory_img) { %>
+                            <div class="bdc-topinfo-factorylogo">
+                                <img src="<%= vod.factory_img %>"/>
+                            </div>
+                            <% } else { %>
+                            <div class="bdc-topinfo-factorylogo" style="visibility: hidden">
+                                <img src="/images/user-mypage/profile-img.png" style="visibility: hidden"/>
+                            </div>
+                            <% } %>
+                        </span>
+                        <h2 id="live-title" class="bdc-topinfo-tit"><%= vod.live_title %></h2>
+                        <div class="bdc-topinfo-tag">
+                            <p class="topinfo-tag"><%= vod.category_name%></p>
+                        </div>
+                    </div>
+                    <div class="clearfix" style="float: right; position: absolute; right: 0;">
+                        <% if(!user || user.user_type === 'user') { %>
+                            <button type="submit" class="bdc-topinfo-follow" id="bdc-follow"></button>
+                        <% } else { %>
+                            <button type="submit" class="bdc-topinfo-follow" id="bdc-follow" style="visibility: hidden"></button>
+                        <% } %>
+                        <div class="bdc-topinfo-btn">
+                            <a href="">
+                                <img src="/images/broadcast/icon-report.svg" alt="신고하기">
+                            </a>
+                            <a href="javascript:" onclick="copyLink('http://livefactory.kr/broadcast/vod/<%= vod.vod_pk %>')">
+                                <img src="/images/broadcast/icon-share.svg" alt="공유하기">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-broadcast-topinfo clearfix">
+                    <button class="m-topinfo-chat" type="button"><img height="17px" src="/images/mobile/icon-LIvechat.svg" alt=""> Live 채팅</button>
+                    <!-- 모바일용 라이브 채팅창  -->
+                    <div id="m-broadcast-livechat" class="broadcast-livechat m-broadcast-livechat m-chat-open">
+                        <div class="livechat-head">
+                            <img src="/images/broadcast/icon-live.svg">
+                            <h2 class="livechat-head-h2">라이브 채팅</h2>
+                        </div>
+                        <div id="m-chat-log-area" class="livechat-txtarea">
+                        <% for(let i = 0; i < chats.length; i++){ %>
+                            <div class="livechat-txtwrap">
+                                <div class="livechat-txt">
+                                    <div class="livechat-txt-img">
+                                        <img src="<%= chats[i].mem_img %>">
+                                    </div>
+                                    <h4 class="livechat-send-tag"><%= chats[i].mem_nickname %></h4>
+                                    <p class="livechat-comment"><%= chats[i].chat_contents %></p>
+                                </div>
+                            </div>
+                        <%} %>
+                        </div>
+                    </div>
+                    <div class="m-topinfo-tit" style="padding: 15px 15px 0">
+                        <h2><%= vod.live_title %></h2>
+                    </div>
+                    <div class="m-topinfo-host">
+                        <a href="javascript:void(0)">
+                            <div class="bdc-topinfo-img">
+                                <img src="<%= vod.mem_img %>">
+                            </div>
+                            <div class="m-topinfo-name">
+                                <h3><a href="/channel/main/<%= vod.chnl_pk %>/live"><%= vod.mem_nickname %></a></h3>
+                                <% if(vod.factory_img) { %>
+                                    <div class="m-topinfo-factorylogo">
+                                        <img src="<%= vod.factory_img %>"/>
+                                    </div>
+                                <% } else { %>
+                                <div class="m-topinfo-factorylogo" style="visibility: hidden">
+                                    <img src="/images/user-mypage/profile-img.png" style="visibility: hidden"/>
+                                </div>
+                                <% } %>
+                                <span><%= vod.category_name%></span>
+                            </div>
+                        </a>
+                        <div class="m-topinfo-btn" style="top: -40px">
+                            <button type="button"><img style="height: 38px;" src="/images/broadcast/icon-report.svg"></button>
+                            <button type="button" onclick="copyLink('http://livefactory.kr/broadcast/vod/<%= vod.vod_pk %>')">
+                                <img style="height: 38px;" src="/images/broadcast/icon-share.svg">
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="broadcast-subscript">
+                    <pre class="live-info-pre" id="live-info"><%= vod.live_info %></pre>
+                </div>
+                <div class="broadcast-product">
+                    <h2>라이브 상품 목록</h2>
+                    <div id="product-wrap" class="bdc-product-wrap">
+                        <% for(let i = products.length-1; i >= 0 ; i--){ %>
+                            <div class="bdc-product-list">
+                                <div class="bdc-product-img">
+                                    <img src="<%= products[i].product_img %>">
+                                </div>
+                                <div class="bdc-product-info">
+                                    <h3 class="bdc-product-name"><%= products[i].product_name %></h3>
+                                    <p class="bdc-product-price"><%= products[i].product_price %></p>
+                                    <% if(user && user.user_type === 'user') { %>
+                                    <% if(products[i].wish_yn === 1 ) { %>
+                                        <button type="button" id="wish-btn<%= products[i].product_pk %>" class="bdc-product-fav product-fav-on" onclick="removeWishList(<%= products[i].product_pk%>)"></button>
+                                    <% }else { %>
+                                        <button type="button" id="wish-btn<%= products[i].product_pk %>" class="bdc-product-fav" onclick="addWishList(<%= products[i].product_pk%>)"></button>
+                                    <% } %>
+                                    <% } %>
+                                    <a class="bdc-product-buy" onclick="countClick(<%= products[i].product_pk %>)" href="<%= products[i].product_url %>">구매하기</a>
+                                    <div class="m-product-btn">
+                                    <% if(user && user.user_type === 'user') { %>
+                                        <% if(products[i].wish_yn === 1 ) { %>
+                                        <button id="m-wish-btn<%= products[i].product_pk %>" class="m-product-fav" type="button" onclick="removeWishList(<%= products[i].product_pk%>)"><img class="addFav-img" height="38px" src="/images/mobile/icon-wish.svg"></button>
+                                        <% }else { %>
+                                        <button id="m-wish-btn<%= products[i].product_pk %>" class="m-product-fav" type="button" onclick="addWishList(<%= products[i].product_pk%>)"><img class="addFav-img" height="38px" src="/images/mobile/icon-wish-del.svg"></button>
+                                        <% } %>
+                                    <% } %>
+                                    <a class="m-product-buy" onclick="countClick(<%= products[i].product_pk %>)" href="<%= products[i].product_url %>"><img height="38px" src="/images/mobile/icon-url.svg"></a>
+                                    </div>
+                                </div>
+                            </div>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include("../include/common-footer") %>
+    </body>
+</html>
+<script>
+    // 팔로우 여부 체크
+    const bdcFollow = document.getElementById('bdc-follow')
+    <% if(!follow_yn[0]){ %>
+    bdcFollow.innerText = '팔로잉'
+    bdcFollow.className = 'bdc-topinfo-follow'
+    bdcFollow.addEventListener('click', function (){
+        bdcFollowing(<%= vod.chnl_pk %>)
+        this.removeEventListener('click',arguments.callee)
+    })
+    <% }else{ %>
+    bdcFollow.innerText = '팔로잉 취소'
+    bdcFollow.className = 'bdc-topinfo-unfollow'
+    bdcFollow.addEventListener('click', function (){
+        bdcUnfollowing(<%=vod.chnl_pk%>)
+        this.removeEventListener('click',arguments.callee)
+    })
+    <%} %>
+
+    // 팔로잉 처리
+    function bdcFollowing(chnl_pk){
+        <% if(user && user.user_type === 'user') { %>
+        axios.post('/follow/' + chnl_pk).then(function (res) {
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    bdcFollow.innerText = '팔로잉 취소'
+                    bdcFollow.className = 'bdc-topinfo-unfollow'
+                    bdcFollow.addEventListener('click', function () {
+                        bdcUnfollowing(chnl_pk)
+                        this.removeEventListener('click', arguments.callee)
+                    })
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function (err) {
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+        <% } %>
+    }
+    // 언팔로잉 처리
+    function bdcUnfollowing(chnl_pk){
+        <% if(user && user.user_type === 'user') { %>
+        if(confirm('팔로우를 끊으시겠습니까?')){
+            axios.delete('/follow/'+ chnl_pk).then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        alert('팔로우가 끊어졌습니다.')
+                        bdcFollow.innerText = '팔로잉'
+                        bdcFollow.className = 'bdc-topinfo-follow'
+                        bdcFollow.addEventListener('click',function(){
+                            bdcFollowing(chnl_pk)
+                            this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                        })
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        }else {
+            bdcFollow.addEventListener('click',function(){
+                bdcUnfollowing(chnl_pk)
+                this.removeEventListener('click',arguments.callee)
+            })
+        }
+        <% } %>
+    }
+</script>
+<script>
+    // 위시리스트
+    function addWishList(product_pk) {
+        <% if(user && user.user_type === 'user') { %>
+        axios.post('/wish/'+product_pk).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    const wishBtn = document.getElementById('wish-btn'+product_pk)
+                    const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+
+                    wishBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-wish.svg') // 모바일
+                    wishBtn.style.background = "url(/images/broadcast/icon-fav-on.svg) no-repeat" // 컴퓨터
+                    wishBtn.className = ('bdc-product-fav product-fav-on')
+                    wishBtn.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener("click",arguments.callee)
+                    }
+                    wishBtnMobile.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener("click",arguments.callee)
+                    }
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+        <% } %>
+    }
+
+    function removeWishList(product_pk) {
+        <% if(user && user.user_type === 'user') { %>
+        const wishBtn = document.getElementById('wish-btn'+product_pk)
+        const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+        if (confirm('위시리스트에서 삭제하시겠습니까?')) {
+            axios.delete('/wish/' + product_pk).then(function (res) {
+                const state = res.data.state
+                switch (state){
+                    case 'SUCCESS':
+                        wishBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-wish-del.svg') // 모바일
+                        wishBtn.style.background = "url(/images/broadcast/icon-fav.svg) no-repeat" // 컴퓨터
+                        wishBtn.className = ('bdc-product-fav')
+                        wishBtn.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener("click",arguments.callee)
+                        }
+                        wishBtnMobile.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener("click",arguments.callee)
+                        }
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        }else {
+            wishBtn.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener("click",arguments.callee)
+            }
+            wishBtnMobile.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener("click",arguments.callee)
+            }
+        }
+        <% } %>
+    }
+</script>
+<script>
+    // 라이브 상품 목록 마우스 스크롤
+    $(function() {
+        const slider = document.querySelector('.bdc-product-wrap');
+        let isMouseDown = false;
+        let startX, scrollLeft;
+
+        slider.addEventListener('mousedown', function(){
+            isMouseDown = true;
+            slider.classList.add('active');
+        });
+        slider.addEventListener('mouseleave', function(){
+            isMouseDown = false;
+            slider.classList.remove('active');
+        });
+        slider.addEventListener('mouseup', function(){
+            isMouseDown = false;
+            slider.classList.remove('active');
+        });
+        slider.addEventListener('mousemove',function(){
+        });
+
+
+        slider.addEventListener('mousedown', function(e){
+            isMouseDown = true;
+            slider.classList.add('active');
+
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', function(){
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mousemove', function(e){
+            if (!isMouseDown) return;
+
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 1;
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    });
+</script>
+<script>
+    //공유하기 기능
+    function copyLink(link){
+        var $temp = $('<input>');
+        $('body').append($temp);
+        $temp.val(link).select();
+        document.execCommand('copy');
+        $temp.remove();
+        alert('URL이 복사되었습니다.');
+    }
+
+    // 구매하기 클릭 시 클릭 수 증가
+    function countClick(product_pk) {
+        axios.post('/product/click/'+product_pk).catch(function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>
+<!-- 스크롤 스타일 -->
+<style>
+    .bdc-product-wrap::-webkit-scrollbar {
+        width: 7px;
+        height: 5px;
+    }
+    .bdc-product-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+    .bdc-product-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>

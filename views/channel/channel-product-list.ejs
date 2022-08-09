@@ -1,0 +1,68 @@
+<div class="user-wl-list-wrap">
+    <% for(let i = 0; i < products.length; i++){ %>
+        <ul class="user-wl-list">
+            <li>
+                <div class="user-wl-img">
+                    <img src="<%= products[i].product_img %>">
+                </div>
+                <div class="user-wl-name now-pd-name">
+                    <h3><h3 class="user-wl-h3"><%= products[i].product_name %></h3></h3>
+                    <p><%= products[i].product_price %></p>
+                </div>
+                <% if(user.user_type === 'user'){ %>
+                <div class="user-wl-btn">
+                    <a href="product/<%=products[i].product_pk %>/review" class="user-wl-reviewlist">후기 리스트</a>
+                    <% if(products[i].wish_yn === 0) { %>
+                    <a href="javascript:void(0)" id="wish-btn<%=products[i].product_pk%>" class="user-wl-wishbtn" style="background: #c8c8c8" onclick="addWishList(<%= products[i].product_pk %>)";>
+                    <img src="/images/user-mypage/icon-wish.svg" style="width: 12px;" id="wish-btn"> 위시리스트</a>
+                    <% }else{ %>
+                    <a href="javascript:void(0)" id="wish-btn<%=products[i].product_pk%>" class="user-wl-wishbtn" onclick="removeWishList(<%= products[i].product_pk %>)">
+                    <img src="/images/user-mypage/icon-wish.svg" style="width: 12px;" id="wish-btn"> 위시리스트</a>
+                    <% } %>
+                    <a href="product/<%= products[i].product_pk %>/inquiry" class="user-wl-inquiry">1:1 문의</a>
+                    <a href="<%= products[i].product_url %>" class="user-wl-buy" onclick="countClick(<%= products[i].product_pk %>)">구매하기</a>
+                </div>
+                <div class="user-wl-btn m-wl-btn">
+                    <a href="product/<%=products[i].product_pk %>/review" class="user-wl-reviewlist">후기</a>
+                    <a href="product/<%= products[i].product_pk %>/inquiry" class="user-wl-inquiry">문의</a>
+                    <% if(products[i].wish_yn === 0) { %>
+                    <a href="javascript:void(0)" id="m-wish-btn<%=products[i].product_pk%>" class="user-wl-wishbtn" style="background: #c8c8c8" onclick="addWishList(<%= products[i].product_pk %>)";>
+                        <img src="/images/user-mypage/icon-wish.svg" style="width: 12px;" id="wish-btn"></a>
+                    <% }else{ %>
+                    <a href="javascript:void(0)" id="m-wish-btn<%=products[i].product_pk%>" class="user-wl-wishbtn" onclick="removeWishList(<%= products[i].product_pk %>)">
+                        <img src="/images/user-mypage/icon-wish.svg" style="width: 12px;" id="wish-btn"></a>
+                    <% } %>
+                    <a href="<%= products[i].product_url %>" class="user-wl-buy" onclick="countClick(<%= products[i].product_pk %>)">
+                        <img src="/images/mobile/icon-left-arrow.svg" alt="구매하기">
+                    </a>
+                </div>
+                <% }else{ %>
+                    <div class="factory-pd-btn">
+                        <a href="product/<%= products[i].product_pk %>/review" class="factory-wl-reviewlist">후기 리스트</a>
+                        <a href="product/<%= products[i].product_pk %>/inquiry" class="factory-wl-inquiry">1:1 문의</a>
+                        <a href="<%= products[i].product_url %>" class="factory-wl-buy">구매하기</a>
+                    </div>
+                <% } %>
+            </li>
+        </ul>
+    <% } %>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

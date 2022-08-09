@@ -1,0 +1,213 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <% if(pageType === 'creation'){%>
+                            <h2 class="admin-contents-h2" style="margin: 0;">피드 생성</h2>
+                        <% }else if(pageType === 'modification'){ %>
+                            <h2 class="admin-contents-h2 admin-contents-h2-modifi" style="margin: 0;">피드 수정</h2>
+                            <button id="delete-button" class="feed-create-uplord feed-delete-upload" style="float: right; width: 74px; height: 30px; line-height: 30px;" type="button">삭제하기</button>
+                        <% }%>
+                    </div>
+                    <div class="admin-contents-body fc-contents-body">
+                        <div class="feed-create-img">
+                            <h3>사진첨부</h3>
+                            <div class="feed-create-thumb">
+                                <!-- <img src="/images/img-sample/img01.jpg"> -->
+                                <input type="text" id="change-img-btn" class="feed-create-add" placeholder="+ 이미지를 첨부하세요" readonly>
+                                <input type="file" id="feed-file-btn" style="display: none" accept=".gif, .jpg, .png, .jpeg">
+                                <div style="/*display: flex;*/ max-height: 100%; max-width: 100%;">
+                                    <div id="feed-img" class="feed-img" style="text-align: center;">
+                                        <img src="/" id="feed-detail-img" style="object-fit: contain; max-height: 100%; max-width: 100%;">
+                                    </div>
+                                </div>
+                            </div>
+                            <% if(pageType === 'modification'){ %>
+                            <button id="delete-button" class="feed-create-uplord mobile-none" style="float: left; background: #110101;" type="button" onclick="deleteFeed()">삭제하기</button>
+                            <% } %>
+                        </div>
+                        <div class="feed-create-txt">
+                            <h3>본문</h3>
+                            <% if(pageType === 'modification') {%>
+                            <textarea class="feed-create-txtarea reg_exp" limitsize="500" reg_type="string" id="feed-create-textarea"><%= feed.feed_text%></textarea>
+                            <% } else {%>
+                            <textarea class="feed-create-txtarea reg_exp" limitsize="500" reg_type="string" id="feed-create-textarea"></textarea>
+                            <% } %>
+                            <a class="feed-create-cancel" href="/channel-admin/feed/manage">취소</a>
+                            <button id="upload-button" class="feed-create-uplord" type="button">업로드</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+
+    //사진 미리보기
+    const changeImgBtn      = document.getElementById('change-img-btn')
+    const feedFileBtn       = document.getElementById('feed-file-btn')
+    const feedDetailImg     = document.getElementById('feed-detail-img')
+    const feedImg           = document.getElementById('feed-img')
+    const feedText          = document.getElementById('feed-create-textarea')
+
+    feedImg.style.display = "none"
+
+    //사진 click
+    changeImgBtn.addEventListener('click',function(e){
+        e.preventDefault()
+        feedFileBtn.click()
+    })
+
+    //사진 바뀌었을 때
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader()
+            reader.onload = function (e) {
+                feedDetailImg.setAttribute('src', e.target.result)
+            }
+            reader.readAsDataURL(input.files[0])
+        }
+    }
+    feedDetailImg.addEventListener('click',function(e){
+        e.preventDefault()
+        feedFileBtn.click()
+    })
+    feedFileBtn.addEventListener('change',function(){
+        if(!/\.(gif|jpg|jpeg|png)$/i.test(feedFileBtn.files[0].name)){
+            feedFileBtn.value = ""
+            feedImg.style.display = "none"
+            changeImgBtn.style.display = "block"
+            alert('사진 형식의 파일만 가능합니다.')
+            return false
+        }
+        readURL(this)
+        feedImg.style.display = "block"
+        changeImgBtn.style.display = "none"
+    })
+</script>
+<script>
+    function checkValues(){
+        if(feedImg.style.display === "none"){
+            alert('사진을 첨부하세요.')
+            return false
+        }
+        if(!feedText.value){
+            alert('본문을 입력하세요')
+            feedText.focus()
+            return false
+        }
+        saveFeedInfo()
+    }
+
+    function saveFeedInfo(){
+        uploadBtn.disabled = true
+
+        const formData = new FormData
+        const file = feedFileBtn.files[0]
+        const text = feedText.value
+
+        const info = {
+            feed_text : text
+        }
+
+        formData.append('info', JSON.stringify(info))
+        formData.append('img', file)
+
+        <% if(pageType === 'creation'){ %>
+        axios.post('/feed', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then( function(res){
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    alert('피드를 생성하였습니다')
+                    uploadBtn.disabled = false
+                    location.href='/channel-admin/feed/manage'
+                    break
+                case 'FAIL':
+                    uploadBtn.disabled = false
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function (err){
+            uploadBtn.disabled = false
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+        <% }else if(pageType === 'modification'){ %>
+            formData.append('feed_pk',<%= feed.feed_pk %>)
+            axios.put('/feed', formData,{
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            }).then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        alert('피드 수정이 완료되었습니다')
+                        uploadBtn.disabled = false
+                        location.href="/channel-admin/feed/manage"
+                        break
+                    case 'FAIL':
+                        uploadBtn.disabled = false
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                uploadBtn.disabled = false
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        <% } %>
+    }
+    const uploadBtn = document.getElementById('upload-button')
+    uploadBtn.addEventListener('click', checkValues)
+
+    // 피드 삭제
+    <% if(pageType === 'modification'){ %>
+    const deleteBtn = document.getElementById('delete-button')
+    deleteBtn.addEventListener('click', deleteFeed)
+
+    function deleteFeed() {
+        deleteBtn.disabled = true
+        if (confirm('정말로 삭제하시겠습니까?')) {
+            axios.delete('/feed/<%=feed.feed_pk%>').then(function (res) {
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        alert('정상적으로 삭제되었습니다.')
+                        deleteBtn.disabled = false
+                        location.replace('/channel-admin/feed/manage')
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        deleteBtn.disabled = false
+                        break
+                }
+            }).catch(function (err) {
+                alert('서버에 이상이 생겼습니다.')
+                deleteBtn.disabled = false
+            })
+        }
+    }
+    <% } %>
+
+
+</script>
+<script>
+    <% if(pageType === 'modification'){%>
+        feedDetailImg.setAttribute('src', '<%= feed.feed_img %>')
+        feedImg.style.display = "block"
+        changeImgBtn.style.display = "none"
+    <% } %>
+</script>

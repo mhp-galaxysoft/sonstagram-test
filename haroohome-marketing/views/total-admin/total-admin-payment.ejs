@@ -1,0 +1,234 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/total-admin.css">
+</head>
+
+<body>
+    <div class="total-admin">
+        <%- include("total-admin-head") %>
+        <div class="total-admin-user">
+            <div class="user-manage">
+                <h3>결제내역</h3>
+                <button type="button" class="down-excel-btn">Excel 내려받기</button>
+            </div>
+            <!-- 유저관리 테이블 -->
+            <div class="user-table">
+                <div class="user-search-wrap">
+                    <div class="user-search-topbar">
+                        <select id="user-nick-type" class="user-category nick-category">
+                            <option value="">유저 닉네임</option>
+                            <option value="">11</option>
+                            <option value="">22</option>
+                        </select>
+                        <input id="user-search-text" class="user-search" type="text">
+                        <!-- <button id="user-search-btn" type="button" class="user-search-btn"></a> -->
+                        <button type="button" class="total-search-btn">검색</button>
+                    </div>
+                </div>
+                <div class="table-wrap">
+                    <table class="table user-list-table">
+                        <caption>유저관리 테이블</caption>
+                        <colgroup>
+                            <col style="width: 50px">
+                            <col style="width:10%">
+                            <col style="width:15%">
+                            <col style="width:15%">
+                            <col style="width:10%">
+                            <col style="width:20%">
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col" class="btn-pay-array">결제일시</th>
+                                <th scope="col">닉네임</th>
+                                <th scope="col">이름</th>
+                                <th scope="col">플랜유형</th>
+                                <th scope="col">가격</th>
+                                <th scope="col">결제취소</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>2021.03.22 12:25:45</td>
+                                <td>틴트누나</td>
+                                <td>김틴트</td>
+                                <td>starter</td>
+                                <td>30,000원</td>
+                                <td>
+                                    <button type="button" class="payment-cancel-btn" data-toggle="modal" data-target="#paymentStop">취소</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2021.03.22 12:25:45</td>
+                                <td>틴트누나</td>
+                                <td>김틴트</td>
+                                <td>starter</td>
+                                <td>30,000원</td>
+                                <td>
+                                    <button type="button" class="payment-cancel-btn" data-toggle="modal" data-target="#paymentStop">취소</button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>2021.03.22 12:25:45</td>
+                                <td>틴트누나</td>
+                                <td>김틴트</td>
+                                <td>starter</td>
+                                <td>30,000원</td>
+                                <td>
+                                    <button type="button" class="payment-cancel-btn" data-toggle="modal" data-target="#paymentStop">취소</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div style="width:100%;">
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <li class="page-item active">
+                                <a class="page-link" href="javascript:void(0);" onclick="getFollowList(1)">1</a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
+
+
+<!-- 스크롤 스타일 -->
+<style>
+    .table-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+
+<!-- 결제 취소 모달 -->
+<div class="modal fade" id="planWithdraw" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header liveend-header">
+                <h5 class="modal-title liveend-h5" id="staticBackdropLabel">LIVE 방송을 종료 하시겠습니까?</h5>
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button id="close-button" type="button" data-dismiss="modal" data-toggle="modal" data-target="#addVoddrop" class="btn liveend-agree">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+.liveend-dialog {
+    max-width: 690px;
+    margin: 18em auto;
+}
+.liveend-header {
+    border: none;
+    padding-top: 30px;
+}
+.liveend-h5 {
+    font-weight: bold;
+    text-indent: 190px;
+}
+.liveend-header .liveend-close {
+    padding: 0 1rem;
+}
+.liveend-footer {
+    border: none;
+    justify-content: center;
+    padding-bottom: 20px;
+}
+.btn:hover {
+    color: #fff;
+}
+.liveend-agree {
+    width: 180px;
+    line-height: 45px;
+    color: #fff;
+    background: #e73828;
+    font-size: 16px;
+    padding: 0;
+}
+.liveend-cancel {
+    width: 180px;
+    line-height: 45px;
+    color: #fff;
+    background: #606060;
+    font-size: 16px;
+    padding: 0;
+}
+</style>
+
+<!-- 사용권한 중지 -->
+<div class="modal fade" id="paymentStop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog payment-dialog">
+        <div class="modal-content">
+            <div class="modal-header liveend-header">
+                <h5 class="modal-title liveend-h5" id="staticBackdropLabel">채널 관리자가 사용하는 플랜의 결제를 취소하시겠습니까?</h5>
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button id="close-button" type="button" data-dismiss="modal" data-toggle="modal" data-target="#addVoddrop" class="btn liveend-agree">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-open .modal {
+    }
+    .liveend-dialog {
+        max-width: 690px;
+        margin: 18em auto;
+    }
+    .liveend-header {
+        border: none;
+        padding-top: 30px;
+    }
+    .liveend-h5 {
+        font-weight: bold;
+        text-indent: 190px;
+    }
+    .liveend-header .liveend-close {
+        padding: 0 1rem;
+    }
+    .liveend-footer {
+        border: none;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .btn:hover {
+        color: #fff;
+    }
+    .liveend-agree {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #e73828;
+        font-size: 16px;
+        padding: 0;
+    }
+    .liveend-cancel {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #606060;
+        font-size: 16px;
+        padding: 0;
+    }
+</style>

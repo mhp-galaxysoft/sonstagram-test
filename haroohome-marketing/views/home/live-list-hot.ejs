@@ -1,0 +1,22 @@
+<% for(let i= 0; i < lives.length; i++){ %>
+    <div class="live-slide">
+        <a href="/broadcast/live/<%= lives[i].live_pk %>">
+            <div class="live-slide-img">
+                <img src="<%= lives[i].live_thumbnail %>">
+                <span class="live-span">현재 <%= lives[i].live_ccu %>명 시청중</span>
+            </div>
+            <h4 class="live-slide-tit"><%= lives[i].live_title %></h4>
+            <div class="live-slide-ui">
+                <div class="ui-img">
+                    <img src="<%= lives[i].mem_img %>">
+                </div>
+                <h5><%= lives[i].mem_nickname %></h5>
+                <% if(lives[i].factory_img) { %>
+                <span class="ui-pactory-logo">
+                    <img src="<%= lives[i].factory_img %>">
+                </span>
+                <% } %>
+            </div>
+        </a>
+    </div>
+<% } %>

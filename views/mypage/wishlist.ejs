@@ -1,0 +1,131 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <div class="user-body">
+            <%- include("../include/common-header") %>
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") %>
+                <div class="user-contents">
+                    <div class="user-lnbwrap">
+                        <ul class="user-lnb">
+                            <li class="user-lnbtab-first">
+                                <a href="/mypage/following">팔로잉한 채널</a>
+                            </li>
+                            <li class="lnb-active">
+                                <a href="/mypage/wish">내 위시리스트</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/review">내 후기내역</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/inquiry">내 1:1 문의</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="wish-list"></div>
+                </div>
+                <%- include("../include/mypage/m-info-set") %>
+            </div>
+            <%- include("../include/common-footer") %>
+        </div>
+    </body>
+</html>
+<script>
+    // 위시리스트 배경색 토글
+    /*$('.user-wl-wishbtn').on('click',function() {
+        console.log('ss');
+        $(this).toggleClass('wishbtn-off')
+    });*/
+    $('.m-user-unBtn').on('click',function() {
+            $(this).toggleClass('unwish')
+    })
+</script>
+<script>
+
+    (getList(1))
+    function getList(page) {
+        axios.get('/mypage/wish-list?pageNo='+ page).then(function (res){
+            const wishList = document.getElementById('wish-list')
+            wishList.innerHTML = res.data
+        })
+    }
+
+    // 위시리스트
+    function addWishList(product_pk) {
+        axios.post('/wish/'+product_pk).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    const wishBtn = document.getElementById('wish-btn'+product_pk)
+                    const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+
+                    wishBtn.className = 'user-wl-wishbtn wishbtn'
+                    wishBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-wish.svg')
+                    wishBtn.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    }
+                    wishBtnMobile.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    }
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    function removeWishList(product_pk) {
+        const wishBtn = document.getElementById('wish-btn'+product_pk)
+        const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+        if (confirm('위시리스트에서 삭제하시겠습니까?')) {
+            axios.delete('/wish/' + product_pk).then(function (res) {
+                const state = res.data.state
+                switch (state){
+                    case 'SUCCESS':
+                        alert('위시리스트에서 삭제되었습니다.')
+                        wishBtn.className = 'user-wl-wishbtn wishbtn-off'
+                        wishBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-wish-del.svg')
+                        wishBtn.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener('click',arguments.callee)
+                        }
+                        wishBtnMobile.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener('click',arguments.callee)
+                        }
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        } else {
+            wishBtn.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener('click',arguments.callee)
+            }
+            wishBtnMobile.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener('click',arguments.callee)
+            }
+        }
+    }
+
+    // 구매하기 클릭 시 클릭 수 증가
+    function countClick(product_pk) {
+        axios.post('/product/click/'+product_pk).catch(function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>

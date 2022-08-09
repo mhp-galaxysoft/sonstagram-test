@@ -1,0 +1,156 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2" style="margin: 0;">고객 관리</h2>
+                    </div>
+                    <div class="admin-create-body" style="padding: 0;">
+                         <ul class="customer-manage-lnb">
+                            <li class="ct-mn-active">
+                                <a href="/channel-admin/customer-manage">후기내역</a>
+                            </li>
+                            <li>
+                                <a href="/channel-admin/customer-inquiry">1:1 문의</a>
+                            </li>
+                         </ul>
+                         <div id="review-list"></div>
+                    </div>
+                </div>
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+
+        <!-- 후기내역 미리보기 모달 -->
+        <style>
+            .customer-mg-dialog {
+                max-width: 880px;
+            }
+            .customer-mg-header {
+                padding-bottom: 0;
+            }
+            .customer-mg-body {
+                padding: 0 0 80px 0;
+            }
+            .mem-md-img {
+                width: 47px;
+                height: 47px;
+                border-radius: 5px;
+                margin-right: 10px;
+            }
+            .mem-md-wrap {
+                overflow: hidden;
+                display: flex;
+                align-items: flex-end;
+            }
+            .mem-md-img img {
+                max-width: 100%;
+                min-height: 100%;
+                object-fit: cover;
+            }
+        </style>
+        <div class="modal fade" id="review-detail-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog customer-mg-dialog">
+                <div class="modal-content">
+                    <div class="modal-header customer-mg-header" style="border: none;">
+                        <h5 class="modal-title" id="exampleModalLabel"></h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body customer-mg-body">
+                        <div class="user-inquiry-list">
+                            <div class="mem-md-wrap">
+                                <div class="mem-md-img">
+                                    <img id="mem-img" alt="프로필사진">
+                                </div>
+                                <div class="">
+                                    <p id="mem-nickname"></p>
+                                    <div class="inquiry-star">
+                                        <div class="list-star"><img alt="별"></div>
+                                        <div class="list-star"><img alt="별"></div>
+                                        <div class="list-star"><img alt="별"></div>
+                                        <div class="list-star"><img alt="별"></div>
+                                        <div class="list-star"><img alt="별"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="inquiry-top">
+
+                                <div class="inquiry-title"><p id="inquiry-title"  style="color: #606060"></p></div>
+                                <div class="inquiry-date"><p id="inquiry-date"></p></div>
+                            </div>
+                            <div class="review-img-box">
+                                <img id="inquiry-img" alt="">
+                            </div>
+                            <div class="inquiry-bottom"><p id="inquiry-contents"></p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    const reviewContents = document.getElementById('review-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/channel-admin/customer-manage/review?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            reviewContents.innerHTML = res.data
+        }).catch(function (err){
+            console.error(err)
+        })
+    }
+</script>
+<script>
+    function showReviewDetail(review_pk){
+        axios.get('/review/'+ review_pk).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'FAIL':
+                    alert("서버에 이상이 생겼습니다.")
+                    break
+                case 'SUCCESS':
+                    const review = res.data.review
+                    const memImg = document.getElementById('mem-img')
+                    const memNickname = document.getElementById('mem-nickname')
+                    const inquiryTitle = document.getElementById('inquiry-title')
+                    const inquiryDate = document.getElementById('inquiry-date')
+                    const inquiryImg = document.getElementById('inquiry-img')
+                    const listStar = document.getElementsByClassName('list-star')
+                    const inquiryContents = document.getElementById('inquiry-contents')
+
+                    memImg.setAttribute('src',review.mem_img)
+                    memNickname.innerText = review.mem_nickname
+                    inquiryTitle.innerText = '제품:' + review.product_name
+                    inquiryDate.innerText = review.create_time
+                    for(let i = 0; i < review.review_star; i++){
+                        listStar[i].firstChild.setAttribute('src','/images/broadcast/icon-star.svg')
+                    }
+                    for(let i = review.review_star; i < 5; i++){
+                        listStar[i].firstChild.setAttribute('src','/images/broadcast/icon-starr.svg')
+                    }
+                    if(review.review_img){
+                        inquiryImg.setAttribute('src', review.review_img)
+                        inquiryImg.display = 'block'
+                    }else{
+                        inquiryImg.display = 'none'
+                    }
+                    inquiryContents.innerText = review.review_contents
+
+                    $('#review-detail-modal').modal('show')
+            }
+        })
+    }
+</script>

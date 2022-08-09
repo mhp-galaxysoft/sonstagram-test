@@ -1,0 +1,387 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <div class="user-body">
+            <% if(user.user_type === 'user'){ %>
+            <%- include("../include/common-header") %>
+            <%} else { %>
+            <%- include("../include/admin-header") %>
+            <% } %>
+            <div class="user-mypage">
+                <h2>마이페이지</h2>
+                <div class="user-edit">
+                    <h3>회원정보 수정</h3>
+                    <table class="table tutorial-table">
+                        <tbody>
+                            <tr>
+                                <th>프로필사진</th>
+                                <td class="tuto-img-reset-td">
+                                    <input type="file" id="change-img-btn" class="tutorial-table-img" style="display:none;" accept=".gif, .jpg, .png, .jpeg">
+                                    <img id="mem-img" class="profile-img tutorial-table-img" src="<%= user.mem_img %>" placeholder="프로필 이미지" alt=""/>
+                                    <div class="tuto-img-reset-div">
+                                        <div id="img-reset-btn" class="tuto-img-reset">기본 프로필로 변경</div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e5e5;">
+                                <th>닉네임</th>
+                                <td>
+                                    <input type="text" id="mem-nickname" class="tutorial-table-ip reg_exp" limitsize="100" reg_type="name" placeholder="틴트누나">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <table class="table tutorial-table">
+                        <tbody>
+                            <tr>
+                                <th>이름</th>
+                                <td>
+                                    <input type="text" id="mem-name" class="tutorial-table-ip reg_exp" limitsize="20" reg_type="name" placeholder="이름">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>아이디</th>
+                                <td>
+                                    <input type="text" id="mem-id" class="tutorial-table-ip" disabled>
+                                    <input id="tutoCheck" class="tuto-checkip" type="checkbox">
+                                    <label for="tutoCheck" class="tutorial-table-check">정보메일을 수신하겠습니다.</label>
+                                    <p class="tuto-join-span">이메일 수신에 동의하시면 여러가지 할인혜택과 각종 이벤트 정보를 받아보실 수 있습니다.<br>
+                                        회원가입관련, 주문 배송관련 등의 메일은 수신동의와 상관없이 모든 회원에게 발송됩니다.</p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>휴대폰번호</th>
+                                <td>
+                                    <input type="tel" id="mem-tel" class="tutorial-table-ip reg_exp" limitsize="30" reg_type="phone" placeholder="휴대폰번호" disabled>
+                                    <input id="tutoCheck-ph" class="tuto-checkip" type="checkbox">
+                                    <label for="tutoCheck-ph" class="tutorial-table-check">SMS를 수신하겠습니다.</label>
+                                    <p class="tuto-join-span">SMS 수신에 동의하시면 여러가지 할인혜택과 각종 이벤트 정보를 받아보실 수 있습니다.<br>
+                                        회원가입관련, 주문 배송관련 등의 메세지는 수신동의와 상관없이 모든 회원에게 발송됩니다.</p>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e5e5;">
+                                <th>주소</th>
+                                <td>
+                                    <input type="text" id="mem-addr" class="tutorial-table-ip reg_exp" limitsize="200" reg_type="string" placeholder="주소">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <% if(user.user_type === 'channelAdmin') { %>
+                        <h3 style="margin: 40px 0 20px 0;">스트리밍 정보</h3>
+                        <table class="table liveedit-table">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">서버</th>
+                                    <td>rtmp://110.93.134.242:1935/<%= user.channel.stream_application %></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">스트림 키</th>
+                                    <td>livefactory</td>
+                                </tr>
+                                <tr>
+                                    <th>사용자 이름</th>
+                                    <td><%= user.channel.stream_id %></td>
+                                </tr>
+                                <tr>
+                                    <th>비밀번호</th>
+                                    <td><%= user.channel.stream_password %></td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e5e5e5;">
+                                    <th>송출 어플리케이션 다운로드</th>
+                                    <td>
+                                        <a href="https://livefactorykr.s3.ap-northeast-2.amazonaws.com/StreamingApp.apk" target="_blank"><button type="button" class="btn-obs" >송출앱 다운로드</button></a>
+                                        <p class="tuto-join-span" style="color: #f27070; font-weight: 500;">* 라이브팩토리 송출 앱을 통해 간단하게 스트리밍해보세요. APK 파일을 다운로드받아 설치 후, 바로 사용할 수 있습니다.<br>
+                                            * 별도의 송출없이 로그인만으로 간단한 송출이 가능합니다!</p>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e5e5e5;">
+                                    <th>OBS 다운로드</th>
+                                    <td>
+                                        <a href="https://obsproject.com/ko/download" target="_blank"><button type="button" class="btn-obs" >OBS다운로드</button></a>
+                                        <p class="tuto-join-span" style="color: #f27070; font-weight: 500;">* OBS는 라이브 방송 송출 프로그램입니다. 송출 앱 이용이 불가능하거나, PC에서 송출을 해야 되는 상황이라면 OBS를 사용해보세요.<br>
+                                            * OBS 사용법이 어려우시다면 라이브팩토리 홈페이지에 메뉴얼을 다운받아보세요!</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <h3 style="margin: 40px 0 20px 0;">채널정보 수정</h3>
+                        <table class="table liveedit-table">
+                            <tbody id="channel-table">
+                                <tr>
+                                    <th scope="row">채널 장르</th>
+                                    <td>
+                                        <select id="channel-type" class="liveedit-table-selectbox">
+                                            <%for(let i = 0; i < category.length; i++){ %>
+                                            <option value="<%= category[i].category_pk %>"><%= category[i].category_name %></option>
+                                            <% } %>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="vertical-align: top;">채널 설명</th>
+                                    <td>
+                                        <textarea id="channel-info" style="resize: none;" class="liveedit-table-txt reg_exp" limitsize="200" reg_type="string"></textarea>
+                                    </td>
+                                </tr>
+                                <tr class="my-mall">
+                                    <th scope="row">자사 쇼핑몰 주소</th>
+                                    <td>
+                                        <input type="text" id="channel-url" class="liveedit-table-url reg_exp" limitsize="100" reg_type="url" placeholder="url을 입력하세요">
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody id="plan-cn-addshop-table">
+                                <tr>
+                                    <td colspan="2" class="plan-cn-addshop">
+                                        <button type="button" class="plan-cn-urlbtn">+ 자사 쇼핑몰 주소 추가하기</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    <% } %>
+                    <div class="user-edit-btn">
+                        <button href="" id="edit-button" class="user-edit-save">저장하기</button>
+                        <a href="/mypage/following" class="user-edit-cancle">취소</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+
+<script>
+    const memNickName   = document.getElementById('mem-nickname')
+    const memName       = document.getElementById('mem-name')
+    const memId      = document.getElementById('mem-id')
+    const memTel        = document.getElementById('mem-tel')
+    const memAddr       = document.getElementById('mem-addr')
+    const memImg        = document.getElementById('mem-img')
+    const acptEmailBtn  = document.getElementById('tutoCheck')
+    const acptSMSBtn    = document.getElementById('tutoCheck-ph')
+
+    const channelType   = document.getElementById('channel-type')
+    const channelInfo   = document.getElementById('channel-info')
+    const mallTable     = document.getElementById('channel-table')
+    const chnlUrl       = document.getElementById('channel-url')
+    const mallUrl       = document.getElementsByClassName('liveedit-table-url')
+</script>
+<script>
+    function addMallDiv(text){
+
+        const mallDiv = document.createElement('tr')
+        mallDiv.className = 'my-mall'
+
+        const mallTh = document.createElement('th')
+        mallTh.setAttribute('scope','row')
+        mallTh.innerText = '자사 쇼핑몰 주소'
+
+        const mallTd = document.createElement('td')
+        const mallInput = document.createElement('input')
+        mallInput.setAttribute('type','text')
+        mallInput.setAttribute('placeholder', 'url을 입력하세요')
+        mallInput.setAttribute('limitsize', 100)
+        mallInput.setAttribute('reg_type','url')
+        mallInput.classList.add('reg_exp','liveedit-table-url')
+        mallInput.value = text !== undefined ? text : ""
+        // mallInput.onkeyup = checkRegExp($(mallInput))
+        // mallInput.onfocusout = checkRegExp($(mallInput))
+
+        const mallImg = document.createElement('img')
+        mallImg.className = 'plan-cn-removebtn'
+        mallImg.setAttribute('src','/images/user-mypage/x-button.svg')
+        mallImg.addEventListener('click',function(){
+            let parent = this.parentNode.parentNode
+            parent.remove()
+        })
+
+        mallTd.appendChild(mallInput)
+        mallTd.appendChild(mallImg)
+        mallDiv.appendChild(mallTh)
+        mallDiv.appendChild(mallTd)
+        mallTable.appendChild(mallDiv)
+
+        // `<tr class="my-mall">
+        //     <th scope="row">자사 쇼핑몰</th>
+        //     <td>
+        //         <input type="text" class="liveedit-table-url">
+        //         <img class="plan-cn-removebtn" src="/images/user-mypage/x-button.svg" alt="">
+        //     </td>
+        // </tr>`
+    }
+</script>
+<script>
+    //변경된 사진 미리보기
+    const changeImgBtn = document.getElementById('change-img-btn')
+    const imgResetBtn = document.getElementById('img-reset-btn')
+
+    //사진 click
+    memImg.addEventListener('click',function(e){
+        e.preventDefault()
+        changeImgBtn.click()
+    })
+
+    //사진 바뀌었을 때
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            if(!/\.(gif|jpg|jpeg|png)$/i.test(input.files[0].name)){
+                resetImg()
+                alert('사진 형식의 파일만 가능합니다.')
+                return false
+            }
+            const reader = new FileReader()
+            reader.onload = function (e) {
+                memImg.setAttribute('src', e.target.result)
+            }
+            reader.readAsDataURL(input.files[0])
+        }
+    }
+    changeImgBtn.addEventListener('change',function(){
+        readURL(this)
+    })
+
+    // 사진 초기화
+    function resetImg(){
+        memImg.setAttribute('src', defaultProfile)
+        changeImgBtn.value = ""
+    }
+    imgResetBtn.addEventListener('click',resetImg)
+</script>
+
+<script>
+    //초기화
+    function init(){
+        memNickName.value   = '<%= user.mem_nickname %>'
+        memName.value       = '<%= user.mem_name %>'
+        memId.value      = '<%= user.mem_id %>'
+        memTel.value        = '<%= user.mem_tel %>'
+        memAddr.value       = '<%= user.mem_addr %>'
+        acptEmailBtn.checked = '<%= user.flag_acpt_email %>' == 1 ? true : false
+        acptSMSBtn.checked = '<%= user.flag_acpt_sms %>' == 1 ? true : false
+
+        <% if(user.user_type === "channelAdmin"){ %>
+        for(var i=0; i< channelType.children.length; i++) {
+            if(channelType.children[i].value == '<%= user.channel.category_pk %>') {
+                channelType.children[i].setAttribute('selected', '')
+            }
+        }
+        channelInfo.value = '<%= user.channel.chnl_info %>'
+        const chnlUrlSet = '<%= user.channel.chnl_shop_url %>'.split(',')
+        for(let key in chnlUrlSet) {
+            if (key !== '0') {
+                addMallDiv()
+            }
+            mallUrl[key].value = chnlUrlSet[key]
+        }
+        <% } %>
+    }
+
+    function checkValues(){
+        if(!memNickName.value){
+            alert("닉네임을 입력하세요.")
+            memName.focus()
+            return false
+        }
+        if(!memName.value){
+            alert("이름을 입력하세요.")
+            memName.focus()
+            return false
+        }
+        if(!memTel.value){
+            alert("전화번호를 입력하세요.")
+            memTel.focus()
+            return false
+        }
+        if(!memAddr.value){
+            alert("주소를 입력하세요.")
+            memAddr.focus()
+            return false
+        }
+        <% if(user.user_type === "channelAdmin"){ %>
+        if(!chnlUrl.value){
+            alert("자사 쇼핑몰 주소를 1개 이상 입력하세요.")
+            chnlUrl.focus()
+            return false
+        }
+        <% } %>
+        editInfo()
+    }
+
+    function editInfo(){
+        editBtn.disabled = true
+        const nickName = memNickName.value
+        const name     = memName.value
+        const tel      = memTel.value
+        const addr     = memAddr.value
+        const acptEmail = acptEmailBtn.checked ? 1 : 0;
+        const acptSMS  = acptSMSBtn.checked ? 1 : 0;
+
+        const info = {
+            mem_nickname    : nickName,
+            mem_name        : name,
+            mem_tel         : tel,
+            mem_addr        : addr,
+            flag_acpt_email : acptEmail,
+            flag_acpt_sms   : acptSMS
+        }
+
+        const formData = new FormData()
+        const file = changeImgBtn.files[0]
+        if(memImg.getAttribute('src') === defaultProfile){
+            info.mem_img = '/images/user-mypage/profile-img.png'
+        }
+        formData.append('info', JSON.stringify(info))
+        formData.append('img', file)
+        <% if (user.user_type === "channelAdmin"){ %>
+        const chnlType = channelType.options[channelType.selectedIndex].value
+        const chnlInfo = channelInfo.value
+        const mallUrlSet = Array.prototype.slice.call(mallUrl)
+        const chnl_shop_url = mallUrlSet.map(url => url.value).join(',') // url을 , 를 기준으로 붙여 한 문자열로 만듦
+        const channel = {
+            category_pk     : chnlType,
+            chnl_info       : chnlInfo,
+            chnl_shop_url   : chnl_shop_url
+        }
+        formData.append('channel', JSON.stringify(channel))
+        <% } %>
+
+        axios.put('/profile/info', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then( function(res){
+            const state = res.data.state
+            switch (state){
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    editBtn.disabled = false
+                    break
+                case 'SUCCESS':
+                    alert('회원 정보가 수정되었습니다.')
+                    editBtn.disabled = false
+                    location.href = '/mypage/following'
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            editBtn.disabled = false
+        })
+    }
+</script>
+<script>
+    window.onpageshow = init
+    const editBtn = document.getElementById('edit-button')
+    editBtn.addEventListener('click', checkValues)
+
+    <% if(user.user_type === "channelAdmin"){ %>
+        const addMallBtn = document.getElementById('plan-cn-addshop-table')
+        addMallBtn.addEventListener('click',function(){
+            if(mallUrl.length < 5) addMallDiv()
+            else alert("최대 5개까지 추가 가능합니다.")
+        })
+    <% } %>
+</script>
+

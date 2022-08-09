@@ -1,0 +1,48 @@
+ <div class="invoice-wrap">
+     <div class="invoice-search-wrap">
+        <div class="invoice-search-in">
+            <select class="invoice-search-name">
+                <option>고객성함</option>
+                <option>고객성함</option>
+                <option>고객성함</option>
+            </select>
+            <div class="invoice-search-btn">
+                <input type="text" class="invoice-search-ip">
+                <button type="button" class="btn-iv-se"><img src="/images/channel-admin/icon-search.svg" alt="검색"></button>
+            </div>
+        </div>
+    </div>
+     <div class="invoice-customer-info">
+         <% for(let i=0; i<order.length; i++) { %>
+         <div class="delivery-refund">
+             <div class="refund-info invoice-info">
+                 <div class="refund-name">
+                     <h3><%= order[i].mem_nickname %></h3>
+                     <p>주문번호 : <%= order[i].order_number %></p>
+                 </div>
+                 <table class="table invoice-table">
+                     <tbody>
+                        <tr>
+                            <th>고객성함</th>
+                            <td><%= order[i].receiver_name %></td>
+                        </tr>
+                        <tr>
+                            <th>고객주소</th>
+                            <td>(<%= order[i].receiver_zip %>) <%= order[i].receiver_addr %> <%= order[i].receiver_addr_detail%></td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <th>운송장 번호입력</th>
+                            <td>
+                                <input type="text" class="waybill-number">
+                            </td>
+                        </tr>
+                     </tbody>
+                 </table>
+                 <div class="invoice-send-btn">
+                     <button type="button" class="invoice-send" onclick="clickWaybillSendBtn('<%= order[i].order_pk %>', '<%= i %>')">전송</button>
+                 </div>
+             </div>
+         </div>
+         <% } %>
+     </div>
+ </div>

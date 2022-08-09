@@ -1,0 +1,66 @@
+<%- include("./search") %>
+<script>
+    $('.channel-lnb-tab3').addClass('channel-lnb-active')
+</script>
+                <div class="search-article">
+                    <h2>LIVE 영상</h2>
+                    <ul class="search-pd-list">
+                        <% for ( let i = 0; i < lives.length; i++) { %>
+                        <li>
+                            <div class="pd-img">
+                                <img src="<%= lives[i].live_thumbnail %>">
+                            </div>
+                            <div class="live-video-info">
+                                <span class="live-video-tag">LIVE</span>
+                                <p class="live-video-txt"><%= lives[i].live_title %></p>
+                            </div>
+                            <a href="/broadcast/live/<%= lives[i].live_pk %>" class="pd-channel-btn" style="background: #e73828;">영상보기</a>
+                        </li>
+                        <% } %>
+                    </ul>
+                </div>
+                <div style="width:100%; margin: 0 0 50px 0; background: #fff; border-radius: 0 0 5px 5px;">
+                    <nav>
+                        <ul class="pagination justify-content-center">
+                            <% if(yn_prev === 1) { %>
+                                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="searchLive(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+                            <% } %>
+                            <% for(let page = startPage; page <= endPage; page++) { %>
+                                <% if(page == pageNo) { %>
+                                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="searchLive(<%= page %>)"><%= page %></a></li>
+                                <% } else { %>
+                                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="searchLive(<%= page %>)"><%= page %></a></li>
+                                <% } %>
+                            <% } %>
+                            <% if(yn_next === 1) { %>
+                                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="searchLive(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+                            <% } %>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </div>
+</body>
+</html>
+<!-- 스크롤 스타일 -->
+<style>
+    .search-pd-list::-webkit-scrollbar {
+        width: 7px;
+    }
+    .search-pd-list::-webkit-scrollbar-track {
+        background: none;
+    }
+    .search-pd-list::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script>
+
+    function searchLive(page){
+        if(isNaN(page)) page = 1
+        const url = '/search/live?keyword=' + '<%= keyword %>' + '&pageNo=' + page
+        location.href = url
+    }
+</script>

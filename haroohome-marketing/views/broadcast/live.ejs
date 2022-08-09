@@ -1,0 +1,1217 @@
+    <%- include("../include/head") %>
+    <link rel="stylesheet" href="/css/broadcast.css">
+    <link rel="stylesheet" href="/css/dd.css">
+    <style>
+        footer {
+            padding-right: 548px;
+        }
+    </style>
+    <script src="/js/jquery.dd.min.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <link href="https://unpkg.com/video.js@7/dist/video-js.min.css" rel="stylesheet">
+    <link href="https://unpkg.com/@videojs/themes@1/dist/forest/index.css" rel="stylesheet">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    </head>
+    <body>
+        <% if(user && user.user_type === 'user'){ %>
+        <%- include("../include/common-header") %>
+        <%} else { %>
+        <%- include("../include/admin-header") %>
+        <% } %>
+        <div class="broadcast-body">
+            <div id="broadcast-livechat" class="broadcast-livechat">
+                <div class="livechat-head">
+                    <img src="/images/broadcast/icon-live.svg">
+                    <h2 class="livechat-head-h2">라이브 채팅</h2>
+                </div>
+                <div id="chat-log-area" class="livechat-txtarea">
+                    <% for(let i = 0; i < chats.length; i++){ %>
+                        <div class="livechat-txtwrap">
+                            <div class="livechat-txt">
+                                <div class="livechat-txt-img">
+                                    <img src="<%= chats[i].mem_img %>">
+                                </div>
+                                <% if( chats[i].mem_pk === live.mem_pk){ %>
+                                <h4 class="livechat-send-admin"><%= chats[i].mem_nickname %></h4>
+                                <% }else{ %>
+                                <h4 class="livechat-send-tag"><%= chats[i].mem_nickname %></h4>
+                                <% } %>
+                                <p class="livechat-comment"><%= chats[i].chat_contents %></p>
+                            </div>
+                        </div>
+                    <%} %>
+                </div>
+                <div class="livechat-sendarea">
+                    <div class="livechat-send-name">
+                        <% if(user && (user.user_type === 'user' || user.chnl_pk === live.chnl_pk)){ %>
+                        <div class="livechat-send-img">
+                            <img src="<%= user.mem_img %>">
+                        </div>
+                        <h4 class="livechat-send-tag"><%= user.mem_nickname %></h4>
+                        <% }else{ %>
+                        <div class="livechat-send-img">
+                            <img src="/images/user-mypage/profile-img.png">
+                        </div>
+                        <h4 class="livechat-send-tag">Guest</h4>
+                        <% } %>
+                    </div>
+                    <form>
+                        <div class="livechat-typing">
+                            <textarea class="reg_exp" id="chat-text" style="resize: none;" placeholder="채팅을 입력해 주세요" limitsize="300"></textarea>
+                        </div>
+                        <button id="send-chat-btn" class="livechat-typing-btn" type="button">전송</button>
+                    </form>
+                </div>
+            </div>
+            <div class="broadcast-screen-wrap">
+                <div class="broadcast-screen">
+                    <div>
+                        <img src="/images/broadcast/live-loading.png" id="bdc-loading-img" class="bdc-loading-img">
+                    </div>
+                    <video-js id="my_video" class="video-js vjs-theme-forest" controls preload="auto" muted = "muted"></video-js>
+                    <script src="https://unpkg.com/video.js/dist/video.js"></script>
+                    <script src="https://unpkg.com/@videojs/http-streaming/dist/videojs-http-streaming.js"></script>
+                    <script>
+                        let player = videojs('my_video')
+                        player.src({
+                            src: 'http://jwp.link:1935/<%= live.stream_application %>/livefactory<%=live.live_quality%>/playlist.m3u8',
+                            type: 'application/x-mpegURL',
+                            handleManifestRedirects : true,
+                            liveui: true,
+                            blacklistDuration : 1
+                        })
+                        player.ready(function(){
+                            player.play()
+                        })
+                        player.on('error', function() {
+                            player.dispose()
+                            const loadingImg = document.getElementById('bdc-loading-img')
+                            loadingImg.style.display = 'block'
+                        })
+                    </script>
+                    <style>
+                        #my_video{
+                            width: inherit;
+                            height: inherit;
+                        }
+                        .vjs-theme-forest{
+                            --vjs-theme-forest--primary: #f27070;
+                            --vjs-theme-forest--secondary: #fff;
+                        }
+                        .video-js .vjs-control-bar{
+                            background: rgba(43,51,63,.7);
+                            margin-bottom : 0;
+                        }
+                    </style>
+                    <%# 채널 관리자일 때%>
+                    <% if(user && user.chnl_pk === live.chnl_pk){ %>
+                        <div class="broadcast-screen-btn">
+                            <button data-toggle="modal" data-target="#live-end-drop" type="submit" class="broadcast-screen-end">방송종료</button>
+                            <button data-toggle="modal" data-target="#liveEditdrop" type="button" class="broadcast-screen-edit">LIVE 수정하기</button>
+                            <button data-toggle="modal" data-target="#liveEditdrop" type="button" class="broadcast-screen-edit m-screen-edit">수정하기</button>
+                        </div>
+                    <% } %>
+                </div>
+            </div>
+            <div class="broadcast-wraper">
+                <div class="broadcast-inner clearfix">
+                    <div class="broadcast-topinfo clearfix">
+                        <div class="clearfix" style="float: left; width: 80%;">
+                            <div class="bdc-topinfo-img">
+                                <img src="<%= live.mem_img %>">
+                            </div>
+                            <span>
+                                <a href="/channel/main/<%= live.chnl_pk %>/live"><%= live.mem_nickname %></a>
+                                <% if(live.factory_img) { %>
+                                <div class="bdc-topinfo-factorylogo">
+<!--                                    <img src="/images/user-mypage/factory-logo.png" alt=""/>-->
+                                    <img src="<%= live.factory_img %>"/>
+                                </div>
+                                <% } %>
+                            </span>
+                            <h2 id="live-title" class="bdc-topinfo-tit"><%= live.live_title %></h2>
+                            <div class="bdc-topinfo-tag">
+                                <p class="topinfo-tag"><%= live.category_name%></p>
+                            </div>
+                        </div>
+                        <div class="clearfix" style="float: right; position: absolute; right: 0;">
+                            <p id="live-ccu" class="bdc-topinfo-viewer">현재 <%= live.live_ccu %>명 시청중</p>
+                            <% if(user && user.user_type === 'user') { %>
+                            <button type="submit" class="bdc-topinfo-follow" id="bdc-follow"></button>
+                            <% } %>
+                            <div class="bdc-topinfo-btn">
+                                <a href="">
+                                    <img src="/images/broadcast/icon-report.svg" alt="신고하기">
+                                </a>
+                                <a href="javascript:" onclick="copyLink('http://livefactory.kr/broadcast/<%= live.live_pk %>')">
+                                    <img src="/images/broadcast/icon-share.svg" alt="공유하기">
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="m-broadcast-topinfo clearfix">
+                        <button class="m-topinfo-chat" type="button"><img height="17px" src="/images/mobile/icon-LIvechat.svg" alt=""> Live 채팅</button>
+                        <!-- 모바일용 라이브 채팅창  -->
+                        <div id="m-broadcast-livechat" class="broadcast-livechat m-broadcast-livechat m-chat-open">
+                            <div class="livechat-head">
+                                <img src="/images/broadcast/icon-live.svg">
+                                <h2 class="livechat-head-h2">라이브 채팅</h2>
+                            </div>
+                            <div id="m-chat-log-area" class="livechat-txtarea">
+                            <% for(let i = 0; i < chats.length; i++){ %>
+                                <div class="livechat-txtwrap">
+                                    <div class="livechat-txt">
+                                        <div class="livechat-txt-img">
+                                            <img src="<%= chats[i].mem_img %>">
+                                        </div>
+                                        <% if( chats[i].mem_pk === live.mem_pk){ %>
+                                        <h4 class="livechat-send-admin"><%= chats[i].mem_nickname %></h4>
+                                        <% }else{ %>
+                                        <h4 class="livechat-send-tag"><%= chats[i].mem_nickname %></h4>
+                                        <% } %>
+                                        <p class="livechat-comment"><%= chats[i].chat_contents %></p>
+                                    </div>
+                                </div>
+                            <%} %>
+                            </div>
+                            <div class="livechat-sendarea">
+                                <% if(user && (user.user_type === 'user'|| user.chnl_pk === live.chnl_pk)){ %>
+                                <div class="livechat-send-name">
+                                    <div class="livechat-send-img">
+                                        <img src="<%= user.mem_img %>">
+                                    </div>
+                                    <h4 class="livechat-send-tag"><%= user.mem_nickname %></h4>
+                                </div>
+                                <% }else{ %>
+                                <div class="livechat-send-name">
+                                    <div class="livechat-send-img">
+                                        <img src="/images/user-mypage/profile-img.png">
+                                    </div>
+                                    <h4 class="livechat-send-tag">Guest</h4>
+                                </div>
+                                <% } %>
+                                <form>
+                                    <div class="livechat-typing">
+                                        <textarea class="reg_exp" id="m-chat-text" style="resize: none; border-bottom: 1px solid #eee;" placeholder="채팅을 입력해 주세요" limitsize="300"></textarea>
+                                    </div>
+                                    <button id="m-send-chat-btn" class="livechat-typing-btn" type="button">전송</button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="m-topinfo-tit">
+                            <h2><%= live.live_title %></h2>
+                        </div>
+                        <div class="m-topinfo-host">
+                            <a href="javascript:void(0)">
+                                <div class="bdc-topinfo-img">
+                                    <img src="<%= live.mem_img %>">
+                                </div>
+                                <div class="m-topinfo-name">
+                                    <h3><a href="/channel/main/<%= live.chnl_pk %>/live"><%= live.mem_nickname %></a></h3>
+                                    <% if(live.factory_img) { %>
+                                    <div class="m-topinfo-factorylogo">
+                                        <img src="<%= live.factory_img %>"/>
+                                    </div>
+                                    <% } %>
+                                </div>
+                                <span class="m-topinfo-ptag"><%= live.category_name%></span>
+                            </a>
+                            <div class="m-topinfo-btn">
+                                <button type="button"><img style="height: 38px;" src="/images/broadcast/icon-report.svg"></button>
+                                <button type="button" onclick="copyLink('http://livefactory.kr/broadcast/live/<%= live.live_pk %>')">
+                                    <img style="height: 38px;" src="/images/broadcast/icon-share.svg">
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="broadcast-subscript">
+                        <pre id="live-info"><%= live.live_info %></pre>
+                    </div>
+                    <div class="broadcast-product">
+                        <h2>라이브 상품 목록</h2>
+                        <div id="product-wrap" class="bdc-product-wrap">
+                            <% for(let i = products.length-1; i >= 0 ; i--){ %>
+                                <div class="bdc-product-list">
+                                    <div class="bdc-product-img">
+                                        <img src="<%= products[i].product_img %>">
+                                    </div>
+                                    <div class="bdc-product-info">
+                                        <h3 class="bdc-product-name"><%= products[i].product_name %></h3>
+                                        <p class="bdc-product-price"><%= products[i].product_price %></p>
+                                        <% if(user && user.user_type === 'user') { %>
+                                            <% if(products[i].wish_yn === 1 ) { %>
+                                            <button type="button" id="wish-btn<%= products[i].product_pk %>" class="bdc-product-fav product-fav-on" onclick="removeWishList(<%= products[i].product_pk%>); this.onclick=null;"></button>
+                                            <% }else { %>
+                                            <button type="button" id="wish-btn<%= products[i].product_pk %>" class="bdc-product-fav" onclick="addWishList(<%= products[i].product_pk%>); this.onclick=null;"></button>
+                                            <% } %>
+                                        <% } %>
+                                        <a class="bdc-product-buy" onclick="countClick(<%= products[i].product_pk %>)" href="<%= products[i].product_url %>" target="_blank">구매하기</a>
+                                        <div class="m-product-btn">
+                                        <% if(user && user.user_type === 'user') { %>
+                                            <%if(products[i].wish_yn === 1 ) {%>
+                                            <button id="m-wish-btn<%= products[i].product_pk %>" class="m-product-fav" type="button" onclick="removeWishList(<%= products[i].product_pk%>); this.onclick=null;"><img class="addFav-img" height="38px" src="/images/mobile/icon-wish.svg"></button>
+                                            <% }else { %>
+                                            <button id="m-wish-btn<%= products[i].product_pk %>" class="m-product-fav" type="button" onclick="addWishList(<%= products[i].product_pk%>); this.onclick=null;"><img class="addFav-img" height="38px" src="/images/mobile/icon-wish-del.svg"></button>
+                                            <% } %>
+                                        <% } %>
+                                        <a class="m-product-buy" onclick="countClick(<%= products[i].product_pk %>)" href="<%= products[i].product_url %>"><img height="38px" src="/images/mobile/icon-url.svg"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+<% if(user && user.chnl_pk === live.chnl_pk){ %>
+<!-- 채널관리자 수정 모달 -->
+<div class="modal fade" id="liveEditdrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveedit-dialog" style="zoom: 85%;">
+      <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title liveedit-h5" id="staticBackdropLabel">LIVE 영상 수정</h5>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body liveedit-body">
+            <table class="table liveedit-table">
+                <tbody id="live-info-tbody">
+                    <tr>
+                        <th scope="row">썸네일 사진</th>
+                        <td>
+                            <input type="file" id="change-img-btn">
+                            <div class="live-tnail-wrap">
+                                <img id="live-thumbnail-mod" src="<%= live.live_thumbnail%>" alt="">
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row">LIVE 영상명</th>
+                        <td>
+                            <input type="text" id="live-title-mod" class="liveedit-table-url reg_exp" limitsize="100">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" style="vertical-align: top;">영상 설명</th>
+                        <td>
+                            <textarea style="resize: none;" id="live-info-mod" class="liveedit-table-txt reg_exp" limitsize="300"></textarea>
+                        </td>
+                    </tr>
+                </tbody>
+                <tbody id="add-product-btn" class="live-tab1" style="border: 0; border-bottom : 1px solid #dee2e6;">
+                <tr>
+                    <td colspan="2" class="plan-cn-addshop">
+                        <button type="button" class="plan-cn-urlbtn">+ 상품 추가하기</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="modal-footer">
+            <button id="modify-btn" type="button" data-dismiss="modal" class="btn liveedit-btn">수정하기</button>
+        </div>
+      </div>
+    </div>
+</div>
+<style>
+    .liveedit-dialog {
+        max-width: 1100px;
+        margin: 5.75rem auto;
+    }
+    .liveedit-h5 {
+        font-weight: bold;
+        margin: 10px 0 0 25px;
+    }
+    .liveedit-body {
+        padding: 20px 40px;
+    }
+    .liveedit-btn {
+        background: #e73828;
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        padding: 0;
+    }
+    .liveedit-btn:hover {
+        color: #fff;
+    }
+    .live-tnail-wrap {
+        width: 410px;
+        margin-top: 20px;
+    }
+    .live-tnail-wrap img {
+        max-width: 100%;
+        min-height: 100%;
+        object-fit: cover;
+    }
+    @media all and (max-width: 767px) {
+        .liveedit-body {
+            padding: 20px 15px;
+        }
+        table.liveedit-table th {
+            text-indent: unset;
+        }
+        .liveedit-table-url {
+            width: 100%;
+        }
+        .liveedit-table-txt {
+            width: 100%;
+        }
+        .live-tnail-wrap {
+            width: 100%;
+        }
+    }
+</style>
+
+<!-- 방송 종료 모달 -->
+<div class="modal fade" id="live-end-drop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header liveend-header">
+                <h5 class="modal-title liveend-h5" id="staticBackdropLabel">LIVE 방송을 종료 하시겠습니까?</h5>
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button id="close-button" type="button" data-dismiss="modal" data-toggle="modal" data-target="#addVoddrop" class="btn liveend-agree">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-open .modal {
+    }
+    .liveend-dialog {
+        max-width: 690px;
+        margin: 18em auto;
+    }
+    .liveend-header {
+        border: none;
+        padding-top: 30px;
+    }
+    .liveend-h5 {
+        font-weight: bold;
+        text-indent: 190px;
+    }
+    .liveend-header .liveend-close {
+        padding: 0 1rem;
+    }
+    .liveend-footer {
+        border: none;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .btn:hover {
+        color: #fff;
+    }
+    .liveend-agree {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #e73828;
+        font-size: 16px;
+        padding: 0;
+    }
+    .liveend-cancel {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #606060;
+        font-size: 16px;
+        padding: 0;
+    }
+    @media all and (max-width: 767px) {
+        .liveend-dialog {
+            margin: 13em auto;
+        }
+        .liveend-header {
+            text-align: center;
+            display: block;
+        }
+        .liveend-h5 {
+            font-size: 12px;
+            text-indent: unset;
+        }
+        .liveend-agree,
+        .liveend-cancel {
+            width: 80px;
+            line-height: 35px;
+            font-size: 14px;
+        }
+    }
+
+</style>
+<% } %>
+<script src="/js/regexp.js"></script>
+<script>
+    //socket.io - connection to namespace:chat
+    const socket = io.connect('livefactory.kr/chat', {
+        path: '/socket.io'
+    })
+
+    /*const socket = io.connect('http://localhost:3000/chat', {
+        path: '/socket.io'
+    })*/
+
+    const sendChatBtn   = document.getElementById('send-chat-btn')
+    const chatText      = document.getElementById('chat-text')
+    const chatLogArea   = document.getElementById('chat-log-area')
+    const sendChatBtnMobile = document.getElementById('m-send-chat-btn')
+    const chatTextMobile = document.getElementById('m-chat-text')
+    const chatLogAreaMobile = document.getElementById('m-chat-log-area')
+
+    chatText.onkeyup = function(){
+        chatTextMobile.value = chatText.value
+    }
+    chatTextMobile.onkeyup = function(){
+        chatText.value = chatTextMobile.value
+    }
+
+    function takeEnter(e){
+        if(e.keyCode === 13){
+            if(!e.shiftKey){
+                sendMessage(e)
+            }
+        }
+    }
+
+    function sendMessage(e){
+        e.preventDefault()
+        if(!chatText.value) return false
+        <% if(user && (user.user_type === 'user'|| user.chnl_pk === live.chnl_pk)){ %>
+        axios.post('/broadcast/live/<%= live.live_pk %>/chat',{
+            chat : chatText.value,
+            type : "<%= user.user_type %>"
+        }).then(function(res){
+            chatText.value = ""
+            chatTextMobile.value = ""
+            chatText.focus()
+        }).catch(function (err){
+            alert("서버에 이상이 생겼습니다.")
+            console.error(err)
+        })
+        <% }else{ %>
+        chatText.value = ''
+        chatTextMobile.value = ''
+        chatText.focus()
+        alert("권한이 없습니다.")
+        <% } %>
+    }
+
+    function updateMessage(data){
+        const liveChatTxtWrap = document.createElement('div')
+        liveChatTxtWrap.className = "livechat-txtwrap"
+        const liveChatTxt = document.createElement('div')
+        liveChatTxt.className = "livechat-txt"
+
+        const liveChatTxtImg = document.createElement('div')
+        liveChatTxtImg.className = "livechat-txt-img"
+        if(data.img){
+            const liveChatProfileImg = document.createElement('img')
+            liveChatProfileImg.setAttribute('src', data.img)
+            liveChatTxtImg.appendChild(liveChatProfileImg)
+        }
+
+        const liveChatSendTag = document.createElement('h4')
+        liveChatSendTag.className = "livechat-send-tag"
+        liveChatSendTag.textContent = data.user
+        if(data.type === 'channelAdmin'){
+            liveChatSendTag.className = "livechat-send-admin"
+        }else{
+            liveChatSendTag.className = "livechat-send-tag"
+        }
+        const liveChatComment = document.createElement('p')
+        liveChatComment.className = "livechat-comment"
+        liveChatComment.textContent = data.chat
+
+        liveChatTxt.appendChild(liveChatTxtImg)
+        liveChatTxt.appendChild(liveChatSendTag)
+        liveChatTxt.appendChild(liveChatComment)
+        liveChatTxtWrap.appendChild(liveChatTxt)
+
+        chatLogArea.appendChild(liveChatTxtWrap)
+        chatLogAreaMobile.appendChild(liveChatTxtWrap.cloneNode(true))
+
+        chatLogArea.scrollTop = chatLogArea.scrollHeight //채팅창 아래로 내리기
+        chatLogAreaMobile.scrollTop = chatLogAreaMobile.scrollHeight
+        //  <div class="livechat-txtwrap">
+        //      <div class="livechat-txt">
+        //          <div class="livechat-txt-img">
+        //              <img src="/images/channel/icon_user.png">
+        //          </div>
+        //          <h4 class="livechat-send-tag">틴트누나</h4>
+        //          <p class="livechat-comment">몇 브릭스인가요?</p>
+        //      </div>
+        //  </div>
+    }
+
+    function updateConcurrentUser(data){
+        const concurrentUser = data.concurrentUser
+        const liveCcu = document.getElementById('live-ccu')
+        liveCcu.innerText = "현재 "+concurrentUser+"명 시청중"
+
+        //채팅창 아래로 내리기
+        chatLogArea.scrollTop = chatLogArea.scrollHeight
+        chatLogAreaMobile.scrollTop = chatLogAreaMobile.scrollHeight
+    }
+
+    // Send 버튼 클릭, enter 입력되면 메시지 전송
+    chatText.addEventListener('keydown', takeEnter)
+    chatTextMobile.addEventListener('keydown', takeEnter)
+    sendChatBtn.addEventListener('click', sendMessage)
+    sendChatBtnMobile.addEventListener('click', sendMessage)
+
+    // // 모바일 - PC 전환할 떄 스크롤 아래로 바꾸기
+    // // 하다가 잠시 보류..
+    // const chatArea = document.getElementById('broadcast-livechat')
+    // const chatAreaMobile = document.getElementById('m-broadcast-livechat')
+    // console.log(chatAreaMobile.style.display)
+    // const observer = new MutationObserver(function(mutations, observer){
+    //     for (let mutation of mutations){
+    //         console.log(mutation)
+    //     }
+    // })
+    // const config = {
+    //     attributes : true,
+    //     attributeFilter: ['style']
+    // }
+    // observer.observe(chatAreaMobile,config)
+
+    // 방 입장했을 때
+    <% if(user && (user.user_type === 'user'|| user.chnl_pk === live.chnl_pk)){ %>
+    socket.emit('newLive',{
+        mem_nickname: '<%= user.mem_nickname %>',
+        mem_pk : '<%= user.mem_pk %>',
+        mem_img : '<%= user.mem_img %>'
+    })
+    <% }else{ %>
+    socket.emit('newLive')
+    <% } %>
+
+    socket.on('join',updateConcurrentUser)
+    socket.on('chat',updateMessage)
+    socket.on('exit',updateConcurrentUser)
+    socket.on('updateInfo', function (){
+        axios.get('/live/<%= live.live_pk %>').then(function(res){
+            const products = res.data.products
+            const live = res.data.live
+
+            // live 정보 업데이트
+            const liveTitle = document.getElementById('live-title')
+            const liveInfo = document.getElementById('live-info')
+
+            liveTitle.innerText = live.live_title
+            liveInfo.innerText = live.live_info
+
+            //판매 상품 업데이트
+            const productsUpd = products.reverse()
+            const bdcProductWrap = document.getElementById('product-wrap')
+            bdcProductWrap.innerHTML = ""
+            for(let i =0; i < productsUpd.length; i++){
+                makeProductList(productsUpd[i])
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+        })
+    })
+    socket.on('close',function(){ // 라이브 종료되면 홈으로 이동하기
+        if(!player.isDisposed()){
+            player.dispose()
+        }
+
+        const loadingImg = document.getElementById('bdc-loading-img')
+        loadingImg.setAttribute('src','/images/broadcast/live-end.png')
+        loadingImg.style.display = 'block'
+
+        <% if(user && user.chnl_pk === live.chnl_pk){ %> // 라이브 송출자
+        alert("라이브가 종료되었습니다.\nVOD로 변환하는 데 10분 정도의 시간이 소요됩니다.\n모두 완료되기 전에 라이브 생성 시 VOD가 붙어서 저장될 수 있으니 주의해주세요!")
+        <% }else{ %> // 시청자
+        alert("라이브가 종료되었습니다.")
+        <% } %>
+        location.replace('/')
+    })
+    socket.on('count', function(room_pk){
+        axios.post('/live/socket', {
+            room_pk : room_pk
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    })
+    socket.on('time out', function(){ // 채널 관리자가 송출 가능한 시간을 모두 소요한 경우
+        // 영상 정지 후 라이브 종료 사진으로 변경
+        if(!player.isDisposed()){
+            player.dispose()
+        }
+
+        const loadingImg = document.getElementById('bdc-loading-img')
+        loadingImg.setAttribute('src','/images/broadcast/live-end.png')
+        loadingImg.style.display = 'block'
+
+        <% if(user && user.chnl_pk === live.chnl_pk){ %> // 라이브 송출자
+        swal("라이브 가능 시간이 모두 소요되어 라이브가 종료됩니다.\n방송 종료 후 라이브를 더 진행하시려면 쿠폰을 사용하거나 플랜을 신청하세요.\nVOD로 변환하는 데 10분 정도의 시간이 소요됩니다.\n모두 완료되기 전에 라이브 생성 시 VOD가 붙어서 저장될 수 있으니 주의해주세요!").then(function(){
+            $('#live-end-drop').modal('show')
+        })
+        <% }else{ %> // 시청자
+        alert("라이브가 종료되었습니다.")
+        location.replace('/')
+        <% } %>
+    })
+    socket.on('compulsion', function () {
+        if(!player.isDisposed()){
+            player.dispose()
+        }
+
+        const loadingImg = document.getElementById('bdc-loading-img')
+        loadingImg.setAttribute('src','/images/broadcast/live-end.png')
+        loadingImg.style.display = 'block'
+
+        <% if(user && user.chnl_pk === live.chnl_pk){ %> // 라이브 송출자
+        alert("OBS 방송 송출 프로그램이 종료되어 라이브를 종료합니다.\nVOD로 변환하는 데 10분 정도의 시간이 소요됩니다.\n모두 완료되기 전에 라이브 생성 시 VOD가 붙어서 저장될 수 있으니 주의해주세요!")
+        <% }else{ %> // 시청자
+        alert("라이브가 종료되었습니다.")
+        <% } %>
+
+        location.replace('/')
+    })
+
+</script>
+<script>
+    // 팔로우 여부 체크
+    <% if(user && user.user_type === 'user') { %>
+    const bdcFollow = document.getElementById('bdc-follow')
+
+    <% if(!follow_yn[0]){ %>
+    bdcFollow.innerText = '팔로잉'
+    bdcFollow.className = 'bdc-topinfo-follow'
+    bdcFollow.addEventListener('click', function (){
+        bdcFollowing(<%= live.chnl_pk %>)
+        this.removeEventListener('click',arguments.callee)
+    })
+    <% }else{ %>
+    bdcFollow.innerText = '팔로잉 취소'
+    bdcFollow.className = 'bdc-topinfo-unfollow'
+    bdcFollow.addEventListener('click', function (){
+        bdcUnfollowing(<%=live.chnl_pk%>)
+        this.removeEventListener('click',arguments.callee)
+    })
+    <%} %>
+
+    // 팔로잉 처리
+    function bdcFollowing(chnl_pk){
+        <% if(user && user.user_type === 'user') { %>
+            axios.post('/follow/' + chnl_pk).then(function (res) {
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        bdcFollow.innerText = '팔로잉 취소'
+                        bdcFollow.className = 'bdc-topinfo-unfollow'
+                        bdcFollow.addEventListener('click', function () {
+                            bdcUnfollowing(chnl_pk)
+                            this.removeEventListener('click', arguments.callee)
+                        })
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err) {
+                console.error(err)
+                alert('서버에 이상이 생겼습니다.')
+            })
+        <% } %>
+    }
+
+    // 언팔로잉 처리
+    function bdcUnfollowing(chnl_pk){
+        if(confirm('팔로우를 끊으시겠습니까?')){
+            axios.delete('/follow/'+ chnl_pk).then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        alert('팔로우가 끊어졌습니다.')
+                        bdcFollow.innerText = '팔로잉'
+                        bdcFollow.className = 'bdc-topinfo-follow'
+                        bdcFollow.addEventListener('click',function(){
+                            bdcFollowing(chnl_pk)
+                            this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                        })
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        }else {
+            bdcFollow.addEventListener('click',function(){
+                bdcUnfollowing(chnl_pk)
+                this.removeEventListener('click',arguments.callee)
+            })
+        }
+    }
+    <% } %>
+</script>
+<script>
+    // 위시리스트
+    <% if(user && user.user_type === 'user') { %>
+    function addWishList(product_pk) {
+        <% if(user && user.user_type === 'user') { %>
+        axios.post('/wish/'+product_pk).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    const wishBtn = document.getElementById('wish-btn'+product_pk)
+                    const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+
+                    wishBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-wish.svg') // 모바일
+                    wishBtn.style.background = "url(/images/broadcast/icon-fav-on.svg) no-repeat" // 컴퓨터
+                    wishBtn.className = ('bdc-product-fav product-fav-on')
+                    wishBtn.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener("click",arguments.callee)
+                    }
+                    wishBtnMobile.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener("click",arguments.callee)
+                    }
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+        <% } %>
+    }
+
+    function removeWishList(product_pk) {
+        const wishBtn = document.getElementById('wish-btn'+product_pk)
+        const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+        if (confirm('위시리스트에서 삭제하시겠습니까?')) {
+            axios.delete('/wish/' + product_pk).then(function (res) {
+                const state = res.data.state
+                switch (state){
+                    case 'SUCCESS':
+                        wishBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-wish-del.svg') // 모바일
+                        wishBtn.style.background = "url(/images/broadcast/icon-fav.svg) no-repeat" // 컴퓨터
+                        wishBtn.className = ('bdc-product-fav')
+                        wishBtn.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener("click",arguments.callee)
+                        }
+                        wishBtnMobile.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener("click",arguments.callee)
+                        }
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        }else {
+            wishBtn.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener("click",arguments.callee)
+            }
+            wishBtnMobile.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener("click",arguments.callee)
+            }
+        }
+    }
+    <% } %>
+</script>
+<script>
+    function makeProductList(data){
+        const bdcProductWrap = document.getElementById('product-wrap')
+
+        const bdcProductList = document.createElement('div')
+        bdcProductList.className = "bdc-product-list"
+
+        const bdcProductImg = document.createElement('div')
+        bdcProductImg.className = "bdc-product-img"
+        const productImg = document.createElement('img')
+        productImg.setAttribute('src',data.product_img)
+
+        const bdcProductInfo = document.createElement('div')
+        bdcProductInfo.className = "bdc-product-info"
+        const bdcProductName = document.createElement('h3')
+        bdcProductName.className = "bdc-product-name"
+        bdcProductName.innerText = data.product_name
+        const bdcProductPrice = document.createElement('p')
+        bdcProductPrice.className = "bdc-product-price"
+        bdcProductPrice.innerText = data.product_price
+        const bdcProductFav = document.createElement('button')
+        bdcProductFav.id = 'wish-btn' + data.product_pk
+        if (data.wish_yn===1) {
+            bdcProductFav.className = "bdc-product-fav product-fav-on"
+            bdcProductFav.onclick = function(){
+                removeWishList(data.product_pk)
+            }
+        } else {
+            bdcProductFav.className = "bdc-product-fav"
+            bdcProductFav.onclick = function(){
+                addWishList(data.product_pk)
+            }
+        }
+        bdcProductFav.setAttribute('type','button')
+
+        const bdcProductBuy = document.createElement('a')
+        bdcProductBuy.className = "bdc-product-buy"
+        bdcProductBuy.setAttribute('href',data.product_url)
+        bdcProductBuy.onclick = function(){
+            countClick(data.product_pk)
+        }
+        bdcProductBuy.innerText = "구매하기"
+
+        const mProductBtn = document.createElement('div')
+        mProductBtn.className = "m-product-btn"
+        const mProductFav = document.createElement('button')
+        mProductFav.id = "m-wish-btn" + data.product_pk
+        mProductFav.className = "m-product-fav"
+        const addFavImg = document.createElement('img')
+        addFavImg.setAttribute('height','38px')
+        if (data.wish_yn === 1) {
+            mProductFav.onclick = function(){
+                removeWishList(data.product_pk)
+            }
+            addFavImg.setAttribute('src','/images/mobile/icon-wish.svg')
+        } else {
+            mProductFav.onclick = function(){
+                addWishList(data.product_pk)
+            }
+            addFavImg.setAttribute('src','/images/mobile/icon-wish-del.svg')
+        }
+        const mProductBuy = document.createElement('a')
+        mProductBuy.className = 'm-product-buy'
+        mProductBuy.setAttribute('href',data.product_pk)
+        mProductBuy.onclick = function(){
+            countClick(data.product_pk)
+        }
+        const mProductBuyImg = document.createElement('img')
+        mProductBuyImg.setAttribute('height','38px')
+        mProductBuyImg.setAttribute('src','/images/mobile/icon-url.svg')
+
+        mProductFav.appendChild(addFavImg)
+        mProductBuy.appendChild(mProductBuyImg)
+        mProductBtn.appendChild(mProductFav)
+        mProductBtn.appendChild(mProductBuy)
+
+        bdcProductImg.appendChild(productImg)
+        bdcProductInfo.appendChild(bdcProductName)
+        bdcProductInfo.appendChild(bdcProductPrice)
+        bdcProductInfo.appendChild(bdcProductFav)
+        bdcProductInfo.appendChild(bdcProductBuy)
+        bdcProductInfo.appendChild(mProductBtn)
+
+        bdcProductList.appendChild(bdcProductImg)
+        bdcProductList.appendChild(bdcProductInfo)
+
+        bdcProductWrap.appendChild(bdcProductList)
+        /*<div class="bdc-product-list">
+            <div class="bdc-product-img">
+                <img src="">
+            </div>
+            <div class="bdc-product-info">
+                <h3 class="bdc-product-name"></h3>
+                <p class="bdc-product-price"></p>
+                <button class="bdc-product-fav" type="button"></button>
+                <a class="bdc-product-buy" href="">구매하기</a>
+                <div class="m-product-btn">
+                    <button id="m-wish-btn" class="m-product-fav" type="button" onclick="removeWishList()"><img class="addFav-img" height="38px" src="/images/mobile/icon-wish.svg"></button>
+                    <button id="m-wish-btn" class="m-product-fav" type="button" onclick="addWishList()"><img class="addFav-img" height="38px" src="/images/mobile/icon-wish-del.svg"></button>
+                    <a class="m-product-buy" href=""><img height="38px" src="/images/mobile/icon-url.svg"></a>
+                </div>
+            </div>
+        </div>*/
+    }
+</script>
+<script>
+    <%# 현재 라이브를 생성한 채널 관리자일 떄%>
+    <% if(user && user.chnl_pk === live.chnl_pk){ %>
+
+    // 라이브 종료
+    const closeBtn = document.getElementById('close-button')
+    closeBtn.addEventListener('click',function(){
+        closeBtn.disabled = true
+        axios.delete('/live/<%= live.live_pk %>').then(function(res){
+            const liveExist = res.data.liveExist
+            if(liveExist){
+                alert('OBS 등의 방송 송출을 먼저 종료해주세요.')
+            }
+            closeBtn.disabled = false
+        }).catch(function(err){
+            alert("서버에 이상이 생겼습니다.")
+            closeBtn.disabled = false
+            console.error(err)
+        })
+    })
+
+    $('.m-topinfo-chat').on('click',function() {
+        $('.m-broadcast-livechat').toggleClass('m-chat-open')
+        chatLogArea.scrollTop = chatLogArea.scrollHeight
+        chatLogAreaMobile.scrollTop = chatLogAreaMobile.scrollHeight
+    })
+
+    // 라이브 수정
+    function addProduct(option){
+        const liveInfoTbody = document.getElementById('live-info-tbody')
+
+        const productTr = document.createElement('tr')
+        productTr.className = 'product-tr'
+
+        const productTh = document.createElement('th')
+        productTh.setAttribute('scope','row')
+        productTh.innerText = '상품 설정'
+
+        const productTd = document.createElement('td')
+        const productSelect = document.createElement('select')
+        productSelect.classList.add('live-product-mod','liveedit-table-selectbox')
+
+        <% for(let i = 0; i < items.length; i++){ %>
+        const productOption<%=i%> = document.createElement('option')
+        productOption<%=i%>.innerText = '<%= items[i].product_name %>'
+        productOption<%=i%>.value = '<%= items[i].product_pk %>'
+        productSelect.appendChild(productOption<%=i%>)
+        <% } %>
+        if(option){
+            for(let i = 0; i < productSelect.options.length; i++){
+                if(parseInt(productSelect.options[i].value) === option){
+                    productSelect.options[i].selected = true
+                    break
+                }
+            }
+        }
+
+        const removeTdBtn = document.createElement('img')
+        removeTdBtn.className = 'product-remove-btn'
+        removeTdBtn.setAttribute('src','/images/user-mypage/x-button.svg')
+        removeTdBtn.addEventListener('click',function(){
+            let parent = this.parentNode.parentNode
+            parent.remove()
+        })
+
+        productTd.appendChild(productSelect)
+        productTd.appendChild(removeTdBtn)
+        productTr.appendChild(productTh)
+        productTr.appendChild(productTd)
+        liveInfoTbody.appendChild(productTr)
+
+        //<tr>
+        //    <th scope="row">상품 설정</th>
+        //    <td>
+        //        <select class="liveedit-table-selectbox">
+        //              <option value=></option>
+        //        </select>
+        //    </td>
+        //</tr>
+    }
+
+    function readURL(input) {
+        if (input.files && input.files[0]) {
+            const reader = new FileReader()
+            reader.onload = function (e) {
+                const liveThumbnailMod = document.getElementById('live-thumbnail-mod')
+                liveThumbnailMod.setAttribute('src', e.target.result)
+            }
+            reader.readAsDataURL(input.files[0])
+        }
+    }
+
+    // 초기화
+    const liveTitleMod = document.getElementById('live-title-mod')
+    const liveInfoMod = document.getElementById('live-info-mod')
+    const changeImgBtn = document.getElementById('change-img-btn')
+    const addProductBtn = document.getElementById('add-product-btn')
+
+    changeImgBtn.onchange = function (){
+        readURL(changeImgBtn)
+    }
+
+    liveTitleMod.value = '<%= live.live_title %>'
+    liveInfoMod.value = `<%= live.live_info %>`
+    addProductBtn.onclick = addProduct
+
+    let liveProducts = JSON.parse('<%- JSON.stringify(products) %>')
+    for(let key in liveProducts){
+        addProduct(liveProducts[key].product_pk)
+    }
+    let productNo = '<%= products.length %>'
+
+    // 수정하기
+    const modifyBtn = document.getElementById('modify-btn')
+    modifyBtn.onclick = function(){
+        modifyBtn.disabled = true
+        const info = {
+            live_title  : liveTitleMod.value,
+            live_info   : liveInfoMod.value
+        }
+        const formData = new FormData()
+        const file = changeImgBtn.files[0]
+
+        const liveProductsMod = document.getElementsByClassName('live-product-mod')
+        let liveProductList = []
+        for(let key = 0; key < liveProductsMod.length; key++){
+            let select = liveProductsMod[key]
+            let value = select.options[select.selectedIndex].value
+            liveProductList.push(value)
+        }
+        const set = new Set(liveProductList)
+        liveProductList = [...set]
+
+        formData.append('info', JSON.stringify(info))
+        formData.append('items', liveProductList.toString())
+        formData.append('product_no', productNo)
+        formData.append('img', file)
+        axios.put('/live/<%= live.live_pk %>', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function(res){
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    const products = res.data.products
+                    for(let i = liveProductsMod.length-1; i >= 0 ; i--){
+                        const parent = liveProductsMod[i].parentNode.parentNode
+                        parent.remove()
+                    }
+                    for(let product of products){
+                        addProduct(product.product_pk)
+                    }
+                    productNo = products.length
+                    alert('라이브 정보 수정이 완료되었습니다.')
+                    modifyBtn.disabled = false
+                    socket.emit('update')
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    modifyBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+            modifyBtn.disabled = false
+        })
+    }
+    <% } %>
+</script>
+<script>
+    // 라이브 상품 목록 마우스 스크롤
+    $(function() {
+        const slider = document.querySelector('.bdc-product-wrap');
+        let isMouseDown = false;
+        let startX, scrollLeft;
+
+        slider.addEventListener('mousedown', function(){
+            isMouseDown = true;
+            slider.classList.add('active');
+        });
+        slider.addEventListener('mouseleave', function(){
+            isMouseDown = false;
+            slider.classList.remove('active');
+        });
+        slider.addEventListener('mouseup', function(){
+            isMouseDown = false;
+            slider.classList.remove('active');
+        });
+        slider.addEventListener('mousemove',function(){
+        });
+
+
+        slider.addEventListener('mousedown', function(e){
+            isMouseDown = true;
+            slider.classList.add('active');
+
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        });
+
+        slider.addEventListener('mouseleave', function(){
+            slider.classList.remove('active');
+        });
+
+        slider.addEventListener('mousemove', function(e){
+            if (!isMouseDown) return;
+
+            e.preventDefault();
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 1;
+            slider.scrollLeft = scrollLeft - walk;
+        });
+    });
+
+</script>
+<script>
+    //공유하기 기능
+    function copyLink(link){
+        var $temp = $('<input>');
+        $('body').append($temp);
+        $temp.val(link).select();
+        document.execCommand('copy');
+        $temp.remove();
+        alert('URL이 복사되었습니다.');
+    }
+</script>
+<!-- 스크롤 스타일 -->
+<style>
+    .scrollbar-color,
+    .bdc-product-wrap::-webkit-scrollbar {
+        width: 7px;
+        height: 5px;
+    }
+    .scrollbar-color,
+    .bdc-product-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+    .scrollbar-color,
+    .bdc-product-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script>
+    // 구매하기 클릭 시 클릭 수 증가
+    function countClick(product_pk) {
+        axios.post('/product/click/'+product_pk).catch(function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>
+<% if(isTimeOut){ %>
+<script>
+    if(!player.isDisposed()){
+        player.dispose()
+    }
+
+    const loadingImg = document.getElementById('bdc-loading-img')
+    loadingImg.setAttribute('src','/images/broadcast/live-end.png')
+    loadingImg.style.display = 'block'
+
+    <% if(user && user.chnl_pk === live.chnl_pk){ %>
+    alert("라이브 가능 시간이 모두 소요되어 라이브가 종료됩니다.\n방송 종료 후 라이브를 더 진행하시려면 쿠폰을 사용하거나 플랜을 신청하세요.")
+    $('#live-end-drop').modal('show')
+    <% }else{ %>
+    alert("종료된 라이브입니다.")
+    window.history.back() // 뒤로가기
+    <% } %>
+</script>
+<% } %>

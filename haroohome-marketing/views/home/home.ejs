@@ -1,0 +1,28 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/channel.css">
+</head>
+    <body>
+        <%- include("../include/common-header") %>
+        <div class="channel-body">
+            <div class="channel-wrap">
+                <div class="channel-inner">
+                    <h2 class="channel-logo">
+                        <% if(user.flag_pumkin === 0) { %>
+                            <img src="/images/tutorial/live-logo.svg">
+                        <% } else { %>
+                            <img src="/images/pumkin/logo.svg" style="width: 294px; height: 117px">
+                        <% } %>
+                    </h2>
+                    <div class="channel-lnb-wrap">
+                        <ul class="channel-lnb">
+                            <li class="channel-lnb-first">
+                                <a href="/home/live">LIVE 방송</a>
+                            </li>
+                            <li class="channel-lnb-tab2">
+                                <a href="/home/vod">VOD 방송</a>
+                            </li>
+                            <li class="channel-lnb-tab3">
+                                <a href="/home/channel">라이브 채널</a>
+                            </li>
+                        </ul>
+                    </div>

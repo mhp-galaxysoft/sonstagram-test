@@ -1,0 +1,121 @@
+<link rel="stylesheet" href="/css/factory-admin.css">
+<script src = "https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<%- include("../include/head") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="factory-wrap">
+            <%- include("../include/mypage/factory-mypage-profile") %>
+            <div class="user-contents">
+                <div class="user-lnbwrap">
+                    <h3 class="channel-chart-h3 channel-chart-tit">채널 통계</h3>
+                    <div class="chart-ip-wrap">
+                        <input type="date" id="start-date" onchange="dateCheck()" class="channel-chart-date">
+                        ~
+                        <input type="date" id="last-date" onchange="dateCheck()" class="channel-chart-date channel-chart-date2">
+                    </div>
+                    <input type="checkbox" id="click" name="xxx" value="클릭 수" onclick="test()" checked> 클릭 수
+                    <a class="channel-chart-set" href="/factory-admin/statistic">통계 설정하기</a>
+                </div>
+                <div id="factory-statistic-chart">
+                    <canvas id="myChart" width="400" height="205"></canvas>
+                </div>
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+<style>
+    .factory-statistic-chart {
+        overflow: hidden;
+    }
+</style>
+<script>
+    let ctx = document.getElementById('myChart').getContext('2d')
+    let myChart = new Chart(ctx, {
+        type: 'line',
+        fill: 'false',
+        data: {
+            labels: [
+                <% for ( let i = 0; i < products.length; i++) {%>
+                    '<%= products[i].product_name %>',
+                <% } %>
+            ],
+            datasets: [{
+                lineTension: 0,
+                label: '상품 클릭 수',
+                data: [
+                    <% for ( let i = 0; i < products.length; i++) {%>
+                    <%= products[i].cnt %>,
+                    <% } %>
+                ],
+                backgroundColor: [
+                    'rgba(255, 255, 255, 0.2)',
+                ],
+                borderColor: [
+                    'rgba(255, 99, 132, 1)',
+                    'rgba(54, 162, 235, 1)',
+                    'rgba(255, 206, 86, 1)',
+                    'rgba(75, 192, 192, 1)',
+                    'rgba(153, 102, 255, 1)',
+                    'rgba(255, 159, 64, 1)'
+                ],
+                borderWidth: 1
+            }]
+
+        },
+        options: {
+            scales: {
+                yAxes: [{
+                    ticks: {
+                        min: -0,
+                        max: <%= maxCnt %> +2,
+                    callback: function (value) {
+                        if (0 === value % 1) {
+                            return value;
+                        }
+                    }
+                    }
+                }]
+            }
+        }
+    })
+    let chartLabel = myChart.data.labels
+    let chartData = myChart.data.datasets
+
+    // 날짜 변경시 차트 정보 수정
+    function dateCheck() {
+        const startDate = document.getElementById('start-date').value
+        const lastDate = document.getElementById('last-date').value
+        if(startDate <= lastDate) {
+            getChart(startDate, lastDate)
+        }
+    }
+
+    function getChart (startDate, lastDate) {
+        axios.get('/factory-admin/main/statistic/' + startDate + '/' +lastDate).then(function(res){
+                let data = chartData[0].data
+                for(let j=0 ; j < data.length ; j++){
+                    if(res.data.products[0]) {
+                        data[j] = res.data.products[j].cnt
+                    } else {
+                        data[j] = 0
+                    }
+                }
+            myChart.update()
+    })
+    }
+
+    const clickCheck = document.getElementById('click')
+    function test () {
+        if(clickCheck.checked) {
+            myChart.data.datasets[0].hidden = false
+            myChart.update()
+        } else {
+            myChart.data.datasets[0].hidden = true
+            myChart.update()
+        }
+    }
+
+</script>

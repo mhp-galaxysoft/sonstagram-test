@@ -1,0 +1,149 @@
+<%- include("./home") %>
+<script>
+    $('.channel-lnb-first').addClass('channel-lnb-active')
+</script>
+<div class="channel-live channel-common channel-lnb-tab1">
+    <div class="channel-live-head">
+        <h3>LIVE 방송</h3>
+        <div class="channel-live-topbar">
+            <select id="live-sort-type" class="channel-category">
+                <option value="">장르 선택</option>
+                <% for(let i=0; i<category.length; i++) { %>
+                    <option value="<%= category[i].category_pk %>"><%= category[i].category_name%></option>
+                <% } %>
+            </select>
+            <input id="live-search-text" class="channel-search" type="text">
+            <button id="live-search-btn" class="channel-search-btn"></button>
+        </div>
+    </div>
+    <div class="channel-live-banner">
+        <% if(user.flag_pumkin === 0) { %>
+            <img src="/images/channel/live-banner.svg">
+        <% } else { %>
+            <img src="/images/pumkin/live-banner.svg">
+        <% } %>
+    </div>
+    <div class="m-channel-live-banner">
+        <% if(user.flag_pumkin === 0) { %>
+            <img src="/images/mobile/live-banner.svg">
+        <% } else { %>
+            <img src="/images/pumkin/mobile/live-banner.svg">
+        <% } %>
+    </div>
+    <div class="channel-live-slider">
+        <h3>현재 인기있는 LIVE 🔥</h3>
+        <div class="live-slide-wrap">
+            <div id="hot-live-list"></div>
+        </div>
+    </div>
+    <div class="channel-live-list">
+        <h3>현재 라이브 중 👀</h3>
+        <div class="live-list-wrap">
+            <div class="txt-center">
+                <div id="now-live-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+</div>
+</div>
+<%- include("../include/common-footer") %>
+</body>
+</html>
+<script>
+    // 라이브 상품 목록 마우스 스크롤
+    $(function() {
+        const slider = document.querySelector('.live-slide-wrap')
+        let isMouseDown = false;
+        let startX, scrollLeft;
+
+        slider.addEventListener('mousedown', () => {
+            isMouseDown = true;
+            slider.classList.add('active')
+        })
+        slider.addEventListener('mouseleave', () => {
+            isMouseDown = false;
+            slider.classList.remove('active')
+        })
+        slider.addEventListener('mouseup', () => {
+            isMouseDown = false;
+            slider.classList.remove('active')
+        })
+        slider.addEventListener('mousemove',() => {
+        })
+
+
+        slider.addEventListener('mousedown', (e) => {
+            isMouseDown = true;
+            slider.classList.add('active')
+
+            startX = e.pageX - slider.offsetLeft;
+            scrollLeft = slider.scrollLeft;
+        })
+
+        slider.addEventListener('mouseleave', () => {
+            slider.classList.remove('active')
+        })
+
+        slider.addEventListener('mousemove', (e) => {
+            if (!isMouseDown) return;
+
+            e.preventDefault()
+            const x = e.pageX - slider.offsetLeft;
+            const walk = (x - startX) * 1;
+            slider.scrollLeft = scrollLeft - walk;
+        })
+    })
+</script>
+<script>
+    //검색 기능
+    const liveSortType = document.getElementById('live-sort-type')
+    const liveSearchText = document.getElementById('live-search-text')
+    const liveSearchBtn = document.getElementById('live-search-btn')
+    const liveContents = document.getElementById('now-live-list')
+    const hotLiveContents = document.getElementById('hot-live-list')
+</script>
+<script>
+    // 인기 라이브
+    (getHotLiveList)(1)
+
+    function getHotLiveList(page){
+        if(isNaN(page)) page = 1
+        const category_pk = liveSortType.options[liveSortType.selectedIndex].value
+        const keyword = liveSearchText.value
+        const url = '/home/live/list/hot?' + 'pageNo=' + page + '&keyword=' + keyword + '&category_pk=' + category_pk
+        axios.get(url).then(function(res){
+            hotLiveContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    // 현재 라이브 목록
+    (getLiveList)(1)
+
+    function getLiveList(page){
+        if(isNaN(page)) page = 1
+        const category_pk = liveSortType.options[liveSortType.selectedIndex].value
+        const keyword = liveSearchText.value
+        const url = '/home/live/list/now?' + 'pageNo=' + page + '&keyword=' + keyword + '&category_pk=' + category_pk
+        axios.get(url).then(function(res){
+            liveContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getLiveList(1)
+        }
+    }
+    liveSearchText.addEventListener('keydown',enterSearch)
+    liveSearchBtn.addEventListener('click',getLiveList)
+    liveSortType.addEventListener('change', function() {
+        getLiveList(1)
+        getHotLiveList(1)
+    })
+</script>

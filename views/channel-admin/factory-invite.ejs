@@ -1,0 +1,105 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body style="background: #fff1f1;">
+        <div class="admin-invite-body">
+            <div class="invite-inner">
+                <div class="invite-head">
+                    <h1 class="invite-logo">
+                        <img src="/images/tutorial/live-logo.svg">
+                    </h1>
+                    <p class="invite-head-p"><%= channel.mem_nickname %> 님<br>팩토리 초대 제의가 도착했습니다!</p>
+                </div>
+                <div class="invite-box">
+                    <div class="invite-box-top">
+                        <p class="invite-txt">
+                            안녕하세요. <span><%= factory.factory_name %></span> 대표 <span><%= factory.factory_repname %></span> 입니다.<br>
+                            <span><%= channel.mem_nickname %></span> 님, 팩토리 초대 제의를 위해 메일을 드렸습니다.<br>
+                            <br>
+                            저희의 소속이 되어 함께 즐거운 라이브팩토리를 진행하실 생각이있으신가요?<br>
+                            있으시다면 가입을 승낙해주세요!
+                        </p>
+                    </div>
+                    <div class="invite-box-bottom">
+                        <div class="ivt-wrap">
+                            <div class="invite-box-factory">
+                                <img src="<%= factory.factory_img %>">
+                            </div>
+                        </div>
+                        <ul class="invite-box-info">
+                            <li>
+                                <div class="invite-box-name">
+                                    <h3><%= factory.factory_name %></h3>
+                                </div>
+                                <p><%= factory.factory_name %></p>
+                            </li>
+                            <li>
+                                <div class="invite-box-name">
+                                    <h3>대표자명</h3>
+                                </div>
+                                <p><%= factory.factory_repname %></p>
+                            </li>
+                            <li>
+                                <div class="invite-box-name">
+                                    <h3>본사 주소</h3>
+                                </div>
+                                <p><%= factory.factory_headaddr %></p>
+                            </li>
+                            <li>
+                                <div class="invite-box-name">
+                                    <h3>연락처</h3>
+                                </div>
+                                <p><%= factory.factory_tel %></p>
+                                <!-- <div class="invite-box-pwrap">-->
+                                <!-- <p><%= factory.factory_tel %></p>-->
+                                <!-- </div>-->
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="invite-btn-wrap">
+                        <button type="button" id="invite-btn-accept" class="invite-btn-accept" onclick="clickInviteAccept(<%= channel.chnl_pk %>)">승인하기</button>
+                        <button type="button" id="invite-btn-refusal" class="invite-btn-refusal">거절하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<script>
+    const inviteAcceptBtn   = document.getElementById('invite-btn-accept')
+    const inviteRefusalBtn  = document.getElementById('invite-btn-refusal')
+</script>
+<script>
+    function clickInviteAccept (chnl_pk) {
+        const url = '/channel-admin/factory-invite/' + '<%= factory.factory_pk %>'
+        axios.post(url, {
+            chnl_pk : chnl_pk,
+            user_id : '<%= channel.mem_id %>'
+        }).then(function(res) {
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    alert('승인되었습니다.')
+                    location.href = '/'
+                    break
+                case 'ALREADY':
+                    alert('이미 승인된 초대입니다.')
+                    location.href = '/'
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err) {
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    function clickInviteRefusal () {
+        alert('거절되었습니다.')
+        location.href = '/'
+    }
+
+    inviteRefusalBtn.addEventListener('click', clickInviteRefusal)
+</script>

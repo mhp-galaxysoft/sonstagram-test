@@ -1,0 +1,67 @@
+<div class="table-wrap">
+    <table class="table user-list-table">
+        <caption>유저관리 테이블</caption>
+        <colgroup>
+            <col style="width: 50px">
+            <col style="width:20%">
+            <col style="width:15%">
+            <col style="width:15%">
+            <col style="width:20%">
+            <col style="width:15%">
+            <col style="width:15%">
+        </colgroup>
+        <thead>
+        <tr>
+            <th scope="col">선택</th>
+            <th scope="col" class="btn-list-array" onclick="changeOrderType(<%= pageNo %>)">등록일</th>
+            <th scope="col">기업명</th>
+            <th scope="col">대표자명</th>
+            <th scope="col">아이디</th>
+            <th scope="col">현황</th>
+            <th scope="col">비고</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(let i = 0; i < factory.length; i++) { %>
+        <tr>
+            <th scope="row">
+                <input type="checkbox" pk="<%= factory[i].factory_pk %>">
+            </th>
+            <td><%= factory[i].factory_created %></td>
+            <td><%= factory[i].factory_name %></td>
+            <td><%= factory[i].factory_repname %></td>
+            <td><%= factory[i].factory_id %></td>
+            <% if(factory[i].flag_status === 0){ %>
+                <td>사용중</td>
+            <% } else if(factory[i].flag_status === 1){ %>
+                <td>탈퇴 대기</td>
+            <% } else if(factory[i].flag_status === 2){ %>
+                <td>탈퇴</td>
+            <% } else if(factory[i].flag_status === 3){ %>
+                <td>신고 유저</td>
+            <% } %>
+            <td><button type="button" class="user-info-btn" data-toggle="modal" onclick="showFactoryDetail(<%= factory[i].factory_pk %>)">보기</button></td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

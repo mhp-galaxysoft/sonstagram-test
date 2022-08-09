@@ -1,0 +1,68 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/tutorial.css">
+</head>
+    <body>
+        <div class="tutorial-body">
+            <div class="tutorial-joinner">
+                <div class="tutorial-head">
+                    <h1 class="tutorial-logo">
+                        <a href="/">
+                            <img src="/images/tutorial/live-logo.svg">
+                        </a>
+                    </h1>
+                </div>
+                <div class="tutorial-joinbox">
+                    <a href="/tutorial/login" class="tutorial-back"></a>
+                    <h2 style="margin-top: 40px;">라이브 팩토리 비밀번호 찾기</h2>
+                    <table class="table tutorial-table">
+                        <tbody>
+                            <tr style="border-bottom: 1px solid #e5e5e5;">
+                                <th>아이디</th>
+                                <td>
+                                    <input type="text" id="mem-id" class="tutorial-table-ip reg_exp" limitsize="20" reg_type="id" placeholder="example@livefactory.kr">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="javascript:void(0)" id="find-pw-btn" class="join_clearBtn">비밀번호 찾기</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<!--<script src="/js/regexp.js"></script>-->
+<script>
+
+    const memId = document.getElementById('mem-id')
+    const findPwBtn = document.getElementById('find-pw-btn')
+
+    const emailRegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    findPwBtn.addEventListener('click', function (){
+        if(memId.value === "") return false
+        if(!emailRegExp.test(memId.value)){
+            alert("아이디는 이메일 형식이어야 합니다.")
+            memId.focus()
+        }else{
+            axios.post('/tutorial/help/password',{
+                id : memId.value
+            }).then(function(res){
+                const state = res.data.state
+                switch (state){
+                    case 'INVALID EMAIL':
+                        alert('가입된 이메일로 메일을 보낼 수 없습니다.')
+                        break
+                    case 'NOT FOUND':
+                        alert('탈퇴한 사용자이거나 가입되지 않은 ID입니다.')
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                    case 'SUCCESS':
+                        alert('해당 이메일로 임시 비밀번호가 발급되었습니다.\n로그인 후 비밀번호를 수정해주세요.')
+                        location.replace('/tutorial/login')
+                        break
+                }
+            })
+        }
+    })
+</script>

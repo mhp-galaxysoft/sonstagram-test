@@ -1,0 +1,131 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/total-admin.css">
+</head>
+
+<body>
+    <div class="total-admin">
+        <%- include("total-admin-head") %>
+        <div class="total-admin-user">
+            <div class="user-manage">
+                <h3>로그</h3>
+                <button type="button" class="down-excel-btn" onclick="excelDown()">Excel 내려받기</button>
+            </div>
+            <!-- 유저관리 테이블 -->
+            <div class="user-table">
+                <div class="user-search-wrap">
+                    <div class="user-search-topbar">
+                        <select id="log-user-type" class="user-category nick-category">
+                            <option value="">유저타입</option>
+                            <option value="NOT-EXIST">미가입자</option>
+                            <option value="NORMAL">일반유저</option>
+                            <option value="CHANNEL">채널관리자</option>
+                            <option value="FACTORY">팩토리관리자</option>
+                        </select>
+                        <select id="log-search-type" class="user-category nick-category">
+                            <option value="">로그타입</option>
+                            <option value="ADMIN">계정관리</option>
+                            <option value="LIVE">LIVE</option>
+                            <option value="VOD">VOD</option>
+                            <option value="PRODUCT">상품</option>
+                            <option value="COUPON">쿠폰</option>
+                            <option value="FACTORY">팩토리</option>
+                            <option value="PLAN">플랜</option>
+                        </select>
+                        <input id="log-search-text" class="user-search" type="text">
+                        <!-- <button id="user-search-btn" type="button" class="user-search-btn"></a> -->
+                        <button type="button" id="log-search-btn" class="total-search-btn">검색</button>
+                    </div>
+                </div>
+                <div id="log-list"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="/js/regexp.js"></script>
+
+<script>
+    const   logContents     = document.getElementById('log-list')
+    const   logUserType     = document.getElementById('log-user-type')
+    const   logSearchType   = document.getElementById('log-search-type')
+    const   logSearchText   = document.getElementById('log-search-text')
+    const   logSearchBtn    = document.getElementById('log-search-btn')
+    let     orderType
+</script>
+<script>
+    (getList(1))
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        if(!orderType) orderType = 'LATEST'
+        let userType    = logUserType.options[logUserType.selectedIndex].value
+        let keywordType = logSearchType.options[logSearchType.selectedIndex].value
+        let keyword     = logSearchText.value
+        const url = '/total-admin/log-list?' + 'pageNo=' + page + '&userType=' + userType + '&keywordType=' + keywordType + '&keyword=' + keyword + '&orderType=' + orderType
+
+        axios.get(url).then(function(res){
+            logContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    function changeOrderType(pageNo) {
+        if(orderType === 'LATEST') {
+            orderType = 'OLDEST'
+        } else {
+            orderType = 'LATEST'
+        }
+
+        getList(pageNo)
+    }
+
+    logUserType.addEventListener('change', function() {
+        getList(1)
+    })
+
+    logSearchType.addEventListener('change', function() {
+        getList(1)
+    })
+
+    logSearchBtn.addEventListener('click', function () {
+        getList(1)
+    })
+
+    logSearchText.addEventListener('keydown', enterSearch)
+
+    function excelDown(){
+        if(!confirm('검색 조건에 따라 Excel이 다운로드 됩니다.\n계속하시겠습니까?')){
+            return false
+        }
+
+        if(!orderType) orderType = 'LATEST'
+        let userType    = logUserType.options[logUserType.selectedIndex].value
+        let keywordType = logSearchType.options[logSearchType.selectedIndex].value
+        let keyword     = logSearchText.value
+        location.href = '/total-admin/log-download?' + 'userType=' + userType + '&keywordType=' + keywordType + '&keyword=' + keyword + '&orderType=' + orderType
+    }
+
+</script>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .table-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>

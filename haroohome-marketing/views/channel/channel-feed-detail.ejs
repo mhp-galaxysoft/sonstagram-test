@@ -1,0 +1,59 @@
+<div class="channel-picture visit-com-tab visit-lnb-tab1">
+    <div id="live-list"></div>
+</div>
+<div class="channel-feed visit-com-tab visit-lnb-tab2" id="channel-feed-list" style="padding-bottom: 0">
+    <div class="channel-feed-inner">
+        <div class="channel-fd-thum">
+            <img style="object-fit: contain" src="<%= feed_img %>">
+        </div>
+        <div class="channel-fd-info">
+            <div class="channel-fd-info-in">
+                <div class="channel-fd-info-img">
+                    <img src="<%= mem_img %>">
+                </div>
+                <h4><%= mem_nickname %></h4>
+                <% if( factory_img ) { %>
+                    <div style="margin: 0 0 0 5px;" class="channel-vi-logo">
+                        <img src="<%= factory_img %>">
+                    </div>
+                <% } %>
+                <div class="channel-fd-info-day"><%= feed_time %></div>
+            </div>
+            <div class="channel-fd-info-txt">
+                <pre class="fd-info-txt" style="white-space: break-spaces"><%= feed_text %></pre>
+            </div>
+        </div>
+        <a class="back-btn" href="javascript:void(0)" onclick="back()">뒤로가기</a>
+    </div>
+</div>
+<script>
+    $('.channel-visit-lnb > li > a').on('click',function() {
+        $(this).parent().addClass('visit-lnb-active').siblings().removeClass('visit-lnb-active')
+
+        const idx = $(this).parent().attr('data-tab')
+        $('.visit-com-tab').hide()
+        $('.' + idx).show()
+    })
+</script>
+<style>
+    .channel-fd-info-txt::-webkit-scrollbar {
+        width: 7px;
+    }
+    .channel-fd-info-txt::-webkit-scrollbar-track {
+        background: none;
+    }
+    .channel-fd-info-txt::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+
+    .fd-info-txt::-webkit-scrollbar {
+        width: 7px;
+        display: none;
+    }
+    .fd-info-txt::-webkit-scrollbar-track {
+        background: none;
+    }
+    .fd-info-txt::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>

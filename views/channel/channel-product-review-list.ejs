@@ -1,0 +1,120 @@
+<!-- 상품 후기 배너 -->
+<div class="recent-review">
+    <div class="recent-product-img"><img src="<%= productInfo.product_img %>" alt=""></div>
+    <div class="recent-product-text">
+        <div class="recent-product-title">
+            <p><%= productInfo.product_name %></p>
+        </div>
+        <div class="recent-product-title recent-product-price">
+            <p><%= productInfo.product_price %>원</p>
+        </div>
+    </div>
+    <div class="review-product-right">
+        <% if(typeof user.mem_pk !== 'undefined') { %>
+        <button type="button" class="review-write-btn" onclick="location.href='review/newReview'">
+            상품 후기 작성하기
+        </button>
+        <% } %>
+        <button type="button" class="review-prev-btn" onclick="location.href='/channel/main/<%= productInfo.chnl_pk %>/product'">
+            <img src="/images/channel/left-arrow.svg" alt="">
+        </button>
+    </div>
+</div>
+<!-- 총 40건의 후기  -->
+<div class="product-total-review">
+    <div class="total-review">
+        <p>총 <%=rowCnt%>건의 후기</p>
+    </div>
+    <div class="average-review">
+        <div class="average-title">평균</div>
+        <div class="average-num"><span><%= starAvg %></span> 점</div>
+        <div class="inquiry-star">
+            <% for( let i = 0; i < Math.floor(starAvg); i++ ){%>
+            <div class="list-star"><img src="/images/broadcast/icon-star.svg" alt="별"></div>
+            <% } %>
+            <% for( let i = 0; i < (5-Math.floor(starAvg)); i++ ){%>
+            <div class="list-star"><img src="/images/broadcast/icon-starr.svg" alt="별"></div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<!-- 리뷰 정렬 -->
+<div class="review-sort-list">
+    <ul class="review-sort">
+        <li><a href="javascript:void(0)" class="sort-type" sort="RECOMMEND" onclick="setRecommend(this)">추천순</a></li>
+        <li><a href="javascript:void(0)" class="sort-type" sort="RECENT" onclick="setRecent(this)">최신순</a></li>
+        <li><a href="javascript:void(0)" class="sort-type" sort="STAR" onclick="setStar(this)">평점순</a></li>
+    </ul>
+</div>
+<!-- 리뷰 리스트 -->
+<% for ( let i = 0; i < review.length; i++ ){ %>
+<div class="review-list">
+    <div class="review-user-info">
+        <div class="left-info">
+            <img src="<%= review[i].mem_img %>" alt="">
+        </div>
+        <div class="middle-info">
+            <div class="user-name">
+                <p><%= review[i].mem_nickname %></p>
+            </div>
+            <div class="inquiry-star">
+                <% for ( let j = 0; j < review[i].review_star; j++ ) {%>
+                <div class="list-star"><img src="/images/broadcast/icon-star.svg" alt="별"></div>
+                <% } %>
+                <% for (let j = 0; j < (5-review[i].review_star); j++ ) {%>
+                <div class="list-star"><img src="/images/broadcast/icon-starr.svg" alt="별"></div>
+                <% } %>
+            </div>
+        </div>
+        <div class="right-info">
+            <div class="review-like-ask">
+                <p>이 후기가 도움이 되었습니까?</p>
+            </div>
+            <div class="like-wrap">
+                <% if(typeof user.mem_pk !== 'undefined') { %>
+                    <% if(review[i].like_yn === 0){ %>
+                    <button id="like-btn<%=review[i].review_pk%>" type="button" class="review-like-btn" onclick="Like(<%=review[i].review_pk%>); this.onclick=null ">
+                        <img src="/images/broadcast/icon-up-no.svg" alt="">
+                    </button>
+                    <%} else { %>
+                    <button id="like-btn<%=review[i].review_pk%>" type="button" class="review-like-btn" onclick="UnLike(<%=review[i].review_pk%>); this.onclick=null">
+                        <img src="/images/broadcast/icon-up.svg" alt="">
+                    </button>
+                    <%}%>
+                <% } else { %>
+                    <button id="like-btn<%=review[i].review_pk%>" type="button" class="review-like-btn">
+                        <img src="/images/broadcast/icon-up.svg" alt="">
+                    </button>
+                <% } %>
+                <div id="like-num<%=review[i].review_pk%>" class="like-num"><%= review[i].likeNo %></div>
+            </div>
+        </div>
+    </div>
+    <div class="product-option">
+        <p>제품 : <%= productInfo.product_name %></p>
+    </div>
+    <div class="product-review-img"><img src="<%= review[i].review_img %>"></div>
+    <div class="product-review">
+        <pre><%= review[i].review_contents %></pre>
+    </div>
+</div>
+<% } %>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

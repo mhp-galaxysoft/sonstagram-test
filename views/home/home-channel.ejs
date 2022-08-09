@@ -1,0 +1,129 @@
+<%- include("./home") %>
+<script>
+    $('.channel-lnb-tab3').addClass('channel-lnb-active')
+</script>
+<div class="channel-live-head">
+    <h3>라이브 채널</h3>
+    <div class="channel-live-topbar">
+        <select id="channel-sort-type" class="channel-category">
+            <option value="">장르 선택</option>
+            <% for(let i=0; i<category.length; i++) { %>
+                <option value="<%= category[i].category_pk %>"><%= category[i].category_name%></option>
+            <% } %>
+        </select>
+        <input id="channel-search-text" class="channel-search" type="text">
+        <button id="channel-search-btn" class="channel-search-btn"></button>
+    </div>
+</div>
+<div class="channel-live-banner" style="margin-top: -103px;">
+    <% if(user.flag_pumkin === 0) { %>
+        <img src="/images/channel/channel-banner.svg">
+    <% } else { %>
+        <img src="/images/pumkin/channel-banner.svg">
+    <% } %>
+</div>
+<div class="m-channel-live-banner" style="margin-top: 5px;">
+    <% if(user.flag_pumkin === 0) { %>
+        <img src="/images/mobile/ch-banner.svg">
+    <% } else { %>
+        <img src="/images/pumkin/mobile/ch-banner.svg">
+    <% } %>
+</div>
+<div class="channel-list-wrap">
+    <h3 class="channel-list-h3">라이브 채널 😊</h3>
+    <div id="channel-list"></div>
+</div>
+</div>
+</div>
+<%- include("../include/common-footer") %>
+</body>
+</html>
+<script>
+    // 검색 기능
+    const channelSortType      = document.getElementById('channel-sort-type')
+    const channelSearchText    = document.getElementById('channel-search-text')
+    const channelSearchBtn     = document.getElementById('channel-search-btn')
+    const channelContents      = document.getElementById('channel-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const sort    = channelSortType.options[channelSortType.selectedIndex].value
+        const keyword = channelSearchText.value
+        const url = '/home/channel/list?' + 'pageNo=' + page + '&keyword=' + keyword + '&sort=' + sort
+        axios.get(url).then(function(res){
+            channelContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    channelSearchText.addEventListener('keydown',enterSearch)
+    channelSearchBtn.addEventListener('click',getList)
+    channelSortType.addEventListener('change',getList)
+</script>
+<script>
+    // 팔로잉 처리
+    function following(chnl_pk){
+        let thisBtn = window.event.target
+        axios.post('/follow/' + chnl_pk).then(function (res) {
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    thisBtn.innerText = '팔로잉 취소'
+                    thisBtn.className = 'user-unBtn-un'
+                    thisBtn.addEventListener('click',function(){
+                        unfollowing(chnl_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    })
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function (err) {
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    // 언팔로잉 처리
+    function unfollowing(chnl_pk){
+        let thisBtn = window.event.target
+        if(confirm('팔로우를 끊으시겠습니까?')){
+            axios.delete('/follow/'+ chnl_pk).then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        alert('팔로우가 끊어졌습니다.')
+                        thisBtn.innerText = '팔로잉'
+                        thisBtn.className = 'user-unBtn'
+                        thisBtn.addEventListener('click',function(){
+                            following(chnl_pk)
+                            this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                        })
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        } else {
+            thisBtn.addEventListener('click',function(){
+                unfollowing(chnl_pk)
+                this.removeEventListener('click',arguments.callee)
+            })
+        }
+    }
+</script>

@@ -1,0 +1,92 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/tutorial.css">
+</head>
+    <body>
+        <div class="tutorial-body">
+            <div class="tutorial-inner">
+                <div class="tutorial-head">
+                    <h1 class="tutorial-logo">
+                        <a href="/"><img src="/images/tutorial/live-logo.svg"></a>
+                    </h1>
+                    <p class="tutorial-head-p">안녕하세요<br>라이브커머스 플랫폼 라이브 팩토리입니다!</p>
+                </div>
+                <div class="tutorial-box">
+                    <div class="tutorial-boxin">
+                        <h2 class="tutorial-h2">로그인하시고<br>라이브 팩토리를 사용해보세요</h2>
+                        <input type="text" id="mem-id" class="tutorial-name reg_exp" limitsize="20" reg_type="id" placeholder="아이디를 입력하세요">
+                        <input type="password" id="mem-password" class="tutorial-password reg_exp" limitsize="20" reg_type="password" placeholder="비밀번호를 입력하세요">
+                        <a href="javascript:void(0)" id="login-button" class="tutorial-login">LOG IN</a>
+                        <span class="tutorial-span">비밀번호가 기억이 안나세요?</span>
+                        <a href="/tutorial/help" class="tutorial-find">비밀번호 찾기</a>
+                    </div>
+                    <div class="tutorial-joinUs">
+                        <p>라이브 팩토리 회원이 아니세요?</p>
+                        <a href="/tutorial/join" class="tutorial-joinBtn">라이브 팩토리 회원가입</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+<!--<script src="/js/regexp.js"></script>-->
+<script>
+    const loginBtn = document.getElementById('login-button')
+    const loginInput = document.getElementById('mem-id')
+    const passwordInput = document.getElementById('mem-password')
+    loginInput.addEventListener('keydown',enterSearch)
+    passwordInput.addEventListener('keydown',enterSearch)
+    loginBtn.addEventListener('click',function(){
+        const id = document.getElementById('mem-id').value
+        const password = document.getElementById('mem-password').value
+        if(!id){
+            alert('아이디를 입력해주세요')
+            loginInput.focus()
+            return false
+        }
+        if(!password){
+            alert('비밀번호를 입력해주세요')
+            passwordInput.focus()
+            return false
+        }
+
+        console.log()
+
+        axios.post('../auth/login',{
+            id: id,
+            password: password,
+        }).then(function(res){
+            const state = res.data.state
+            if(!state){
+                location.reload()
+            }
+
+            switch (state){
+                case 'DELETED USER':
+                    alert("탈퇴한 유저입니다.")
+                    break
+                case 'BLOCKED USER':
+                    alert("탈퇴한 유저입니다.")
+                    break
+                case 'NO MEMBER':
+                    alert("가입 정보가 없습니다.")
+                    break
+                case 'NOT MATCH':
+                    alert("잘못된 비밀번호입니다. 다시 확인하세요.")
+                    break
+                case 'FAIL':
+                    alert("서버에 이상이 생겼습니다.")
+                    break
+                case 'SUCCESS':
+                    location.reload()
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+        })
+    })
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            loginBtn.click()
+        }
+    }
+</script>

@@ -1,0 +1,186 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/channel.css">
+<link rel="stylesheet" href="/css/factory-admin.css">
+<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+</head>
+    <body>
+    <% if(user && (typeof user.factory_pk !== "undefined")){ %>
+        <%- include("../include/admin-header") %>
+    <% } else { %>
+        <%- include("../include/common-header") %>
+    <% } %>
+        <div class="channel-body">
+            <div class="channel-visit">
+                <div class="channel-visit-info">
+                    <div class="channel-vi-pre">
+                        <div class="factory-vi-img">
+                            <img src="<%= info.mem_img%>">
+                        </div>
+                        <div class="factory-vi-name">
+                            <h3><%= info.mem_nickname %></h3>
+                            <% if( info.factory_img ) { %>
+                            <div class="factory-vi-logo">
+                                    <img src="<%= info.factory_img %>">
+                            </div>
+                            <% } %>
+                        </div>
+                        <div class="factory-vi-info">
+                            <h4>채널 소개</h4>
+                            <div class="info-txt"><%= info.chnl_info %></div>
+                        </div>
+                    </div>
+                    <div class="channel-vi-shop">
+                        <h3>쇼핑몰 바로가기</h3>
+                        <% for(let i = 0; i <  info.chnl_shop_url.length; i++){
+                            let chnlShopUrl = info.chnl_shop_url[i].split('://')
+
+                            if(chnlShopUrl[0] == 'http' || chnlShopUrl[0] == 'https'){
+                                info.chnl_shop_url[i] = chnlShopUrl[1];
+                            }%>
+                        <a class="channel-shop-link" href="https://<%= info.chnl_shop_url[i] %>"><%= info.chnl_shop_url[i] %></a>
+                        <% } %>
+                    </div>
+                    <div class="channel-vi-follow" id="channel-vi-follow">
+                        <div class="channel-follow">
+                            <h3>팔로워</h3>
+                            <p><strong id="follower-cnt"><%= followerNo %></strong> 명</p>
+                        </div>
+                        <div class="channel-follow">
+                            <h3>영상</h3>
+                            <p><strong><%= liveNo %></strong> 개</p>
+                        </div>
+                        <div class="channel-follow">
+                            <h3>상품등록</h3>
+                            <p><strong><%= productNo %></strong> 개</p>
+                        </div>
+                        <% if(typeof user.mem_pk !== 'undefined') { %>
+                            <a class="channel-follow-btn" id="follow" href="javascript:void(0)" visibility ></a>
+                        <% } %>
+                    </div>
+                </div>
+                <ul class="channel-visit-lnb">
+                    <li class="visit-lnb-1" data-tab="visit-lnb-tab1">
+                        <a href="/channel/main/<%= info.chnl_pk %>/live" id="live-list-btn">영상</a>
+                    </li>
+                    <li class="visit-lnb-2" data-tab="visit-lnb-tab2">
+                        <a href="/channel/main/<%= info.chnl_pk %>/feed">피드</a>
+                    </li>
+                    <li class="visit-lnb-3" data-tab="visit-lnb-tab3">
+                        <a href="/channel/main/<%= info.chnl_pk %>/product">상품</a>
+                    </li>
+                </ul>
+                <!-- 모바일용 채널 소개 사용자 정보 -->
+                <div class="m-visit-info">
+                    <div class="m-vi-pre">
+                        <div class="m-vi-img">
+                            <img src="/images/img-sample/img05.png">
+                        </div>
+                        <div class="m-vi-name">
+                            <h2><%= info.mem_nickname %></h2>
+                        </div>
+                        <% if( info.factory_img ) { %>
+                            <div class="m-vi-logo">
+                                <img src="<%= info.factory_img %>">
+                            </div>
+                        <% } %>
+                        <div class="channel-vi-follow" id="channel-vi-follow">
+                            <div class="channel-follow">
+                                <h3>팔로워</h3>
+                                <p><strong id="follower-cnt"><%= followerNo %></strong> 명</p>
+                            </div>
+                            <div class="channel-follow">
+                                <h3>영상</h3>
+                                <p><strong><%= liveNo %></strong> 개</p>
+                            </div>
+                            <div class="channel-follow">
+                                <h3>상품등록</h3>
+                                <p><strong><%= productNo %></strong> 개</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+<script>
+    const follower  = document.getElementById('follower-cnt')
+    // 팔로워 수
+    function countingFollower(chnl_pk){
+        axios.get('/follow/'+ chnl_pk).then(function(res){
+            follower.innerText = res.data.followerNo
+        })
+    }
+</script>
+<script>
+    <% if(typeof user.mem_pk !== 'undefined') { %>
+        const follow    = document.getElementById('follow')
+
+    // 팔로우 여부 체크 후 이벤트, 텍스트 처리
+        <% if(!follow){ %>
+        follow.innerText = '팔로잉'
+        follow.addEventListener('click', function () {
+            following(<%= info.chnl_pk %>)
+            this.removeEventListener('click',arguments.callee)
+        })
+        <% } else { %>
+        follow.innerText = '팔로잉 취소'
+        follow.className = 'channel-unfollow-btn'
+        follow.addEventListener('click', function () {
+            unfollowing(<%= info.chnl_pk %>)
+            this.removeEventListener('click',arguments.callee)
+        })
+        <% } %>
+
+        // 팔로잉 처리
+        function following(chnl_pk){
+            axios.post('/follow/' + chnl_pk).then(function (res) {
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        follow.innerText = '팔로잉 취소'
+                        follow.className = 'channel-unfollow-btn'
+                        countingFollower(chnl_pk)
+                        follow.addEventListener('click',function(){
+                            unfollowing(chnl_pk)
+                            this.removeEventListener('click',arguments.callee)
+                        })
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err) {
+                alert('서버에 이상이 생겼습니다.')
+            })
+        }
+
+        // 언팔로잉 처리
+        function unfollowing(chnl_pk){
+            if(confirm('팔로우를 끊으시겠습니까?')){
+                axios.delete('/follow/'+ chnl_pk).then(function(res){
+                    const state = res.data.state
+                    switch(state){
+                        case 'SUCCESS':
+                            follow.innerText = '팔로잉'
+                            follow.className = 'channel-follow-btn'
+                            countingFollower(chnl_pk)
+                            follow.addEventListener('click',function(){
+                                following(chnl_pk)
+                                this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                            })
+                            break
+                        case 'FAIL':
+                            alert('서버에 이상이 생겼습니다.')
+                            break
+                    }
+                }).catch(function (err){
+                    alert('서버에 이상이 생겼습니다.')
+                    console.error(err)
+                })
+            }else{
+                follow.addEventListener('click', function(){
+                    unfollowing(chnl_pk)
+                    this.removeEventListener('click',arguments.callee)
+                })
+            }
+        }
+    <% } %>
+</script>

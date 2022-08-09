@@ -1,0 +1,92 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/channel.css">
+</head>
+
+<body>
+    <%- include("../include/common-header") %>
+        <div class="search-body">
+            <div class="search-inner">
+                <div class="search-tit-wrap">
+                    <h2>검색결과</h2>
+                    <div class="search-result">
+                        <p class="search-result-tag">'틴트'&nbsp;</p>
+                        <p class="search-result-num">검색결과 총 9 개</p>
+                    </div>
+                </div>
+                <div class="search-article">
+                    <h2>상품</h2>
+                    <ul class="search-pd-list">
+                        <li>
+                            <div class="pd-img"><img src="/images/img-sample/img03.jpg"></div>
+                            <div class="pd-txt">
+                                <h3>RED 립 틴트</h3>
+                                <p>25,000원</p>
+                            </div>
+                            <a href="#" class="pd-channel-btn">채널보기</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-article">
+                    <h2>라이브 채널</h2>
+                    <ul class="search-pd-list">
+                        <li>
+                            <div class="pd-img"><img src="/images/img-sample/img02.jpg"></div>
+                            <div class="search-live-info">
+                                <h3 class="search-live-name">틴트형부</h3>
+                                <div class="search-live-factory">
+                                    <img src="/images/img-sample/ma-logo.jpg">
+                                </div>
+                            </div>
+                            <div class="search-live-txt">매일발라도 매일 예쁜 립 틴트를 선사합니다틴트언늬 입니다 ღ 
+                                11.24 ~ 11.27 라이브방송 예정입니다~</div>
+                            <a href="#" class="pd-channel-btn">채널보기</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-article">
+                    <h2>LIVE 영상</h2>
+                    <ul class="search-pd-list">
+                        <li>
+                            <div class="pd-img"><img src="/images/img-sample/img01.jpg"></div>
+                            <div class="live-video-info">
+                                <span class="live-video-tag">LIVE</span>
+                                <p class="live-video-txt">(라이브 팩토리) 인기있는 라이브커머스! RED 틴트 5+5 절찬 판매!</p>
+                            </div>
+                            <a href="#" class="pd-channel-btn" style="background: #e73828;">영상보기</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="search-article">
+                    <h2>VOD 영상</h2>
+                    <ul class="search-pd-list">
+                        <li>
+                            <div class="pd-img"><img src="/images/img-sample/img01.jpg"></div>
+                            <div class="live-video-info">
+                                <span class="live-video-tag" style="background: #606060;">VOD</span>
+                                <p class="live-video-txt">(라이브 팩토리) 인기있는 라이브커머스! RED 틴트 5+5 절찬 판매!</p>
+                            </div>
+                            <a href="javascript:void(0)" class="pd-channel-btn" style="background: #e73828;">영상보기</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </div>
+</body>
+
+</html>
+
+    
+<!-- 스크롤 스타일 -->
+<style>
+    .search-pd-list::-webkit-scrollbar {
+        width: 7px;
+    }
+    .search-pd-list::-webkit-scrollbar-track {
+        background: none;
+    }
+    .search-pd-list::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>

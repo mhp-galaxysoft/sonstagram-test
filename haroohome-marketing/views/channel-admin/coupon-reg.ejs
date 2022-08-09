@@ -1,0 +1,114 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="coupon-contents">
+                    <div class="coupon-title">
+                        <h2 class="coupon-title-h2">쿠폰 등록하기</h2>
+                    </div>
+                    <div class="coupon-reg-wrap">
+                        <h3>쿠폰 번호 입력</h3>
+                        <div class="coupon-reg-form">
+                            <% for(let i=0; i<4; i++){ %>
+                            <input type="text" id="coupon-reg<%=i%>" class="coupon-reg reg_exp coupon-number" reg_type="coupon" limitsize="4">
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="btn-sc-wrap">
+                        <button id="btn-save-coupon" class="btn-save-coupon">쿠폰 등록하기</button>
+                    </div>
+                </div>
+                <div class="m-info-set" style="padding: 0 15px;">
+                    <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+                    <a id="leave-btn" class="user-leave">회원탈퇴</a>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .coupon-list-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+    .coupon-list-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+    .coupon-list-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script src="/js/regexp.js"></script>
+<script>
+    const saveCouponBtn = document.getElementById('btn-save-coupon')
+    const couponReg     = document.getElementsByClassName('coupon-number')
+</script>
+<script>
+    function checkValues() {
+        if( !couponReg[0].value ||
+            !couponReg[1].value ||
+            !couponReg[2].value ||
+            !couponReg[3].value ) {
+            couponReg[0].focus()
+            alert(' 정확한 쿠폰 번호를 입력하세요.')
+            return false
+        }
+
+        saveCoupon()
+    }
+
+    function saveCoupon () {
+        saveCouponBtn.disabled = true
+        let coupon_number = couponReg[0].value
+        for(let i=1; i<4; i++) {
+            coupon_number += couponReg[i].value
+        }
+
+        axios.post('/coupon', {
+            coupon_number : coupon_number
+        }).then(function (res) {
+            const state = res.data.state
+
+            switch(state) {
+                case 'SUCCESS':
+                    alert('쿠폰 등록이 완료되었습니다.')
+                    for(let i=0; i<4; i++){
+                        couponReg[i].value = ''
+                    }
+                    saveCouponBtn.disabled = false
+                    location.href = '/channel-admin/coupon'
+                    break
+                case 'NOT EXIST':
+                    alert('유효하지 않은 쿠폰입니다.')
+                    for(let i=0; i<4; i++){
+                        couponReg[i].value = ''
+                    }
+                    saveCouponBtn.disabled = false
+                    break
+                case 'ALREADY EXIST':
+                    alert('이미 사용 등록된 쿠폰입니다.')
+                    for(let i=0; i<4; i++){
+                        couponReg[i].value = ''
+                    }
+                    saveCouponBtn.disabled = false
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    saveCouponBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            saveCouponBtn.disabled = false
+        })
+    }
+
+    saveCouponBtn.addEventListener('click', checkValues)
+</script>

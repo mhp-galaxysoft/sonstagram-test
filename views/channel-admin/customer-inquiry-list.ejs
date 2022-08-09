@@ -1,0 +1,104 @@
+<% for( let i = 0; i < inquiry.length; i++ ) {%>
+<div id="iq-item<%=i%>" class="iq-item">
+    <div class="iq-question">
+        <a href="javascript:void(0)">
+            <div class="iq-head">
+                <div class="iq-head-txt">질문</div>
+            </div>
+            <div class="iq-product-name">
+                <div class="iq-product-txt"><%= inquiry[i].product_name %></div>
+            </div>
+            <div class="iq-day mobile-block">
+                <div class="iq-name-txt"><%= inquiry[i].inq_create_time %></div>
+            </div>
+            <div class="iq-product-con">
+                <div class="iq-con-txt"><%= inquiry[i].inquiry_contents %></div>
+            </div>
+            <div class="iq-name mobile-none">
+                <div class="iq-name-txt"><%= inquiry[i].mem_nickname %></div>
+            </div>
+            <div class="iq-day mobile-none">
+                <div class="iq-name-txt"><%= inquiry[i].inq_create_time %></div>
+            </div>
+            <% if(!inquiry[i].response_contents) { %>
+            <div class="iq-answer">
+                <div id="iq-answer<%=i%>" class="iq-name-txt">미답변</div>
+            </div>
+            <% } else {%>
+            <div class="iq-answer">
+                <div class="iq-name-txt">답변완료</div>
+            </div>
+            <%} %>
+        </a>
+    </div>
+    <% if(!inquiry[i].response_contents) { %>
+    <div class="iq-reply">
+        <div class="iq-head">
+            <div class="iq-reply-tit">답변</div>
+        </div>
+        <div class="iq-product-name">
+            <div class="iq-reply-txt"><%= inquiry[i].product_name %></div>
+        </div>
+        <div id="iq-reply-ip<%=i%>" class="iq-reply-ip">
+            <textarea id="answer-text<%=i%>" class="iq-reply-area" maxlength="500" placeholder="답변 길이는 500자까지 가능합니다."></textarea>
+        </div>
+        <div class="iq-name">
+            <div class="iq-name-txt"><%= inquiry[i].chnl_mem_nickname %></div>
+        </div>
+        <div class="iq-day">
+            <div id="iq-day<%=i%>" class="iq-name-txt"></div>
+        </div>
+        <div id="iq-btn-wrap<%=i%>" class="iq-btn-wrap">
+            <button id="save-btn" class="reply-btn" type="button" onclick="checkValues(this, '<%= inquiry[i].inquiry_pk %>', '<%=i%>')">등록</button>
+            <a class="reply-n-btn" href="javascript:void(0)">취소</a>
+        </div>
+    </div>
+    <% }else { %>
+    <div class="iq-reply">
+        <div class="iq-head">
+            <div class="iq-reply-tit">답변</div>
+        </div>
+        <div class="iq-product-name">
+            <div class="iq-reply-txt"><%= inquiry[i].product_name %></div>
+        </div>
+        <div class="iq-day mobile-block">
+            <div class="iq-name-txt"><%= inquiry[i].res_create_time %></div>
+        </div>
+        <div class="iq-product-con">
+            <div class="iq-reply-con"><%= inquiry[i].response_contents %></div>
+        </div>
+        <div class="iq-name">
+            <div class="iq-name-txt"><%= inquiry[i].chnl_mem_nickname %></div>
+        </div>
+        <div class="iq-day mobile-none">
+            <div class="iq-name-txt"><%= inquiry[i].res_create_time %></div>
+        </div>
+        <!-- <div class="m-reply-txt">
+            <div class="iq-name-txt" style="margin: 0;">
+                <%= inquiry[i].chnl_mem_nickname %>
+            </div>
+        </div> -->
+    </div>
+    <% } %>
+</div>
+<% } %>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+<script src="/js/regexp.js"></script>

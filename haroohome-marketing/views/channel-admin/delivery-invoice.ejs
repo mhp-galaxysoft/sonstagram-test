@@ -1,0 +1,68 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2" style="margin: 0;">배송 관리</h2>
+                    </div>
+                    <div class="admin-create-body" style="padding: 0;">
+                         <ul class="customer-manage-lnb">
+                            <li>
+                                <a href="/channel-admin/refund">환불교환관리</a>
+                            </li>
+                            <li class="ct-mn-active">
+                                <a href="/channel-admin/invoice">송장번호입력</a>
+                            </li>
+                         </ul>
+                        <div id="delivery-invoice-list"></div>
+                    </div>
+                </div>
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    const invoiceContents   = document.getElementById('delivery-invoice-list')
+    const invoiceInfo   = document.getElementsByClassName('invoice-info')
+    // const waybillNumber     = document.getElementsByClassName('waybill-number')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/channel-admin/invoice-list?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            invoiceContents.innerHTML = res.data
+        }).catch(function (err){
+            console.error(err)
+        })
+    }
+
+    function clickWaybillSendBtn(order_pk, idx) {
+        const waybillNumber = document.getElementsByClassName('waybill-number')
+        axios.post('/channel-admin/invoice/order', {
+            order_pk        : order_pk,
+            waybill_number  : waybillNumber[idx].value
+        }).then(function (res) {
+            const state = res.data.state()
+            switch(state){
+                case 'SUCCESS':
+                    alert('저장되었습니다.')
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function (err) {
+            console.error(err)
+        })
+    }
+</script>

@@ -1,0 +1,30 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/channel.css">
+</head>
+<body>
+<%- include("../include/common-header") %>
+<div class="search-body">
+    <div class="search-inner">
+        <div class="search-tit-wrap">
+            <h2>검색결과</h2>
+            <div class="search-result">
+                <p class="search-result-tag">'<%= keyword %>'&nbsp;</p>
+                <p id= "search-cnt" class="search-result-num">검색결과 총 <%= rowCnt %> 개</p>
+            </div>
+        </div>
+        <div class="channel-lnb-wrap">
+            <ul class="channel-lnb search-lnb">
+                <li class="channel-lnb-first">
+                    <a href="/search/product?keyword=<%= keyword %>&pageNo=1">상품</a>
+                </li>
+                <li class="channel-lnb-tab2">
+                    <a href="/search/channel?keyword=<%= keyword %>&pageNo=1">라이브 채널</a>
+                </li>
+                <li class="channel-lnb-tab3">
+                    <a href="/search/live?keyword=<%= keyword %>&pageNo=1">LIVE 영상</a>
+                </li>
+                <li class="channel-lnb-tab4">
+                    <a href="/search/vod?keyword=<%= keyword %>&pageNo=1">VOD 영상</a>
+                </li>
+            </ul>
+        </div>

@@ -1,0 +1,81 @@
+<div class="user-table">
+    <div class="table-wrap">
+        <table class="table user-list-table">
+            <caption>쿠폰 테이블</caption>
+            <colgroup>
+                <col style="width: 50px">
+                <col style="width:10%">
+                <col style="width:15%">
+                <col style="width:15%">
+                <col style="width:15%">
+                <col style="width:10%">
+                <col style="width:10%">
+                <col style="width:10%">
+                <col style="width:10%">
+            </colgroup>
+            <thead>
+            <tr>
+                <th scope="col">선택</th>
+                <th scope="col" class="btn-list-array" onclick="changeOrderType(<%= pageNo %>)">등록일</th>
+                <th scope="col">쿠폰이름</th>
+                <th scope="col">쿠폰번호</th>
+                <th scope="col">쿠폰내용</th>
+                <th scope="col">쿠폰시간</th>
+                <th scope="col">쿠폰 지급방식</th>
+                <th scope="col">단일/모든</th>
+                <th scope="col">삭제현황</th>
+            </tr>
+            </thead>
+            <tbody>
+            <% for(let i=0; i<coupon.length; i++){ %>
+            <tr>
+                <th scope="row">
+                    <input type="checkbox" pk="<%= coupon[i].coupon_pk %>">
+                </th>
+                <td><%= coupon[i].coupon_created %></td>
+                <td><%= coupon[i].coupon_name %></td>
+                <td><%= coupon[i].coupon_number %></td>
+                <td><%= coupon[i].coupon_detail %></td>
+                <td><%= coupon[i].coupon_time %></td>
+                <% if(coupon[i].coupon_type === 0) { %>
+                    <td>가입시</td>
+                <% } else { %>
+                    <td>이벤트</td>
+                <% } %>
+                <% if(coupon[i].coupon_user === 0) { %>
+                    <td>단일 유저</td>
+                <% } else { %>
+                    <td>모든 유저</td>
+                <% } %>
+                <% if(coupon[i].flag_status === 0) { %>
+                    <td>미등록</td>
+                <% } else if(coupon[i].flag_status === 1) { %>
+                    <td>등록</td>
+                <% } else { %>
+                    <td>삭제</td>
+                <% } %>
+            </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+    <div style="width:100%;">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <% if(yn_prev === 1) { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+                <% } %>
+                <% for(let page = startPage; page <= endPage; page++) { %>
+                    <% if(page == pageNo) { %>
+                        <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                    <% } else { %>
+                        <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                    <% } %>
+                <% } %>
+                <% if(yn_next === 1) { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+</div>

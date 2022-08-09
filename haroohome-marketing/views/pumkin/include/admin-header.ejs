@@ -1,0 +1,29 @@
+<header class="ls-header">
+    <div class="ls-header-inner" style="width: 100%">
+        <h1 class="ls-header-logo">
+            <a href="/factory-admin/main">
+                <img src="/images/pumkin/logo.svg" alt="로고">
+            </a>
+        </h1>
+        <% if(user){ %>
+        <a class="factory-logout" href="/auth/logout" > 로그아웃 </a>
+        <% }else{ %>
+        <a class="factory-logout" href="/pumkin/login" > 로그인 </a>
+        <% } %>
+    </div>
+    <div class="m-ls-header">
+        <h1 class="m-ls-logo">
+            <a href="/">
+                <img src="/images/pumkin/logo.svg" alt="로고">
+            </a>
+        </h1>
+        <% if(user){ %>
+        <a class="m-factory-logout m-admin-logout" href="/auth/logout" > 로그아웃 </a>
+        <% }else{ %>
+        <a class="m-factory-logout" href="/pumkin/login" > 로그인 </a>
+        <% } %>
+    </div>
+</header>
+<script>
+    const defaultProfile = '/images/user-mypage/profile-img.png'
+</script>

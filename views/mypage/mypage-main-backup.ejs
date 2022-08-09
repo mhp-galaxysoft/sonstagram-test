@@ -1,0 +1,205 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/user-mypage.css">
+</head>
+    <body>
+        <div class="user-body">
+            <%- include("../include/common-header") %>
+            <div class="user-mypage">
+                <h2>마이페이지</h2>
+                <div class="user-info-wrap">
+                    <div class="user-info">
+                        <a href="/mypage/edit" class="user-change">
+                            <img src="/images/user-mypage/icon-change.png" alt="수정">
+                        </a>
+                        <div class="user-info-img">
+                            <img src="/images/user-mypage/user-tint.jpg">
+                        </div>
+                        <h3 class="user-info-name">틴트누나</h3>
+                        <p class="user-info-email">tintsister2021</p>
+                        <div class="user-info-set">
+                            <a class="user-password" href="/mypage/password">비밀번호 변경</a>
+                            <a class="user-leave" href="javascript:void(0)">회원탈퇴</a>
+                        </div>
+                    </div>
+                    <a href="/mypage/plan" class="user-planbtn">플랜 신청</a>
+                </div>
+                <div class="user-contents">
+                    <div class="user-lnbwrap">
+                        <ul class="user-lnb">
+                            <li data-tab="user-lnbtab-1" class="user-lnbtab-first">
+                                <a href="/mypage/following">팔로잉한 채널</a>
+                            </li>
+                            <li data-tab="user-lnbtab-2">
+                                <a href="/mypage/wish">내 위시리스트</a>
+                            </li>
+                            <li data-tab="user-lnbtab-3">
+                                <a href="/mypage/comment">내 후기내역</a>
+                            </li>
+                            <li data-tab="user-lnbtab-4">
+                                <a href="/mypage/inquiry">내 1:1 문의</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="user-follow user-common-tab user-lnbtab-1">
+                        <ul class="user-fw-list">
+                            <li>
+                                <div class="user-fw-img">
+                                    <img src="/images/user-mypage/user-img.png">
+                                </div>
+                                <div class="user-fw-name">
+                                    <h3>틴트임포</h3>
+                                    <div class="user-fw-factorylogo">
+                                        <img src="/images/user-mypage/factory-logo.png">
+                                    </div>
+                                </div>
+                                <div class="user-fw-txt">
+                                    <p>
+                                        매일발라도 매일 예쁜 립 틴트를 선사합니다<br>
+                                        틴트언늬 입니다 ღ <br>
+                                        11.24 ~ 11.27 라이브방송 예정입니다~
+                                    </p>
+                                </div>
+                                <div class="user-fw-btn">
+                                    <a href="#" class="user-unBtn">언팔로잉</a>
+                                    <a href="#" class="user-chBtn">채널 구경가기</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="user-wishlist user-common-tab user-lnbtab-2">
+                        <ul class="user-wl-list">
+                            <li>
+                                <div class="user-wl-img">
+                                    <img src="/images/user-mypage/user-tint.jpg">
+                                </div>
+                                <div class="user-wl-name">
+                                    <h3>RED 립 틴트 3+8</h3>
+                                    <p>25,000</p>
+                                </div>
+                                <div class="user-wl-btn">
+                                     <a href="javascript:void(0)" class="user-wl-viewch">채널보기</a>
+                                     <a href="javascript:void(0)" class="user-wl-wishbtn">
+                                         <img src="/images/user-mypage/icon-wish.svg" style="width: 12px;"> 위시리스트</a>
+                                     <a href="javascript:void(0)" class="user-wl-buy">구매하기</a>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="user-comment user-common-tab user-lnbtab-3">
+                        <div class="user-cm-list">
+                            <table class="table user-cm-table">
+                                <thead>
+                                    <tr>
+                                        <th>NO.</th>
+                                        <th style="width: 52%;">상품명</th>
+                                        <th style="width: 12%;">후기평가</th>
+                                        <th style="width: 12%;">날짜</th>
+                                        <th style="width: 12%;">확인</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>10000</td>
+                                        <td class="user-cm-td">틴트는 내꺼야</td>
+                                        <td>21</td>
+                                        <td>2020-04-15</td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="user-cm-viewbtn">보기</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10000</td>
+                                        <td class="user-cm-td">틴트는 내꺼야</td>
+                                        <td>21</td>
+                                        <td>2020-04-15</td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="user-cm-viewbtn">보기</a>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>10000</td>
+                                        <td class="user-cm-td">틴트는 내꺼야</td>
+                                        <td>21</td>
+                                        <td>2020-04-15</td>
+                                        <td>
+                                            <a href="javascript:void(0)" class="user-cm-viewbtn">보기</a>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="user-inquiry user-common-tab user-lnbtab-4">
+                        <div class="user-cm-list">
+                            <table class="table user-cm-table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>NO.</th>
+                                        <th style="width: 52%;">상품명</th>
+                                        <th style="width: 12%;">닉네임</th>
+                                        <th style="width: 12%;">날짜</th>
+                                        <th style="width: 12%;">답변여부</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="user-cm-tr">
+                                        <td>10000</td>
+                                        <td class="user-cm-td">틴트는 내꺼야</td>
+                                        <td>공희양</td>
+                                        <td>2020-04-15</td>
+                                        <td>답변완료</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10000</td>
+                                        <td class="user-cm-td">틴트는 내꺼야</td>
+                                        <td>공희희</td>
+                                        <td>2020-04-15</td>
+                                        <td>미답변</td>
+                                    </tr>
+                                    <tr>
+                                        <td>10000</td>
+                                        <td class="user-cm-td">틴트는 내꺼야</td>
+                                        <td>공희은</td>
+                                        <td>2020-04-15</td>
+                                        <td>미답변</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%- include("../include/common-footer") %>
+        </div>
+    </body>
+</html>
+
+<!-- 스크롤 스타일 -->
+<style>
+.user-wl-list::-webkit-scrollbar,
+.user-fw-list::-webkit-scrollbar,
+.user-cm-list::-webkit-scrollbar {
+  width: 7px;
+}
+.user-wl-list::-webkit-scrollbar-track,
+.user-fw-list::-webkit-scrollbar-track,
+.user-cm-list::-webkit-scrollbar-track {
+    background: none; 
+}
+.user-fw-list::-webkit-scrollbar-thumb,
+.user-wl-list::-webkit-scrollbar-thumb ,
+.user-cm-list::-webkit-scrollbar-thumb {
+  background: #FFBABA; 
+}
+</style>
+
+<script>
+    $('.user-lnb > li > a').on('click',function() {
+        $(this).parent().addClass('lnb-active').siblings().removeClass('lnb-active')
+
+        const idx = $(this).parent().attr('data-tab');
+        $('.user-common-tab').hide();
+        $('.' + idx).show();
+    })
+    $('.user-lnbtab-first > a').trigger('click')
+</script>

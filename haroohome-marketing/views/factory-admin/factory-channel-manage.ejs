@@ -1,0 +1,304 @@
+<link rel="stylesheet" href="/css/factory-admin.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<%- include("../include/head") %>
+</head>
+
+<body>
+    <%- include("../include/admin-header") %>
+    <div class="factory-wrap">
+        <%- include("../include/mypage/factory-mypage-profile") %>
+        <div class="user-contents">
+            <div class="user-lnbwrap channel-lnbwrap">
+                <h3 class="channel-chart-h3">소속 채널 관리</h3>
+            </div>
+            <div class="channel-chart-top">
+                <div class="genre-select-wrap">
+                    <select id="channel-sort-type" class="genre-category">
+                        <option value="">장르 선택</option>
+                        <% for(let i=0; i<category.length; i++) { %>
+                            <option value="<%= category[i].category_pk %>"><%= category[i].category_name%></option>
+                        <% } %>
+                    </select>
+                    <input id="channel-search-text" class="channel-search" type="text">
+                    <button id="channel-search-btn" class="channel-search-btn"></button>
+                </div>
+                <div class="chart-btn-wrap new-channel-btn">
+                    <button type="button" class="chart-btn-select" data-toggle="modal" data-target="#inviteModal">새 채널 초대</button>
+                </div>
+            </div>
+            <div class="channel-inner">
+                <div id="factory-channel-list"></div>
+            </div>
+        </div>
+        <%- include("../include/mypage/m-info-set") %>
+    </div>
+    <%- include("../include/common-footer") %>
+</body>
+</html>
+
+</html>
+
+<script>
+    $(function () {
+        $('.chart-pd-list > li').on('click', function () {
+            $(this).toggleClass('add-channel').siblings().removeClass('add-channel');
+        });
+    });
+</script>
+
+<style>
+    .invite-modal {
+    margin: 12rem auto;
+    max-width: 690px;
+    }
+    .email-box {
+        width: 100%;
+        height: 63px;
+        border: 1px solid #e5e5e5;
+        padding: 10px ;
+        overflow: auto;
+    }
+    .invite-header {
+        padding: 30px 40px 15px;
+    }
+    .invite-header h5 {
+        font-weight: bold;
+    }
+    .invite-body {
+        padding: 15px 40px 30px;
+    }
+    .btn-change {
+        display: block;
+        line-height: 32px;
+        color: #fff;
+        width: 112px;
+        background: #e73828;
+        text-align: center;
+        font-size: 12px;
+        float: left;
+    }
+    .invite-footer {
+        padding: 15px 40px 20px;
+    }
+    .email-input-box {
+        width: 33%;
+        height: 100%;
+        border: none;
+        outline: none;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+
+
+     /* 스크롤바 */
+    .email-box::-webkit-scrollbar {
+        width: 6px;
+    }
+    .email-box::-webkit-scrollbar-track {
+        background: none;
+    }
+    .email-box::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+
+<div class="modal fade" id="inviteModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog invite-modal">
+        <div class="modal-content">
+            <div class="modal-header invite-header">
+                <h5 class="modal-title" id="staticBackdropLabel">새 채널 초대</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body invite-body">
+                <div class="invite-email-inner">
+                    <h6>E-mail 입력</h6>
+                        <div class="email-box bootstrap-tagsinput" id="invite-email-input">
+                            <input type="text" id="invite-email-text" class="email-input-box email_reg" data-role="tagsinput" />
+                        </div>
+                </div>
+            </div>
+            <div class="modal-footer invite-footer">
+                <!-- <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button> -->
+                <button type="button" class="btn-change" id="invite-btn">초대하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/regexp.js"></script>
+<script>
+    // 검색 기능
+    const channelSortType       = document.getElementById('channel-sort-type')
+    const channelSearchText     = document.getElementById('channel-search-text')
+    const channelSearchBtn      = document.getElementById('channel-search-btn')
+    const channelContents       = document.getElementById('factory-channel-list')
+
+    // 초대하기
+    const channelInviteBtn      = document.getElementById('invite-btn')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const category_pk = channelSortType.options[channelSortType.selectedIndex].value
+        const keyword = channelSearchText.value
+        const url = '/factory-admin/channel/manage/list?' + 'pageNo=' + page + '&keyword=' + keyword + '&category_pk=' + category_pk
+        axios.get(url).then(function(res){
+            channelContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    channelSearchText.addEventListener('keydown',enterSearch)
+    channelSearchBtn.addEventListener('click',getList)
+    channelSortType.addEventListener('change',getList)
+</script>
+
+<script>
+$("#invite-email-text").tagsinput("add")
+$(".bootstrap-tagsinput > input").addClass('email_reg')
+    .attr('onkeydown', 'if(event.keyCode == 13 || event.keyCode == 188) { pressEnter(); }')
+
+let channel_id = $(".bootstrap-tagsinput > input")
+channel_id.off('keyup').on('keyup', function(){
+    if(channel_id.val().length > 40){
+        alert("입력은 최대 40글자까지 가능합니다.")
+        channel_id.val('')
+    }
+})
+
+channel_id.off("focusout").on("focusout",function(){
+    if(channel_id.val() != ''){
+        const result = checkRegExpEmail()
+        if(result){
+            checkChannelManager().then(function(flag){
+                const emailText = $('#invite-email-text')
+
+                if(!flag) {
+                    channel_id.focus()
+                } else {
+                    emailText.tagsinput('add', channel_id.val())
+                }
+                channel_id.val('')
+            }, function(err){
+                alert('서버에 이상이 생겼습니다.')
+            })
+        }
+    }
+})
+
+function pressEnter() {
+    if(channel_id.val() != ''){
+        let result = checkRegExpEmail()
+
+        if(result){
+            checkChannelManager().then(function(flag){
+                if(!flag){
+                    const emailText = $('#invite-email-text')
+                    const arrEmailText = emailText.tagsinput('items')
+
+                    emailText.tagsinput('remove', arrEmailText[arrEmailText.length-1])
+                }
+            }, function(err){
+                alert('서버에 이상이 생겼습니다.')
+            })
+        }
+    }
+}
+
+function checkRegExpEmail(){
+    if (!reg_email.test(channel_id.val())) {
+        channel_id.focus()
+        channel_id.val('')
+        alert("정확한 이메일 형식으로 입력해주세요.")
+        return false
+    }
+    return true
+}
+
+function checkChannelManager(){
+    return new Promise(function (resolve){
+        const url = "manage/invite/check"
+        axios.post(url, {
+            mem_id: channel_id.val()
+        }).then(function (res) {
+            const state = res.data.state
+            switch (state) {
+                case 'FAIL':
+                    alert('해당 이메일을 가진 채널 관리자가 존재하지 않습니다.')
+                    break
+                case 'CURRENT FACTORY':
+                    alert('해당 채널 관리자는 이미 소속되어 있습니다.')
+                    break
+                case 'OTHER FACTORY':
+                    alert('해당 채널 관리자는 다른 팩토리에 이미 소속되어 있습니다.')
+                    break
+                case 'SUCCESS':
+                    channelArray[channelArray.length] = res.data.chnl_pk
+                    resolve(true)
+                    return true
+            }
+
+            resolve(false)
+        })
+    })
+}
+
+let channelArray = []
+function enterInviteBtn () {
+    const emailText = $('#invite-email-text')
+    const arrEmailText = emailText.tagsinput('items')
+
+    if (arrEmailText.length == 0) {
+        alert('메일을 추가해주세요.')
+        return false
+    }
+
+    for (let i = 0; i < arrEmailText.length; i++) {
+        if (arrEmailText[i].length > 40) {
+            alert('email 주소는 40자를 넘을 수 없습니다.')
+            return false
+        }
+    }
+
+    inviteChannelManager(arrEmailText)
+}
+
+function inviteChannelManager(arrEmail){
+    const emailText = $('#invite-email-text')
+
+    return new Promise(function (resolve) {
+        const url = "manage/invite"
+        axios.post(url, {
+            channel: arrEmail,
+            chnl_pk: channelArray
+        }).then(function (res) {
+            const state = res.data.state
+            switch (state) {
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+                case 'SUCCESS':
+                    alert('초대 메일을 전송했습니다.')
+                    emailText.tagsinput('removeAll')
+                    resolve(true)
+                    break
+            }
+            resolve(false)
+        })
+    })
+}
+
+channelInviteBtn.addEventListener('click', enterInviteBtn)
+</script>

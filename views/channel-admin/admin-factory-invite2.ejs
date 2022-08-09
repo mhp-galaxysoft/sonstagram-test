@@ -1,0 +1,53 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/tutorial.css">
+<link rel="stylesheet" href="/css/user-mypage.css">
+</head>
+    <body>
+        <div class="tutorial-body">
+            <div class="tutorial-joinner">
+                <div class="tutorial-head">
+                    <h1 class="tutorial-logo">
+                        <img src="/images/tutorial/live-logo.svg">
+                    </h1>
+                </div>
+                <div class="tutorial-joinbox">
+                    <a href="/mypage/plan" class="tutorial-back"></a>
+                    <h2>틴트누나 님의 채널 신청 정보</h2>
+                    <table class="table plan-channel">
+                        <tbody>
+                            <tr>
+                                <th scope="row">채널 장르</th>
+                                <td>
+                                    <select class="paln-channel-selectbox">
+                                        <option>화장품 ㆍ 코스메틱</option>
+                                        <option>11</option>
+                                        <option>22</option>
+                                     </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row" style="vertical-align: top;">채널 설명</th>
+                                <td>
+                                    <textarea class="plan-channel-txt"></textarea>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th scope="row">자사 쇼핑몰 주소</th>
+                                <td>
+                                    <input type="text" class="plan-channel-url">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="plan-cn-addshop">
+                                    <button type="button" class="plan-cn-urlbtn">+ 자사 쇼핑몰 주소 추가하기</button>
+                                </td>
+                                <td class="plan-cn-addshop"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="javascript:void(0)" class="join_clearBtn">채널신청</a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

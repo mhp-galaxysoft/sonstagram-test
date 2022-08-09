@@ -1,0 +1,307 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+<!--플랜 신청 모달-->
+<style>
+    .plan-agree-dialog {
+        margin: 10rem auto;
+        max-width: 600px;
+    }
+    .plan-agree-header {
+        padding: 29px 40px 15px;
+    }
+    .plan-agree-body {
+        padding: 15px 40px 15px;
+    }
+    .md-plan-ip {
+        border: 1px solid #e5e5e5;
+        width: 70%;
+        height: 28px;
+        line-height: 28px;
+    }
+    .md-plan-sel {
+        border: 1px solid #e5e5e5;
+        width: 40%;
+        height: 28px;
+        line-height: 28px;
+    }
+    .liveedit-table tbody tr td {
+        padding: 7px 0 7px 10px;
+    }
+    .modal-body .plan-agree-label {
+        width: 100%;
+        font-weight: 500;
+    }
+    .plan-ch-btn {
+        width: 180px;
+        height: 45px;
+        line-height: 45px;
+        background: #e73828;
+        color: #fff;
+        text-align: center;
+    }
+</style>
+</head>
+<body>
+    <%- include("../include/admin-header") %>
+    <div class="user-body">
+        <div class="user-mypage">
+            <%- include("../include/mypage/mypage-profile") -%>
+            <div class="admin-contents">
+                <div class="admin-contents-head">
+                    <h2 class="admin-contents-h2" style="margin: 0;">플랜 변경</h2>
+                </div>
+                <div class="admin-contents-body">
+                    <h3 class="plan-ch-h3">
+                        현재 <span><%= current_plan.plan_name %></span> 플랜을 구독 중 입니다.
+                        <% if(user.channel.scheduled_plan_pk){ %>
+                            다음달 결제부터 <span><%= scheduled_plan.plan_name %></span> 플랜으로 구독됩니다.
+                        <% }else{ %>
+                            서비스 유지를 원하시면 플랜을 신청하세요.
+                        <% } %>
+                    </h3>
+                    <table class="table liveedit-table">
+                        <tbody>
+                        <tr>
+                            <th>카드번호</th>
+                            <td>
+                                <p><%= subscribedInfo.ps_card_number.substring(0,4) %> <%= subscribedInfo.ps_card_number.substring(4,8) %> **** ****</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>만료날짜</th>
+                            <td>
+                                <p><%= subscribedInfo.ps_card_expired_date %></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>카드이름</th>
+                            <td>
+                                <p><%= subscribedInfo.ps_card_name %></p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>생년</th>
+                            <td>
+                                <p><%= subscribedInfo.ps_birth_year %> 년</p>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>생월</th>
+                            <td>
+                                <p><%= subscribedInfo.ps_birth_month %> 월</p>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #e8e8e8;">
+                            <th>생일</th>
+                            <td>
+                                <p><%= subscribedInfo.ps_birth_day %> 일</p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div class="plan-ch-btn-wrap">
+                        <% if(user.channel.scheduled_plan_pk){ %>
+                        <button type="button" id="plan-stop-btn" class="btn-plan-stop" data-toggle="modal">플랜 해지</button>
+                        <% } %>
+                        <a href="/channel-admin/plans/subscription" class="btn-change-plan">플랜 변경</a>
+                        <button type="button" class="btn-card-info" data-toggle="modal" data-target="#cardInfodrop">카드정보 수정</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-info-set" style="padding: 0 15px;">
+            <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+            <a id="leave-btn" class="user-leave">회원탈퇴</a>
+        </div>
+    </div>
+</body>
+<div class="modal fade" id="cardInfodrop" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog plan-agree-dialog">
+        <div class="modal-content">
+            <div class="modal-header plan-agree-header">
+                <h5 class="modal-title" id="staticBackdropLabel" style="font-weight: bold;">카드 정보 수정</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body plan-agree-body">
+                <table class="table liveedit-table">
+                    <tbody>
+                    <tr>
+                        <th>카드번호</th>
+                        <td>
+                            <input id="card-number" type="text" class="md-plan-ip reg_exp" reg_type="num" maxlength="16">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>만료날짜(MM/YY)</th>
+                        <td>
+                            <input id="card-expired-date" type="text" class="md-plan-ip reg_exp" maxlength="5">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>카드이름</th>
+                        <td>
+                            <input id="card-name" type="text" class="md-plan-ip reg_exp" reg_type="string" limitsize="100" >
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>생년</th>
+                        <td>
+                            <input id="birth-year" type="text" class="md-plan-ip reg_exp" reg_type="num" maxlength="4">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>생월</th>
+                        <td>
+                            <select id="birth-month" class="md-plan-sel">
+                                <% for(let i = 1; i <= 12; i++){ %>
+                                <option value="<%=i%>"><%=i%>월</option>
+                                <% } %>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e8e8e8;">
+                        <th>생일</th>
+                        <td>
+                            <select id="birth-day" class="md-plan-sel">
+                                <% for(let i = 1; i <= 31; i++){ %>
+                                <option value="<%=i%>"><%=i%></option>
+                                <% } %>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input id="planAgree" type="checkbox" style="display: none">
+                <label class="plan-agree-label" for="planAgree">본인의 개인 정보를 결제 서비스업체에 제공하는 데에 동의합니다.</label>
+            </div>
+            <div class="modal-footer">
+                <button id="plan-modify-btn" type="button" class="plan-ch-btn">수정하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%- include("../include/common-footer") %>
+</html>
+<script>
+    const cardNumber        = document.getElementById('card-number')
+    const cardExpiredDate   = document.getElementById('card-expired-date')
+    const cardName          = document.getElementById('card-name')
+    const birthYear         = document.getElementById('birth-year')
+    const birthMonth        = document.getElementById('birth-month')
+    const birthDay          = document.getElementById('birth-day')
+    const agreeBtn          = document.getElementById('planAgree')
+
+    cardExpiredDate.onkeypress = function(event){
+        if(event.keyCode !== 8){
+            if(cardExpiredDate.value.length === 2){
+                cardExpiredDate.value += '/'
+            }
+        }
+    }
+
+    const planModifyBtn = document.getElementById('plan-modify-btn')
+    planModifyBtn.addEventListener('click',function(){
+        if(cardNumber.value.length !== 16){
+            alert("카드 번호를 정확히 입력해주세요.")
+            cardNumber.focus()
+            return false
+        }
+        if(cardExpiredDate.value.length !== 5){
+            alert("카드 만료 날짜를 정확히 입력해주세요.")
+            cardExpiredDate.value = ""
+            cardExpiredDate.focus()
+            return false
+        }
+
+        const date = cardExpiredDate.value.split('/')
+        console.log(date)
+        if(!(1 <= Number(date[0]) && Number(date[0]) <= 12 ) || !(21<= Number(date[1]) && Number(date[1])<=50)){
+            alert("카드 만료 날짜를 정확히 입력해주세요.")
+            cardExpiredDate.value = ""
+            cardExpiredDate.focus()
+            return false
+        }
+
+        if(!cardName.value){
+            alert("카드 이름을 입력해주세요.")
+            cardName.focus()
+            return false
+        }
+        if( !(1900 <= Number(birthYear.value) && Number(birthYear.value) <= 2014) ){
+            alert("생일을 정확하게 입력해주세요.")
+            birthYear.value = ""
+            birthYear.focus()
+            return false
+        }
+        if(!agreeBtn.checked){
+            alert("개인 정보 동의에 수락하세요.")
+            return false
+        }
+
+        subscribePlan()
+    })
+
+    function subscribePlan(){
+        planModifyBtn.disabled = true
+
+        axios.put('/channel-admin/plans/subscription',{
+            planInfo : {
+                ps_card_number : cardNumber.value,
+                ps_card_expired_date : cardExpiredDate.value,
+                ps_card_name : cardName.value,
+                ps_birth_year : birthYear.value,
+                ps_birth_month : birthMonth.options[birthMonth.selectedIndex].value,
+                ps_birth_day : birthDay.options[birthDay.selectedIndex].value
+            }
+        }).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'FAIL':
+                    alert("서버에 이상이 생겼습니다.")
+                    planModifyBtn.disabled = false
+                    break
+                case "SUCCESS":
+                    alert("결제 정보가 변경되었습니다.")
+                    location.reload()
+                    break
+            }
+        }).catch(function (err){
+            console.error(err)
+            alert("서버에 이상이 생겼습니다.")
+            planModifyBtn.disabled = false
+        })
+    }
+</script>
+<script>
+    <% if(user.channel.scheduled_plan_pk){ %>
+    const planStopBtn = document.getElementById('plan-stop-btn')
+    planStopBtn.addEventListener('click',function(){
+        if(confirm("플랜을 해지하시겠습니까?\n해지하시면 라이브 기능은 다음 결제일 전까지 이용 가능합니다.")){
+            axios.put('/channel-admin/plans/subscription',{
+                planInfo:{
+                    scheduled_plan_pk : 0
+                }
+            }).then(function(res){
+                const state = res.data.state
+                switch (state){
+                    case 'FAIL':
+                        alert("서버에 이상이 생겼습니다.")
+                        planStopBtn.disabled = false
+                        break
+                    case "SUCCESS":
+                        alert("정상적으로 해지되었습니다.")
+                        location.reload()
+                        break
+                }
+            }).catch(function (err){
+                console.error(err)
+                alert("서버에 이상이 생겼습니다.")
+                planStopBtn.disabled = false
+            })
+        }
+    })
+    <% } %>
+</script>
+

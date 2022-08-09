@@ -1,0 +1,102 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2">채널 영상 관리</h2>
+                        <select id="vod-sort-type" class="live-manage-sel live-manage-ed">
+                            <option value="RECENT">최근 생성 순</option>
+                            <option value="OLD">오래된 순</option>
+                        </select>
+                        <em class="live-manage-search">
+                            <input id="vod-search-text" class="live-manage-ser" type="text">
+                            <button id="vod-search-btn" class="live-manage-serbtn" type="submit">
+                                <img src="/images/channel-admin/icon-search.svg">
+                            </button>
+                        </em>
+                        <div class="live-manage-btn">
+                            <% if(!isLive){ %>
+                            <a class="btn-start-live" id="live-create-btn">LIVE 영상 생성</a>
+                            <% } %>
+                            <a class="btn-vod-save" href="/channel-admin/video/vod/create">VOD 영상 생성</a>
+                        </div>
+                    </div>
+                    <div id="vod-list"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    // 검색 기능
+    const vodSortType      = document.getElementById('vod-sort-type')
+    const vodSearchText    = document.getElementById('vod-search-text')
+    const vodSearchBtn     = document.getElementById('vod-search-btn')
+    const vodContents      = document.getElementById('vod-list')
+    const vodDeleteBtn     = document.getElementById('vod-delete-btn')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const sort    = vodSortType.options[vodSortType.selectedIndex].value
+        const keyword = vodSearchText.value
+        const url = '/vod/list/manage?' + 'pageNo=' + page + '&keyword=' + keyword + '&sort=' + sort
+        axios.get(url).then(function(res){
+            vodContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    vodSearchText.addEventListener('keydown',enterSearch)
+    vodSearchBtn.addEventListener('click',getList)
+    vodSortType.addEventListener('change',getList)
+</script>
+<script>
+    function showVod(vod_pk){
+        location.href="/broadcast/vod/" + vod_pk
+    }
+    function deleteVod(buttonElement, vod_pk){
+        buttonElement.disabled = true
+        axios.delete('/vod/'+vod_pk).then(function (res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    buttonElement.disabled = false
+                    alert('vod가 삭제되었습니다.')
+                    location.reload()
+                    break
+                case 'FAIL':
+                    buttonElement.disabled = false
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            buttonElement.disabled = false
+            console.error(err)
+        })
+    }
+
+    const liveCreateBtn = document.getElementById('live-create-btn')
+    liveCreateBtn.addEventListener('click',function(){
+        if(<%= user.channel.stream_plan_time %> + <%= user.channel.stream_coupon_time %> === 0){
+            alert('라이브 가능 시간이 존재하지 않습니다.')
+        }else{
+            location.href = "/channel-admin/video/live/create"
+        }
+    })
+</script>

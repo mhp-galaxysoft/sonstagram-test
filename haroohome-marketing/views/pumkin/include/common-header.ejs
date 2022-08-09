@@ -1,0 +1,170 @@
+<header class="ls-header">
+    <div class="ls-header-inner">
+        <a href="javascript:void(0)" class="ls-sideslide">
+            <img src="/images/channel/icon_sidemenu.svg" alt="사이드메뉴">
+        </a>
+        <h1 class="ls-header-logo">
+            <a href="/">
+                <img src="/images/pumkin/logo.svg" alt="로고">
+            </a>
+        </h1>
+    </div>
+    <div class="ls-header-art">
+        <div class="ls-header-search">
+            <input id="search-text" type="text" class = "reg_exp" limitsize="100" reg_type="string">
+            <a href="javascript:void(0)" onclick="searchAll()" class="ls-header-searchIcon"></a>
+        </div>
+        <div class="ls-header-messge clearfix">
+            <a href="/mypage/following" class="ls-header-popupBtn">
+                <div class="ls-header-img">
+                    <img class="profile-img" src="<%= user.mem_img %>" alt="">
+                </div>
+                <p class="ls-header-txt"><%= user.mem_nickname %> 님 환영합니다!
+                    <img src="/images/channel/icon_smile.png">
+                </p>
+            </a>
+        </div>
+    </div>
+    <div class="m-ls-header">
+        <h1 class="m-ls-logo">
+            <a href="/home/live">
+                <img src="/images/pumkin/logo.svg" alt="로고">
+            </a>
+        </h1>
+            <a class="m-slidemenu-btn" href="#">
+                <img src="/images/mobile/icon-sidemenu.svg" alt="사이드메뉴">
+            </a>
+            <a class="m-search-btn" href="#">
+            <img class="origin-btn" src="/images/mobile/icon-search.svg" alt="검색">
+        </a>
+        <!-- <a class="m-search-btn s-close-btn" href="#">
+            <img class="s-close-btn" src="/images/mobile/icon-close.svg" alt="닫기">
+        </a> -->
+        <div class="m-search-inner">
+            <div class="search-left">
+                <input id="m-search-text" class="search-left-ip" type="text">
+            </div>
+            <div class="search-right">
+                <button type="button" class="search-right-btn" onclick="searchAllMobile()">
+                    <img src="/images/mobile/icon-search.svg" alt="">
+                </button>
+            </div>
+        </div>
+        <div class="search-dimm"></div>
+    </div>
+</header>
+<div class="main-slidemenu">
+    <div class="slide-head">
+        <a href="javascript:void(0)" class="slide-tabBtn">
+            <img src="/images/channel/icon_sideback.svg" alt="슬라이드메뉴 닫기">
+        </a>
+        <h1 class="slide-h1">
+            <img src="/images/pumkin/logo.svg" alt="">
+        </h1>
+    </div>
+    <div class="m-slide-mypage">
+        <div class="m-slide-mypage-info">
+            <div class="m-slide-mypage-img">
+                <img src="<%= user.mem_img %>">
+            </div>
+            <a class="m-slide-mypage-btn" href="/mypage/following">마이페이지</a>
+        </div>
+        <p class="m-slide-mypage-name"><span><%= user.mem_nickname %></span> 님 <br>환영합니다! 😃</p>
+    </div>
+    <div class="slide-Gnb">
+        <ul class="slide-Gnblist">
+            <li>
+            <a href="/home/live">
+                    <img src="/images/header/icon-home.svg" alt="홈">홈
+                </a>
+            </li>
+            <li>
+                <a href="/mypage/following">
+                    <img src="/images/header/icon-follow.svg" alt="팔로잉 채널">팔로잉 채널
+                </a>
+            </li>
+            <li>
+                <a href="/mypage/wish">
+                    <img src="/images/header/icon-wish.svg" alt="위시리스트">위시리스트
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="slide-botGnb">
+        <ul class="slide-botGnblist">
+            <li style="margin-bottom: 0px;">
+                <a href="/auth/logout">
+                    <img src="/images/header/icon-logout.svg" id="logout-button" alt="로그아웃">로그아웃
+                </a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="ls-dimm"></div>
+<div id = search-list></div>
+<script>
+    // 사이드 메뉴 슬라이드 토글
+    $(function() {
+        $('.ls-sideslide').on('click',function() {
+            $('.main-slidemenu').addClass('menu-open');
+        });
+        $('.slide-tabBtn').on('click',function() {
+            $('.main-slidemenu').removeClass('menu-open');
+            $('.ls-dimm').removeClass('dimm-on')
+        });
+
+        $('.m-slidemenu-btn').on('click',function() {
+            $('.main-slidemenu').addClass('menu-open');
+            $('.ls-dimm').addClass('dimm-on')
+        });
+        $('.ls-dimm').on('click',function() {
+            $('.main-slidemenu').removeClass('menu-open');
+            $(this).removeClass('dimm-on')
+        });
+        // 검색 버튼
+        $('.m-search-btn').on('click', function() {
+            $('.search-dimm').toggleClass('dimm-on');
+            $('.m-search-inner').toggleClass('search-open');
+            $(this).toggleClass('btn-toggle')
+        });
+
+        $('.search-dimm').on('click', function() {
+            $('.m-search-inner').removeClass('search-open');
+            $(this).removeClass('dimm-on');
+            $('.m-search-btn').removeClass('btn-toggle')
+        });
+    })
+    const defaultProfile = '/images/user-mypage/profile-img.png'
+</script>
+<script>
+    let page
+    const searchText = document.getElementById('search-text')
+    const searchTextMobile = document.getElementById('m-search-text')
+
+    function searchAll(page){
+        if (isNaN(page)) page = 1
+        const url = '/search/product?keyword=' + searchText.value + '&pageNo=' + page
+            location.href = url
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            searchAll()
+        }
+    }
+
+    function searchAllMobile(page){
+        if (isNaN(page)) page = 1
+        const url = '/search/product?keyword=' + searchTextMobile.value + '&pageNo=' + page
+        location.href = url
+    }
+
+    function enterSearchMobile(){
+        if(window.event.keyCode === 13){
+            searchAllMobile()
+        }
+    }
+
+    searchText.addEventListener('keydown', enterSearch)
+    searchTextMobile.addEventListener('keydown',enterSearchMobile)
+</script>

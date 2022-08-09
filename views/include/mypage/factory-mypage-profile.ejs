@@ -1,0 +1,46 @@
+<h2>마이페이지</h2>
+<div class="factory-info-wrap">
+    <div class="factory-info">
+        <a href="/factory-admin/info" class="user-change">
+            <img src="/images/user-mypage/icon-change.png" alt="수정">
+        </a>
+        <div class="factory-info-img">
+            <img class="profile-img" src="<%=user.factory_img %>" alt="">
+        </div>
+        <h3 class="factory-info-name"><%= user.factory_name %></h3>
+        <p class="factory-info-email"><%= user.factory_id %></p>
+        <div class="factory-info-set">
+            <a id="leave-btn" class="user-leave">회원탈퇴</a>
+        </div>
+    </div>
+    <div class="factory-admin-lnb">
+        <ul class="factory-lnb-list">
+            <li>
+                <a href="/factory-admin/channel/manage">소속 채널 관리</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<script>
+    const leaveBtn = document.getElementById('leave-btn')
+    leaveBtn.addEventListener('click',function(){
+        if(confirm("회원 탈퇴를 요청하시겠습니까?\n관리자 승인 후 고객님의 모든 정보는 삭제됩니다.")){
+            axios.get('/factory-admin/leave').then(function(res){
+                const state = res.data.state
+                console.log(state)
+                switch(state){
+                    case 'SUCCESS':
+                        alert("지금까지 라이브 팩토리를 이용해주셔서 감사합니다.")
+                        location.replace('/')
+                        break
+                    case 'FAIL':
+                        alert("서버 문제로 탈퇴에 실패했습니다.")
+                        break
+                }
+            }).catch(function (err){
+                alert("서버 문제로 탈퇴에 실패했습니다.")
+                console.error(err)
+            })
+        }
+    })
+</script>

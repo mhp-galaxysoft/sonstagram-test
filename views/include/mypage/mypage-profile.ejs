@@ -1,0 +1,107 @@
+<h2>마이페이지</h2>
+<div class="user-info-wrap">
+    <div class="user-info">
+        <a href="/mypage/profile/info" class="user-change">
+            <img src="/images/user-mypage/icon-change.png" alt="수정">
+        </a>
+        <div class="user-info-img">
+            <img class="profile-img" src="<%=user.mem_img%>" alt="">
+        </div>
+        <h3 class="user-info-name"><%= user.mem_nickname %></h3>
+        <p class="user-info-email"><%= user.mem_id %></p>
+        <div class="user-info-set">
+            <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+            <a id="leave-btn" class="user-leave">회원탈퇴</a>
+        </div>
+    </div>
+    <% if(user.user_type === 'channelAdmin'){ %>
+    <div class="ch-admin-lnb">
+        <ul class="admin-lnb-list">
+            <li>
+                <a href="/channel-admin/video/vod/manage">채널 영상 관리</a>
+            </li>
+            <li>
+                <a href="/channel-admin/products/manage">상품 관리</a>
+            </li>
+            <li>
+                <a href="/channel-admin/customer-manage">고객 관리</a>
+            </li>
+            <li>
+                <% if(user.channel.current_plan_pk){ %>
+                <a href="/channel-admin/plans/info">플랜 변경</a>
+                <% }else{ %>
+                <a href="/channel-admin/plans/subscription">플랜 신청</a>
+                <% } %>
+            </li>
+            <li>
+                <a href="/channel-admin/feed/manage">피드 관리</a>
+            </li>
+            <li>
+                <a href="/channel-admin/coupon">쿠폰 관리</a>
+            </li>
+            <li>
+                <a href="/channel-admin/mini-player">미니 플레이어</a>
+            </li>
+            <li>
+                <a href="/channel-admin/refund">배송 관리</a>
+            </li>
+        </ul>
+    </div>
+    <div class="channel-livetime-wrap">
+        <div>
+            <p><%= user.mem_nickname %> 님의</p>
+            <p class="channel-livetime-p">플랜 잔여 시간은 <span id="plan-time"></span> 입니다 !</p>
+            <p class="channel-livetime-p">쿠폰 잔여 시간은 <span id="coupon-time"></span> 입니다 !</p>
+        </div>
+    </div>
+    <% } %>
+</div>
+<% if(user.user_type === 'channelAdmin'){ %>
+<script>
+    const streamTime = document.getElementById('stream-time')
+    const streamPlanTime = Number(<%= user.channel.stream_plan_time %>)
+    const streamCouponTime = Number(<%= user.channel.stream_coupon_time %>)
+    const totalTime = streamPlanTime + streamCouponTime
+
+    //숫자 프로토타입으로 입력 길이만큼 앞에 0을 채운 문자열 반환
+    Number.prototype.fillZero = function(width){
+        let n = String(this);//문자열 변환
+        return n.length >= width ? n:new Array(width-n.length+1).join('0')+n;//남는 길이만큼 0으로 채움
+    }
+
+    // 00:00:00 형태로 바꾸기
+    const planTime = document.getElementById('plan-time')
+    const couponTime = document.getElementById('coupon-time')
+    planTime.innerText = parseInt(streamPlanTime/3600).fillZero(2) +":"+parseInt(streamPlanTime%3600/60).fillZero(2)+":"+parseInt(streamPlanTime%60).fillZero(2)
+    couponTime.innerText = parseInt(streamCouponTime/3600).fillZero(2) +":"+parseInt(streamCouponTime%3600/60).fillZero(2)+":"+parseInt(streamCouponTime%60).fillZero(2)
+</script>
+<% } %>
+<script>
+    const leaveBtn = document.getElementById('leave-btn')
+    const flag_pumkin = <%= user.flag_pumkin %>
+
+    leaveBtn.addEventListener('click',function(){
+        const result = confirm("회원 탈퇴를 진행하시겠습니까?\n회원 탈퇴 후 고객님의 모든 정보는 삭제됩니다.")
+        if(result){
+            axios.get('/auth/leave').then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        if(flag_pumkin === 0) {
+                            alert("지금까지 라이브 팩토리를 이용해주셔서 감사합니다.")
+                        } else {
+                            alert("지금까지 펌킨 라이브를 이용해주셔서 감사합니다.")
+                        }
+                        location.replace('/')
+                        break
+                    case 'FAIL':
+                        alert("서버 문제로 탈퇴에 실패했습니다.")
+                        break
+                }
+            }).catch(function (err){
+                alert("서버 문제로 탈퇴에 실패했습니다.")
+                console.error(err)
+            })
+        }
+    })
+</script>

@@ -1,0 +1,59 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <div class="user-body">
+            <%- include("../include/common-header") %>
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") %>
+                <div class="user-contents">
+                    <div class="user-lnbwrap">
+                        <ul class="user-lnb">
+                            <li class="user-lnbtab-first">
+                                <a href="/mypage/following">팔로잉한 채널</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/wish">내 위시리스트</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/review">내 후기내역</a>
+                            </li>
+                            <li class="lnb-active">
+                                <a href="/mypage/inquiry">내 1:1 문의</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="user-inquiry">
+                            <div id="inquiry-list"></div>
+                        </div>
+                    </div>
+                    <%- include("../include/mypage/m-info-set") %>
+                </div>
+            </div>
+            <%- include("../include/common-footer") %>
+        </div>
+    </body>
+</html>
+<script>
+    const inquiryContents = document.getElementById('inquiry-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/mypage/inquiry/list?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            inquiryContents.innerHTML = res.data
+
+            // 질문 클릭 시 답변 보여주기
+            $(function() {
+                $('.iq-question a').on('click',function() {
+                    $(this).parent().siblings('.iq-reply').toggleClass('on-reply')
+                })
+            })
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+</script>

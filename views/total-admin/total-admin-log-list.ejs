@@ -1,0 +1,79 @@
+<div class="table-wrap">
+    <table class="table user-list-table">
+        <caption>로그 테이블</caption>
+        <colgroup>
+            <col style="width:15%">
+            <col style="width:10%">
+            <col style="width:15%">
+            <col style="width:15%">
+            <col style="width:35%">
+        </colgroup>
+        <thead>
+            <tr>
+                <th scope="col" class="btn-list-array" onclick="changeOrderType(<%= pageNo %>)">일시</th>
+                <th scope="col">유저타입</th>
+                <th scope="col">아이디</th>
+                <th scope="col">로그타입</th>
+                <th scope="col">로그내용</th>
+            </tr>
+        </thead>
+        <tbody>
+        <% for(let i = 0; i < log.length; i++) { %>
+            <tr>
+                <td><%= log[i].log_created %></td>
+                <td>
+                    <% if(log[i].user_type === 0) { %>
+                        미가입자
+                    <% } else if(log[i].user_type === 1) { %>
+                        일반유저
+                    <% } else if(log[i].user_type === 2) { %>
+                        채널관리자
+                    <% } else if(log[i].user_type === 3) { %>
+                        팩토리관리자
+                    <% } else if(log[i].user_type === 4) { %>
+                        전체관리자
+                    <% } %>
+                </td>
+                <td><%= log[i].user_id %></td>
+                <td>
+                    <% if(log[i].target_type === 0) { %>
+                        계정관리
+                    <% } else if(log[i].target_type === 1) { %>
+                        LIVE
+                    <% } else if(log[i].target_type === 2) { %>
+                        VOD
+                    <% } else if(log[i].target_type === 3) { %>
+                        상품
+                    <% } else if(log[i].target_type === 4) { %>
+                        쿠폰
+                    <% } else if(log[i].target_type === 5) { %>
+                        팩토리
+                    <% } else if(log[i].target_type === 6) { %>
+                        플랜
+                    <% } %>
+                </td>
+                <td>[<%= log[i].log_msg.level %>][ IP: <%= log[i].user_ip %> ] <%= log[i].log_msg.target_type %> - <%= log[i].log_msg.action_type %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

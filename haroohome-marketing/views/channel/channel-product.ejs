@@ -1,0 +1,134 @@
+                <%- include('./main') %>
+                <link rel="stylesheet" href="/css/factory-admin.css">
+                <script>
+                    $('.visit-lnb-3').addClass('visit-lnb-active')
+                </script>
+                <div class="channel-product admin-contents">
+                    <div class="channel-visit-search">
+                        <h3>현재 등록된 상품 🎁</h3>
+                        <div class="channel-live-topbar">
+                            <input class="channel-search m-channer-search" id="product-search-text" type="text" onkeydown="enterSearch()">
+                            <a id="product-search-btn" class="channel-search-btn"></a>
+                        </div>
+                        <div class="visit-com-tab visit-lnb-tab3" id="product-list"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+<style>
+    .page-product.active{
+        background: blue;
+    }
+</style>
+<script>
+    // 검색 기능
+    const productSearchText    = document.getElementById('product-search-text')
+    const productSearchBtn     = document.getElementById('product-search-btn')
+    const productContents      = document.getElementById('product-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const keyword = productSearchText.value
+        const url = '/channel/channel-product-list/<%= info.chnl_pk %>?' + 'pageNo=' + page + '&keyword=' + keyword
+
+        axios.get(url).then(function(res){
+            productContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    productSearchText.addEventListener('keydown',enterSearch)
+    productSearchBtn.addEventListener('click',getList)
+</script>
+<script>
+    // 위시리스트
+    function addWishList(product_pk) {
+        axios.post('/wish/'+product_pk).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    const wishBtn = document.getElementById('wish-btn'+product_pk)
+                    const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+
+                    wishBtn.style.backgroundColor = "#e73828"
+                    wishBtnMobile.style.backgroundColor = "#e73828"
+                    wishBtn.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    }
+                    wishBtnMobile.onclick = function(){
+                        removeWishList(product_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    }
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    function removeWishList(product_pk) {
+        const wishBtn = document.getElementById('wish-btn'+product_pk)
+        const wishBtnMobile = document.getElementById('m-'+'wish-btn'+product_pk)
+        if (confirm('위시리스트에서 삭제하시겠습니까?')) {
+            axios.delete('/wish/' + product_pk).then(function (res) {
+                const state = res.data.state
+                switch (state){
+                    case 'SUCCESS':
+                        alert('위시리스트에서 삭제되었습니다.')
+                        wishBtn.style.backgroundColor = "#c8c8c8"
+                        wishBtnMobile.style.backgroundColor = "#c8c8c8"
+                        wishBtn.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener('click',arguments.callee)
+                        }
+                        wishBtnMobile.onclick = function(){
+                            addWishList(product_pk)
+                            this.removeEventListener('click',arguments.callee)
+                        }
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        } else {
+            wishBtn.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener('click',arguments.callee)
+            }
+            wishBtnMobile.onclick = function(){
+                removeWishList(product_pk)
+                this.removeEventListener('click',arguments.callee)
+            }
+        }
+    }
+
+    // 구매하기 클릭 시 클릭 수 증가
+    function countClick(product_pk) {
+        axios.post('/product/click/'+product_pk).catch(function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+</script>

@@ -1,0 +1,462 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/total-admin.css">
+</head>
+<body>
+    <div class="total-admin">
+        <%- include("total-admin-head") %>
+        <div class="total-admin-user">
+            <div class="user-manage">
+                <h3 style="font-weight: bold;">카테고리 관리</h3>
+                <div class="factory-btn-wrap">
+                    <button type="button" class="factory-create-btn" data-toggle="modal" data-target="#newCategoryModal">새 카테고리 생성</button>
+                </div>
+            </div>
+            <!-- 카테고리관리 테이블 -->
+            <div id="category-table"></div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+
+<!-- 카테고리 생성 모달 -->
+<style>
+    .newcoupon-dialog {
+        max-width: 650px;
+        margin: 10rem auto;
+    }
+    .newcoupon-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .newcoupon-table tbody tr th {
+        background: #f9f9f9;
+        font-size: 14px;
+    }
+    .newcoupon-table tbody tr td {
+        font-size: 14px;
+        padding: 7px 0 0 7px;
+    }
+    .newcoupon-table tbody tr td select {
+        width: 130px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+    }
+    .newcoupon-table tbody tr td textarea {
+        width: 360px;
+        height: 170px;
+        border: 1px solid #e5e5e5;
+        padding: 5px;
+        resize: none;
+    }
+    .cp-input {
+        width: 265px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+    }
+    .cp-input-n {
+        width: 60px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+        margin-right: 5px ;
+    }
+    .newcoupon-footer {
+        text-align: center;
+        display: block;
+    }
+    .btn-newcoupon {
+        width: 123px;
+        height: 38px;
+        line-height: 38px;
+        background: #e73828;
+        display: inline-block;
+        font-size: 14px;
+        color: #fff;
+    }
+</style>
+<!-- 카테고리 생성 모달 -->
+<div class="modal fade" id="newCategoryModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog newcoupon-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title newcoupon-h5">새 카테고리 생성</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table newcoupon-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">카테고리 이름</th>
+                            <td><input id="new-category-name" class="cp-input reg_exp" limitsize="100" reg_type="name" type="text"></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+                <p style="color: #e73828; font-size: 12px;" >* 카테고리를 생성한 후 채널관리자가 생성된 카테고리를 1명이라도 사용할 경우 삭제하실 수 없습니다. </p>
+            </div>
+            <div class="modal-footer newcoupon-footer">
+                <button type="button" id="new-category-btn" class="btn-newcoupon">생성하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 카테고리 수정 모달 -->
+<style>
+    .newcoupon-dialog {
+        max-width: 650px;
+        margin: 10rem auto;
+    }
+    .newcoupon-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .newcoupon-table tbody tr th {
+        background: #f9f9f9;
+        font-size: 14px;
+    }
+    .newcoupon-table tbody tr td {
+        font-size: 14px;
+        padding: 7px 0 0 7px;
+    }
+    .newcoupon-table tbody tr td select {
+        width: 130px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+    }
+    .newcoupon-table tbody tr td textarea {
+        width: 360px;
+        height: 170px;
+        border: 1px solid #e5e5e5;
+        padding: 5px;
+        resize: none;
+    }
+    .cp-input {
+        width: 265px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+    }
+    .cp-input-n {
+        width: 60px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+        margin-right: 5px ;
+    }
+    .newcoupon-footer {
+        text-align: center;
+        display: block;
+    }
+    .btn-newcoupon {
+        width: 123px;
+        height: 38px;
+        line-height: 38px;
+        background: #e73828;
+        display: inline-block;
+        font-size: 14px;
+        color: #fff;
+    }
+</style>
+<!-- 카테고리 수정 모달 -->
+<div class="modal fade" id="updateCategoryModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog newcoupon-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title newcoupon-h5">카테고리 수정</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table newcoupon-table">
+                    <tbody>
+                    <tr>
+                        <th scope="row">카테고리 이름</th>
+                        <td><input id="update-category-name" class="cp-input reg_exp" limitsize="100" type="text" reg_type="name"></td>
+                    </tr>
+
+                    </tbody>
+                </table>
+                <p style="color: #e73828; font-size: 12px;" >* 카테고리 이름을 수정하실 경우 현 카테고리를 사용하고 있는 채널에게 불이익이 발생할 수 있습니다.</p>
+            </div>
+            <div class="modal-footer newcoupon-footer">
+                <button type="button" id="update-category-btn" class="btn-newcoupon">수정하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- 스크롤 스타일 -->
+<style>
+    .table-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+
+<!-- 카테고리 삭제 모달 -->
+<style>
+    .stopcp-header {
+        display: block;
+        text-align: center;
+    }
+    .stopcp-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+<!-- 카테고리 삭제 모달 -->
+<div class="modal fade" id="deleteCategoryModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header stopcp-header">
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div style="height: 20px"></div>
+                <h5 class="modal-title stopcp-h5">생성하신 카테고리를 삭제하시겠습니까?</h5>
+                <p style="font-size: 14px; color: #e73828; margin: 15px 0 20px 0">* 현 카테고리를 사용하는 채널이 존재하는 경우 삭제가 불가능합니다.</p>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button type="button" id="delete-category-btn" class="btn liveend-agree">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-open .modal {
+    }
+    .liveend-dialog {
+        max-width: 690px;
+        margin: 18em auto;
+    }
+    .liveend-header {
+        border: none;
+        padding-top: 30px;
+    }
+    .liveend-h5 {
+        font-weight: bold;
+        text-indent: 190px;
+    }
+    .liveend-header .liveend-close {
+        padding: 0 1rem;
+    }
+    .liveend-footer {
+        border: none;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .btn:hover {
+        color: #fff;
+    }
+    .liveend-agree {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #e73828;
+        font-size: 16px;
+        padding: 0;
+    }
+    .liveend-cancel {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #606060;
+        font-size: 16px;
+        padding: 0;
+    }
+</style>
+
+<!-- 삭제 불가 모달 -->
+<style>
+    .stopcp-header {
+        display: block;
+        text-align: center;
+    }
+    .stopcp-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+<div class="modal fade" id="useCategory" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header stopcp-header" style="border: none;">
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div style="height: 40px"></div>
+                <h5 class="modal-title stopcp-h5">카테고리를 사용하고 있는 채널이 존재하여 삭제하실 수 없습니다.</h5>
+            </div>
+            <div class="modal-footer liveend-footer" style="border: none;">
+                <button type="button" class="btn liveend-agree"  data-dismiss="modal">확인</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/js/regexp.js"></script>
+<script>
+    const categoryContents      = document.getElementById('category-table')
+    const newCategoryName       = document.getElementById('new-category-name')
+    const updateCategoryName    = document.getElementById('update-category-name')
+    const deleteCategoryName    = document.getElementById('delete-category-name')
+    const newCategoryBtn        = document.getElementById('new-category-btn')
+    const updateCategoryBtn     = document.getElementById('update-category-btn')
+    const deleteCategoryBtn     = document.getElementById('delete-category-btn')
+    let   orderType
+    let   categoryPk
+</script>
+<script>
+    (getList(1))
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        if(!orderType) orderType = 'LATEST'
+        const url = '/total-admin/category-list?' + 'pageNo=' + page + '&chnl_pk=' + '<%= user.chnl_pk %>' + '&orderType=' + orderType
+
+        axios.get(url).then(function(res){
+            categoryContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function changeOrderType(pageNo) {
+        if(orderType === 'LATEST') {
+            orderType = 'OLDEST'
+        } else {
+            orderType = 'LATEST'
+        }
+
+        getList(pageNo)
+    }
+</script>
+<!--새 카테고리 생성-->
+<script>
+    function createCategory(){
+        if(!newCategoryName.value){
+            alert('카테고리 이름을 입력하세요.')
+            newCategoryName.focus()
+            return false
+        }
+
+        newCategoryBtn.disabled = true
+        axios.post('/total-admin/category', {
+            category_name : newCategoryName.value
+        }).then(function (res) {
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert('카테고리가 생성되었습니다.')
+                    newCategoryBtn.disabled = false
+                    location.reload()
+                    break
+                case 'ALREADY':
+                    alert('동일한 이름의 카테고리가 이미 있습니다.')
+                    newCategoryBtn.disabled = false
+                    newCategoryName.value = ''
+                    newCategoryName.focus()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    newCategoryBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            newCategoryBtn.disabled = false
+        })
+    }
+
+    newCategoryBtn.addEventListener('click', createCategory)
+</script>
+<!-- 카테고리 수정 -->
+<script>
+    function updateCategoryCheck(category_pk) {
+        categoryPk = category_pk
+    }
+
+    function updateCategory() {
+        if(!updateCategoryName.value){
+            alert('카테고리 이름을 입력하세요.')
+            updateCategoryName.focus()
+            return false
+        }
+
+        updateCategoryBtn.disabled = true
+        axios.put('/total-admin/category', {
+                category_pk     : categoryPk,
+                category_name   : updateCategoryName.value
+            }).then(function (res) {
+            const state = res.data.state
+
+            switch(state) {
+                case 'SUCCESS':
+                    alert('카테고리가 수정되었습니다.')
+                    updateCategoryBtn.disabled = false
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    updateCategoryBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+                updateCategoryBtn.disabled = false
+        })
+    }
+    updateCategoryBtn.addEventListener('click', updateCategory)
+</script>
+<!-- 카테고리 삭제 -->
+<script>
+    function deleteCategoryCheck(category_pk){
+        categoryPk = category_pk
+    }
+
+    function deleteCategory() {
+        deleteCategoryBtn.disabled = true
+        const url = '/total-admin/category?' + 'category_pk=' + categoryPk
+        axios.delete(url).then(function (res) {
+            const state = res.data.state
+
+            switch(state) {
+                case 'SUCCESS':
+                    alert('카테고리가 삭제되었습니다.')
+                    deleteCategoryBtn.disabled = false
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    deleteCategoryBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            deleteCategoryBtn.disabled = false
+        })
+    }
+
+    deleteCategoryBtn.addEventListener('click', deleteCategory)
+</script>

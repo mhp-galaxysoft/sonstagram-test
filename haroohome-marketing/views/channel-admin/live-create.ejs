@@ -1,0 +1,256 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2" style="margin: 0;">LIVE 영상 생성</h2>
+                    </div>
+                    <div class="admin-create-body">
+                        <table class="table liveedit-table">
+                            <tbody id="live-info-tbody" class="live-tab1">
+                                <tr>
+                                    <th scope="row">썸네일 사진</th>
+                                    <td>
+                                        <input type="file" id="live-thumbnail" class="live-thumbnail1" accept=".gif, .jpg, .png, .jpeg">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">LIVE 영상명</th>
+                                    <td>
+                                        <input type="text" id="live-title" class="liveedit-table-url reg_exp" limitsize="100">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row" style="vertical-align: top;">영상 설명</th>
+                                    <td>
+                                        <textarea style="resize: none;" id="live-info" class="liveedit-table-txt reg_exp" limitsize="300"></textarea>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">상품 설정</th>
+                                    <td>
+                                        <select class="live-product liveedit-table-selectbox m-live-select">
+                                            <% for(let i = 0; i < products.length; i++){ %>
+                                                <option value="<%= products[i].product_pk %>"><%= products[i].product_name %></option>
+                                            <% } %>
+                                         </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody id="add-product-btn" class="live-tab1">
+                                <tr>
+                                    <td colspan="2" class="plan-cn-addshop">
+                                        <button type="button" class="plan-cn-urlbtn">+ 상품 추가하기</button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                            <tbody class="live-tab2">
+                                <tr>
+                                    <th scope="row">화질 설정</th>
+                                    <td>
+                                        <select id="live-quality" class="liveedit-table-selectbox">
+                                            <option value="">사용자의 출력에 맞춤</option>
+                                            <option value="_720p">720p</option>
+                                            <option value="_360p">360p</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                                <tr style="border-bottom: 1px solid #e5e5e5;">
+                                    <th scope="row">최대 인원 설정</th>
+                                    <td>
+                                        <p class="create-plan">현재 고객님 채널은 <span>시청자 100명</span> 플랜을 이용하고 계십니다</p>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="live-tab1 admin-create-btn">
+                            <button id="next-tab-btn" class="create-btn" type="button">다음 단계</button>
+                            <a class="cancel-btn" href="/channel-admin/video/vod/manage">취소</a>
+                        </div>
+                        <div class="live-tab2 admin-create-btn">
+                            <button id="before-tab-btn" class="create-btn m-before-btn" type="button">이전 단계</button>
+                            <button id="submit-btn" class="admin-start-btn" type="button">방송시작</button>
+                            <a class="cancel-btn" href="/channel-admin/video/vod/manage">취소</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script src="/js/jquery.dd.min.js"></script>
+<script src="/socket.io/socket.io.js"></script>
+<script src="/js/regexp.js"></script>
+<script>
+    function addProduct(){
+
+        const liveInfoTbody = document.getElementById('live-info-tbody')
+
+        const productTr = document.createElement('tr')
+        productTr.className = 'product-tr'
+
+        const productTh = document.createElement('th')
+        productTh.setAttribute('scope','row')
+        productTh.innerText = '상품 설정'
+
+        const productTd = document.createElement('td')
+        const productSelect = document.createElement('select')
+        productSelect.classList.add("live-product","liveedit-table-selectbox")
+
+        <% for(let i = 0; i < products.length; i++){ %>
+        const productOption<%=i%> = document.createElement('option')
+        productOption<%=i%>.innerText = '<%= products[i].product_name %>'
+        productOption<%=i%>.value = '<%= products[i].product_pk %>'
+        productSelect.appendChild(productOption<%=i%>)
+        <% } %>
+
+        const removeTdBtn = document.createElement('img')
+        removeTdBtn.className = 'product-remove-btn'
+        removeTdBtn.setAttribute('src','/images/user-mypage/x-button.svg')
+        removeTdBtn.addEventListener('click',function(){
+            let parent = this.parentNode.parentNode
+            parent.remove()
+        })
+
+        productTd.appendChild(productSelect)
+        productTd.appendChild(removeTdBtn)
+        productTr.appendChild(productTh)
+        productTr.appendChild(productTd)
+        liveInfoTbody.appendChild(productTr)
+
+    }
+</script>
+<script>
+    const liveThumbnail = document.getElementById('live-thumbnail')
+    const liveTitle = document.getElementById('live-title')
+    const liveInfo = document.getElementById('live-info')
+    const liveQuality = document.getElementById('live-quality')
+    let liveProducts
+</script>
+
+<script>
+    const tab1 = document.getElementsByClassName('live-tab1')
+    const tab2 = document.getElementsByClassName('live-tab2')
+    controlTabDisplay(tab2,'none')
+
+    liveThumbnail.addEventListener('change',function(){
+        if(!/\.(gif|jpg|jpeg|png)$/i.test(liveThumbnail.files[0].name)){
+            liveThumbnail.value = ""
+            alert('사진 형식의 파일만 가능합니다.')
+            return false
+        }
+    })
+
+    const addProductBtn = document.getElementById('add-product-btn')
+    addProductBtn.onclick = addProduct
+
+    const nextTabBtn = document.getElementById('next-tab-btn')
+    const beforeTabBtn = document.getElementById('before-tab-btn')
+    beforeTabBtn.onclick = function (){
+        controlTabDisplay(tab1,"table-row-group")
+        controlTabDisplay(tab2,"none")
+    }
+    nextTabBtn.onclick = function(){
+        if(!liveThumbnail.value){
+            alert("썸네일 사진을 등록해주세요.")
+            return false
+        }
+        if(!liveTitle.value){
+            alert("LIVE 영상명을 입력해주세요.")
+            liveTitle.focus()
+            return false
+        }
+
+        // 값이 모두 입력되었는지 확인하는 함수 만들기
+        liveProducts = document.getElementsByClassName('live-product')
+        const liveProduct = liveProducts[0]
+        if(liveProduct.children.length === 0){
+            alert("판매하실 상품을 먼저 등록해주세요.")
+            return false
+        }
+
+        controlTabDisplay(tab1,"none")
+        controlTabDisplay(tab2,"block")
+    }
+
+    const submitBtn = document.getElementById('submit-btn')
+    submitBtn.onclick = checkValues
+
+    function controlTabDisplay(obj, displayOpt){
+        for(let key = 0; key < obj.length; key++){
+            obj[key].style.display = displayOpt
+        }
+    }
+
+    function checkValues(){
+        if(<%= user.channel.stream_plan_time %> + <%= user.channel.stream_coupon_time %> === 0){
+            alert('라이브 가능 시간이 존재하지 않습니다.')
+            return false
+        }
+
+        // 모두 입력되었으면 axios로 라이브 생성
+        makeLive()
+    }
+
+    function makeLive(){
+        submitBtn.disabled = true
+        let liveProductList = []
+        for(let key = 0; key < liveProducts.length; key++){
+            let select = liveProducts[key]
+            let value = select.options[select.selectedIndex].value
+            liveProductList.push(value)
+        }
+        const set = new Set(liveProductList)
+        liveProductList = [...set]
+
+        const info = {
+            live_title : liveTitle.value,
+            live_info : liveInfo.value,
+            live_quality : liveQuality.options[liveQuality.selectedIndex].value
+        }
+        const formData = new FormData()
+        const file = liveThumbnail.files[0]
+
+        formData.append('info', JSON.stringify(info))
+        formData.append('products', liveProductList.toString())
+        formData.append('img', file)
+
+        axios.post('/live', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function (res){
+            const state = res.data.state
+            switch (state){
+                case 'LIVE':
+                    location.replace('/')
+                    submitBtn.disabled = false
+                    break
+                case 'OBS':
+                    alert('OBS 등의 방송 송출 프로그램을 먼저 켜주세요!')
+                    submitBtn.disabled = false
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    submitBtn.disabled = false
+                    break
+                case 'SUCCESS':
+                    alert('라이브가 생성되었습니다.')
+                    location.replace('/broadcast/live/'+res.data.live_pk)
+                    submitBtn.disabled = false
+                    break
+            }
+        }).catch(function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+            submitBtn.disabled = false
+        })
+    }
+</script>

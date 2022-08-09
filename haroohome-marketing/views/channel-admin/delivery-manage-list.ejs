@@ -1,0 +1,44 @@
+<div class="delivery-wrap">
+    <% for(let i=0; i<inquiry.length; i++) { %>
+    <div class="delivery-refund">
+        <div class="refund-info">
+            <div class="refund-name">
+                <h3><%= inquiry[i].mem_nickname %></h3>
+                <p>주문번호 : <%= inquiry[i].order_number %></p>
+            </div>
+            <div class="refund-reason refund-name">
+                <% if(inquiry[i].inquiry_type === 0) { %>
+                    <h3>교환</h3>
+                <% } else { %>
+                    <h3>환불</h3>
+                <% } %>
+                <p>옵션을 잘못 선택</p>
+            </div>
+        </div>
+        <div class="refund-inner-wrap">
+            <div class="refund-img-wrap">
+                <div class="refund-img">
+                    <img src="/images/broadcast/gucci.jpg">
+                </div>
+                <div class="refund-img">
+
+                </div>
+                <div class="refund-img">
+
+                </div>
+            </div>
+            <div class="refund-txt-area">
+                <%= inquiry[i].inquiry_contents %>
+            </div>
+            <div class="refund-btn-wrap">
+                <% if(inquiry[i].inquiry_type === 0) { %>
+                    <button type="button" id="btn-exchange-agree" class="btn-refund-agree" onclick="clickAgreeExchange(<%= inquiry[i].inquiry_pk %>)">승인</button>
+                <% } else { %>
+                    <button type="button" id="btn-refund-agree" class="btn-refund-agree" onclick="clickAgreeRefund(<%= inquiry[i].inquiry_pk %>)">승인</button>
+                <% } %>
+                <button type="button" id="btn-refund-reject" class="btn-refund-reject" onclick="clickRejectBtn(<%= inquiry[i].inquiry_pk %>)">거절</button>
+            </div>
+        </div>
+    </div>
+    <% } %>
+ </div>

@@ -1,0 +1,62 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+<body>
+<%- include("../include/admin-header") %>
+<div class="user-body">
+    <div class="user-mypage">
+        <%- include("../include/mypage/mypage-profile") -%>
+        <div class="coupon-contents">
+            <div class="coupon-title">
+                <h2 class="coupon-title-h2">미니 플레이어</h2>
+            </div>
+            <div class="coupon-reg-wrap">
+                <h3 class="mb-3" style="font-size: 18px; color: #f27070">※ 해당 소스를 삽입을 원하시는 페이지에 복사해주세요! 소스가 삽입된 페이지에서 미니 플레이어가 실행됩니다.</h3>
+                <div class="" onclick="copyCode()">
+                    <textarea id="codeText" style="width: 100%; outline: none; resize: none; border: 1px solid #e5e5e5; " rows="10" >
+&lt;script src="https://livefactory.kr/js/mini-player.js?accessKey=<%= result.secret_key %>" crossorigin="anonymous">&lt;/script></textarea>
+                </div>
+            </div>
+            <div class="btn-sc-wrap">
+                <a href="javascript:copyCode()" class="btn-save-coupon">코드 복사하기</a>
+            </div>
+        </div>
+        <div class="m-info-set" style="padding: 0 15px;">
+            <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+            <a id="leave-btn" class="user-leave">회원탈퇴</a>
+        </div>
+    </div>
+</div>
+<%- include("../include/common-footer") %>
+
+<script>
+    function copyCode() {
+        /* Get the text field */
+        var copyText = document.getElementById("codeText")
+
+        /* Select the text field */
+        copyText.select()
+        copyText.setSelectionRange(0, 99999) /* For mobile devices */
+
+        /* Copy the text inside the text field */
+        document.execCommand("copy")
+
+        /* Alert the copied text */
+        alert('코드가 복사되었습니다.')
+    }
+</script>
+</body>
+</html>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .coupon-list-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+    .coupon-list-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+    .coupon-list-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>

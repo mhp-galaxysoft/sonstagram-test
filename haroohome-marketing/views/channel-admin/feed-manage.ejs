@@ -1,0 +1,67 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2">피드 관리</h2>
+                        <select class="live-manage-sel" id="feed-sort-type">
+                            <option value="LATEST">최신순</option>
+                            <option value="OLDEST">오래된순</option>
+                        </select>
+                        <em class="live-manage-search">
+                            <input class="live-manage-ser mobile-none" id="feed-search-text" type="text" onkeydown="enterSearch()">
+                            <button class="live-manage-serbtn mobile-none" id="feed-search-btn" type="submit" onclick="setValue()">
+                                <img src="/images/channel-admin/icon-search.svg">
+                            </button>
+                        </em>
+                        <a class="live-manage-add" href="/channel-admin/feed/create">피드 생성</a>
+                        <div id="feed-list"></div>
+                    </div>
+                </div>
+                <div class="m-info-set" style="padding: 0 15px;">
+                    <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+                    <a id="leave-btn" class="user-leave">회원탈퇴</a>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    // 검색 기능
+    const feedSortType      = document.getElementById('feed-sort-type')
+    const feedSearchText    = document.getElementById('feed-search-text')
+    const feedSearchBtn     = document.getElementById('feed-search-btn')
+    const feedContents      = document.getElementById('feed-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const sort    = feedSortType.options[feedSortType.selectedIndex].value
+        const keyword = feedSearchText.value
+        const url = '/feed/list?' + 'pageNo=' + page + '&keyword=' + keyword + '&sort=' + sort
+        axios.get(url).then(function(res){
+            feedContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    feedSearchText.addEventListener('keydown',enterSearch)
+    feedSearchBtn.addEventListener('click',getList)
+    feedSortType.addEventListener('change',getList)
+</script>
+

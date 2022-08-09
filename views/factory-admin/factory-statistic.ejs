@@ -1,0 +1,89 @@
+<link rel="stylesheet" href="/css/factory-admin.css">
+<script src = "https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js"></script>
+<%- include("../include/head") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="factory-wrap">
+            <%- include("../include/mypage/factory-mypage-profile") %>
+            <div class="user-contents" id ="channel-list">
+            </div>
+            <%- include("../include/mypage/m-info-set") %>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+
+<script>
+    $(function() {
+        $('.channel-chart-list > li').on('click', function() {
+            $(this).toggleClass('add-channel')
+        })
+    })
+</script>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .channel-chart-list-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+    .channel-chart-list-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+    .channel-chart-list-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script>
+    const channelContents = document.getElementById('channel-list')
+    let chartSelect = document.getElementById('chart-select')
+    const addChannel = document.getElementsByClassName('add-channel')
+
+    (getList)()
+
+    function getList(){
+        axios.get('/factory-admin/statistic/list').then(function(res){
+            channelContents.innerHTML = res.data
+            $(function() {
+                $('.channel-chart-list > li').on('click', function() {
+                    $(this).toggleClass('add-channel')
+                    chartSelect.innerText = '현재 ' + addChannel.length + '개 선택'
+                })
+            })
+            const channelBtn = document.getElementById('channel-btn')
+            channelBtn.addEventListener('click', nextChannel)
+
+            chartSelect = document.getElementById('chart-select')
+        })
+    }
+
+    function nextChannel() {
+        const selectedChannel = document.getElementsByClassName('add-channel')
+        if(selectedChannel.length === 0){
+            alert('채널을 선택해주세요')
+            return false
+        }
+        let channel = selectedChannel[0].getAttribute('chnl_pk')
+        for (let i = 1; i < selectedChannel.length; i++) {
+            channel = channel + ',' + selectedChannel[i].getAttribute('chnl_pk')
+        }
+
+
+        // post 전송
+        let newForm = document.createElement('form')
+        newForm.name = 'newForm'
+        newForm.method = 'post'
+        newForm.action = '/factory-admin/statistic/product'
+        let input = document.createElement('input')
+        input.setAttribute('type', 'hidden')
+        input.setAttribute('name', 'channel')
+        input.setAttribute('value', channel)
+        newForm.appendChild(input)
+        document.body.appendChild(newForm)
+
+        newForm.submit()
+
+    }
+
+
+</script>

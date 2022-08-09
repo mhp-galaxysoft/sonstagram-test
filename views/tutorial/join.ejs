@@ -1,0 +1,337 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/tutorial.css">
+</head>
+    <body>
+        <div class="tutorial-body">
+            <div class="tutorial-joinner">
+                <div class="tutorial-head">
+                    <h1 class="tutorial-logo">
+                        <a href="/">
+                            <img src="/images/tutorial/live-logo.svg">
+                        </a>
+                    </h1>
+                </div>
+                <div class="tutorial-joinbox">
+                    <a href="/tutorial/login" class="tutorial-back"></a>
+                    <h2>라이브 팩토리 회원가입</h2>
+                    <table class="table tutorial-table">
+                        <tbody>
+                            <tr>
+                                <th>회원 유형</th>
+                                <td>
+                                    <select id="mem-type" class="tutorial-table-ip">
+                                        <option value="user">일반 유저</option>
+                                        <option value="channelAdmin">채널관리자</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>이름</th>
+                                <td>
+                                    <input type="text" id="mem-name" class="tutorial-table-ip reg_exp" limitsize="20" reg_type="name" placeholder="이름">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>아이디</th>
+                                <td>
+                                    <input type="email" id="mem-id" class="tutorial-table-ip" limitsize="200" placeholder="example@livefactory.kr">
+                                    <button id="id-validate-btn" type="button" class="tutorial-id-ck">아이디 중복확인</button>
+                                    <span class="tuto-table-help">아이디는 이메일 형식으로 입력해주세요.</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>이메일 인증 확인</th>
+                                <td>
+                                    <input type="text" id="inserted-key" class="tutorial-table-ip reg_exp" limitsize="8" maxlength="8" reg_type="num" placeholder="이메일 인증 확인">
+                                    <button id="email-validate-btn" type="button" class="tutorial-id-ck">이메일 인증번호 전송</button>
+                                    <input id="tutoCheck" class="tuto-checkip" type="checkbox">
+                                    <label for="tutoCheck" class="tutorial-table-check">정보메일을 수신하겠습니다.</label>
+<!--                                    <p class="tuto-join-span">-->
+<!--                                        이메일 수신에 동의하시면 여러가지 할인혜택과 각종 이벤트 정보를 받아보실 수 있습니다.<br>-->
+<!--                                        회원가입관련, 주문 배송관련 등의 메일은 수신동의와 상관없이 모든 회원에게 발송됩니다.-->
+<!--                                    </p>-->
+                                </td>
+                            </tr>
+                           <!-- <tr>
+                                <th>이메일 인증번호</th>
+                                <td>
+                                    <input type="password" id="mem-password" class="tutorial-table-ip reg_exp" limitsize="20" reg_type="password" placeholder="이메일 인증번호">
+                                    <span class="tuto-table-help">공백 없는 영문,숫자 포함 4~12자</span>
+                                </td>
+                            </tr> -->
+                            <tr>
+                                <th>비밀번호</th>
+                                <td>
+                                    <input type="password" id="mem-password" class="tutorial-table-ip reg_exp" limitsize="20" reg_type="password" placeholder="비밀번호">
+                                    <span class="tuto-table-help">공백 없는 영문,숫자 포함 4~12자</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>비밀번호 확인</th>
+                                <td>
+                                    <input type="password" id="mem-password-repeat" class="tutorial-table-ip reg_exp" limitsize="20" reg_type="password" placeholder="비밀번호">
+                                    <span class="tuto-table-help">비밀번호 확인을 위해 한번 더 입력해주세요</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>휴대폰번호</th>
+                                <td>
+                                    <input type="email" id="mem-tel" class="tutorial-table-ip reg_exp" limitsize="30" reg_type="phone" placeholder="휴대폰번호">
+                                    <input id="tutoCheck-ph" class="tuto-checkip" type="checkbox">
+                                    <label for="tutoCheck-ph" class="tutorial-table-check">SMS를 수신하겠습니다.</label>
+                                    <p class="tuto-join-span">
+                                        SMS 수신에 동의하시면 여러가지 할인혜택과 각종 이벤트 정보를 받아보실 수 있습니다.<br>
+                                        회원가입관련, 주문 배송관련 등의 메일은 수신동의와 상관없이 모든 회원에게 발송됩니다.
+                                    </p>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>휴대폰번호 인증 확인</th>
+                                <td>
+                                    <input type="text" id="sms-validate-key" class="tutorial-table-ip reg_exp" maxlength="6" limitsize="6" reg_type="num" placeholder="인증번호">
+                                    <button id="sms-validate-btn" type="button" class="tutorial-id-ck">휴대폰 인증번호 전송</button>
+                                </td>
+                            </tr>
+                            <tr style="border-bottom: 1px solid #e5e5e5;">
+                                <th>주소</th>
+                                <td>
+                                    <input type="text" id="mem-addr" class="tutorial-table-ip reg_exp" limitsize="200" reg_type="string" placeholder="주소">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <a href="javascript:void(0)" id="join-button" class="join_clearBtn">라이브 팩토리 회원가입</a>
+                </div>
+            </div>
+        </div>
+        <script src="/js/regexp.js"></script>
+        <script src="/js/double-enter-check.js"></script>
+        <script>
+            const memType       = document.getElementById('mem-type')
+            const memName       = document.getElementById('mem-name')
+            const memId         = document.getElementById('mem-id')
+            const insertedKey   = document.getElementById('inserted-key')
+            const memPassword   = document.getElementById('mem-password')
+            const memPasswordRe = document.getElementById('mem-password-repeat')
+            const memTel        = document.getElementById('mem-tel')
+            const memAddr       = document.getElementById('mem-addr')
+
+            // 아이디 중복 체크
+            let isIdValid = false
+            let isEmailValid = false
+            let validationKey
+
+            memId.addEventListener('keyup',function(){
+                isIdValid = false
+                isEmailValid = false
+                idValidateBtn.style.background = '#f27070'
+                emailValidateBtn.style.background = '#f27070'
+            })
+            const idValidateBtn = document.getElementById('id-validate-btn')
+            const emailRegExp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+            idValidateBtn.addEventListener('click', function (){
+                if(!emailRegExp.test(memId.value)){
+                    alert("아이디는 이메일 형식이어야 합니다.")
+                    memId.focus()
+                }else{
+                    axios.post('/auth/valid/id',{
+                        id : memId.value
+                    }).then(function(res){
+                        const status = res.data.state
+                        switch (status){
+                            case "SUCCESS" :
+                                alert("확인되었습니다.")
+                                idValidateBtn.style.background = '#606060'
+                                isIdValid = true
+                                return true
+                            case "DUPLICATE" :
+                                alert("중복된 아이디가 존재합니다.")
+                                isIdValid = false
+                                memId.value = ""
+                                return false
+                            case "FAIL" :
+                                alert("서버에서 오류가 발생했습니다.")
+                                isIdValid = false
+                                return false
+                        }
+                    }).catch(function(err){
+                        alert("서버에서 오류가 발생했습니다.")
+                        console.error(err)
+                        return false
+                    })
+                }
+            })
+
+            // 이메일 인증
+            const emailValidateBtn = document.getElementById('email-validate-btn')
+            emailValidateBtn.addEventListener('click', function(){
+                if(!isIdValid){
+                    alert('아이디 중복 확인을 먼저 진행해주세요.')
+                }else{
+                    axios.post('/auth/valid/email',{
+                        id : memId.value
+                    }).then(function(res){
+                        const state = res.data.state
+                        switch(state){
+                            case 'SUCCESS':
+                                alert("메일함을 확인해주세요.")
+                                isEmailValid = true
+                                emailValidateBtn.style.background = '#606060'
+                                validationKey = res.data.validationKey
+                                break
+                            case 'FAIL':
+                                alert("서버에 이상이 생겼습니다.")
+                                break
+                        }
+                    }).catch(function(err){
+                        console.error(err)
+                        alert("서버에 이상이 생겼습니다.")
+                        return false
+                    })
+                }
+            })
+
+            // 휴대폰 번호 인증
+            const smsValidateBtn = document.getElementById('sms-validate-btn')
+            const smsValidateKey = document.getElementById('sms-validate-key')
+            let isSmsValid
+
+            smsValidateBtn.addEventListener('click', function(){
+                if(!memTel.value){
+                    alert("먼저 휴대폰 번호를 입력해주세요.")
+                    memTel.focus()
+                    return false
+                }
+
+                axios.post('/auth/valid/sms', {
+                    mem_type : memType.options[memType.selectedIndex].value,
+                    tel : memTel.value
+                }).then(function(res){
+                    const state = res.data.state
+                    switch(state){
+                        case 'SUCCESS':
+                            alert("인증번호를 전송했습니다.")
+                            isSmsValid = res.data.randomVal
+                            smsValidateBtn.style.background = '#606060'
+                            break
+                        case 'ALREADY':
+                            alert("이미 가입된 휴대폰 번호입니다.")
+                            memTel.value = ''
+                            memTel.focus()
+                            break
+                        case 'FAIL':
+                            alert("서버에 이상이 생겼습니다.")
+                            break
+                    }
+                }).catch(function(err){
+                    console.error(err)
+                    alert("서버에 이상이 생겼습니다.")
+                    return false
+                })
+            })
+
+            // 입력칸 체크
+            function checkValues(){
+                if(!memName.value){
+                    alert("이름을 입력하세요.")
+                    memName.focus()
+                    return false
+                }
+                if(!memId.value){
+                    alert("ID를 입력하세요.")
+                    memId.focus()
+                    return false
+                }
+                if(!isIdValid){
+                    alert("아이디 중복 체크를 진행해주세요.")
+                    memId.focus()
+                    return false
+                }
+                if(!isEmailValid){
+                    alert("이메일 인증을 진행해주세요.")
+                    return false
+                }
+                if(validationKey !== Number(insertedKey.value)){
+                    alert("이메일 인증 번호가 일치하지 않습니다.")
+                    return false
+                }
+                if(!memPassword.value){
+                    alert("비밀번호를 입력하세요.")
+                    memPassword.focus()
+                    return false
+                }
+                if(!memPasswordRe.value){
+                    alert("비밀번호 확인을 위해 다시 한 번 입력하세요.")
+                    memPasswordRe.focus()
+                    return false
+                }
+                if(!memTel.value){
+                    alert("휴대폰번호를 입력하세요.")
+                    memTel.focus()
+                    return false
+                }
+                if(!isSmsValid){
+                    alert("휴대폰 인증 번호를 확인해주세요.")
+                    smsValidateKey.focus()
+                    return false
+                }
+                if(isSmsValid !== Number(smsValidateKey.value)){
+                    alert("휴대폰 인증 번호가 일치하지 않습니다.")
+                    smsValidateKey.focus()
+                    return false
+                }
+                if(!memAddr.value){
+                    alert("주소를 입력하세요.")
+                    memAddr.focus()
+                    return false
+                }
+                if(memPassword.value !== memPasswordRe.value){
+                    alert('비밀번호가 일치하지 않습니다.')
+                    memPassword.value  = ""
+                    memPasswordRe.value = ""
+                    memPassword.focus()
+                    return false
+                }
+                // 모든 값이 적혀 있는 경우
+
+                if(doubleEnterCheck()) return false
+                addUser()
+            }
+
+            function addUser(){
+                axios.post('../auth/join',{
+                    mem_type : memType.options[memType.selectedIndex].value,
+                    memInfo : {
+                        mem_name        : memName.value,
+                        mem_nickname    : memName.value,
+                        mem_id          : memId.value,
+                        mem_password    : memPassword.value,
+                        mem_tel         : memTel.value,
+                        mem_addr        : memAddr.value,
+                        flag_acpt_email : document.getElementById('tutoCheck').checked ? 1 : 0,
+                        flag_acpt_sms   : document.getElementById('tutoCheck-ph').checked ? 1 : 0
+                    }
+                }).then( function(res){
+                    const state = res.data.state
+                    switch(state){
+                        case 'FAIL':
+                            alert('서버에 이상이 생겼습니다.')
+                            doubleEnterFlag = false
+                            break
+                        case 'SUCCESS':
+                            alert('회원가입에 성공했습니다. 로그인해주세요.')
+                            doubleEnterFlag = false
+                            location.href = '../tutorial/login'
+                            break
+                    }
+                }).catch(function(err){
+                    doubleEnterFlag = false
+                    console.error(err)
+                })
+            }
+
+            const joinBtn = document.getElementById('join-button')
+            joinBtn.addEventListener('click', checkValues)
+        </script>
+    </body>
+</html>

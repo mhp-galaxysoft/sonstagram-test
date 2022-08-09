@@ -1,0 +1,72 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+<body>
+<div class="user-body">
+    <%- include("../include/common-header") %>
+    <div class="user-mypage">
+        <%- include("../include/mypage/mypage-profile") %>
+        <div class="user-contents" style="height: auto;">
+            <h3 class="user-plan-h3">플랜 신청</h3>
+            <div class="user-plan">
+                <div class="user-planwrap">
+                    <ul id="user-planlist" class="user-planlist">
+                        <% for(let i = 0 ; i < plans.length-1; i++) { %>
+                        <li id="plan_<%= plans[i].plan_pk %>" plan_pk="<%= plans[i].plan_pk %>">
+                            <h4 class="user-pl-h4"><%= plans[i].plan_name %></h4>
+                            <p class="user-pl-pay"><%= plans[i].plan_detail %></p>
+                            <p class="user-pl-txt">동시접속자:<%= plans[i].plan_capacity %>명</p>
+                            <p class="user-pl-pay">스트리밍 시간(월):<%= plans[i].plan_limited_time %>시간</p>
+                            <p class="user-pl-pay" style="font-size: 18px; font-weight: bold;">월 <%= plans[i].plan_charge %>원</p>
+                        </li>
+                        <% } %>
+                        <li id="plan_<%= plans[5].plan_pk %>" plan_pk="<%= plans[5].plan_pk %>">
+                            <h4 class="user-pl-h4"><%= plans[5].plan_name %></h4>
+                            <p class="user-pl-pay"><%= plans[5].plan_detail %></p>
+                            <p class="user-pl-txt">이메일을 통해 고객님께 연락 예정.</p>
+                            <p class="user-pl-pay">1회 제공</p>
+                            <p class="user-pl-pay" style="font-size: 18px; font-weight: bold;">250,000원</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="user-plan-btn">
+                    <button id="apply-btn" class="user-plan-ask">신청하기</button>
+                    <a href="/mypage/following" class="user-plan-cancle">취소</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <%- include("../include/common-footer") %>
+</div>
+</body>
+</html>
+<script>
+    // 플랜 클릭 효과
+    $('.user-planlist > li').on('click',function() {
+        $(this).addClass('user-planlist-on').siblings().removeClass('user-planlist-on')
+    })
+</script>
+<script>
+    const applyBtn = document.getElementById('apply-btn')
+    applyBtn.onclick = function(){
+        const selectedPlan = document.getElementsByClassName('user-planlist-on')
+        if(selectedPlan.length === 1){
+            const plan_pk = selectedPlan[0].getAttribute('plan_pk')
+            payCharge(plan_pk)
+        }else{
+            alert("신청하실 플랜을 선택해주세요.")
+        }
+    }
+
+    function payCharge(plan_pk){
+        // 결제 하기.
+        // 결제 끝나면 "/mypage/plan/subscription" 로 이동시키기
+        location.href = '/mypage/plan/subscription'
+    }
+</script>
+<style>
+    .user-planbtn {
+        background: #f27070;
+        color: #fff;
+    }
+</style>

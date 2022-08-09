@@ -1,0 +1,64 @@
+<div class="customer-manage-comment">
+    <table class="table user-cm-table">
+        <thead>
+        <tr>
+            <th>NO.</th>
+            <th style="width: 52%;">상품명</th>
+            <th style="width: 12%;">후기평가</th>
+            <th style="width: 12%;">날짜</th>
+            <th style="width: 12%;">확인</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(let i = 0; i < review.length; i++) {%>
+        <tr>
+            <td><%= startRow+i %></td>
+            <td class="user-cm-td"><%= review[i].product_name %></td>
+            <td><%= review[i].likeCnt %></td>
+            <td><%= review[i].create_time %></td>
+            <td>
+                <button class="user-cm-viewbtn" data-toggle="modal" onclick="showReviewDetail(<%= review[i].review_pk%>)">보기</button>
+            </td>
+        </tr>
+        <% } %>
+        </tbody>
+    </table>
+    <table class="table m-cm-table">
+        <thead>
+        <tr>
+            <th>NO.</th>
+            <th style="width: 50%; text-align: center;">상품명</th>
+            <th style="width: 40%; text-align: center;">날짜</th>
+        </tr>
+        </thead>
+        <tbody>
+        <% for(let i = 0; i < review.length; i++) {%>
+<!--            <tr onclick="reviewClick('<%# review[i].chnl_pk %>', '<%# review[i].product_pk %>')">-->
+            <tr onclick="showReviewDetail(<%= review[i].review_pk %>)">
+                <td><%= startRow+i %></td>
+                <td class="user-cm-td"><%= review[i].product_name %></td>
+                <td style="text-align: center;"><%= review[i].create_time %></td>
+            </tr>
+        <% } %>
+        </tbody>
+    </table>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

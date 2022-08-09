@@ -1,0 +1,112 @@
+            <%- include('./main') %>
+            <div class="channel-picture visit-com-tab visit-lnb-tab1">
+                <div id="review-list"></div>
+                <div id="channel-live-list"></div>
+            <div class="channel-feed visit-com-tab visit-lnb-tab2" id="channel-feed-list">
+            </div>
+            <div class="channel-product visit-com-tab visit-lnb-tab3" id="channel-product-list">
+            </div>
+        </div>
+    </div>
+    </div>
+    <%- include("../include/common-footer") %>
+</body>
+</html>
+<script>
+    let sort
+    const reviewContents = document.getElementById('review-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        if(!sort) sort = 'RECOMMEND'
+        const url = '/review/list/<%= product_pk %>?' + 'pageNo=' + page + '&sort=' + sort
+        axios.get(url).then(function(res){
+            reviewContents.innerHTML = res.data
+            const active = document.getElementsByClassName('sort-type')
+            for (let i = 0; i < active.length; i++){
+                if(active[i].getAttribute('sort') === sort){
+                    active[i].classList.add('active')
+                }else{
+                    active[i].classList.remove('active')
+                }
+            }
+
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function setRecommend(){
+        sort = 'RECOMMEND'
+        getList(1)
+    }
+
+    function setRecent(){
+        sort = 'RECENT'
+        getList(1)
+    }
+
+    function setStar(){
+        sort = 'STAR'
+        getList(1)
+    }
+</script>
+<script>
+    // 후기 좋아요
+    function Like(review_pk){
+        axios.post('/like/'+review_pk).then(function(res){
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    countingLike(review_pk)
+                    const likeBtn = document.getElementById('like-btn'+review_pk)
+                    likeBtn.firstElementChild.setAttribute('src',"/images/broadcast/icon-up.svg")
+                    likeBtn.addEventListener('click',function(){
+                        UnLike(review_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    })
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function (err){
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+
+    // 후기 좋아요 취소
+    function UnLike(review_pk){
+        axios.delete('/like/'+ review_pk).then(function(res){
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    countingLike(review_pk)
+                    const likeBtn = document.getElementById('like-btn'+review_pk)
+                    likeBtn.firstElementChild.setAttribute('src',"/images/broadcast/icon-up-no.svg")
+                    likeBtn.addEventListener('click',function(){
+                        Like(review_pk)
+                        this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                    })
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다')
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다')
+            console.error(err)
+        })
+    }
+
+    // 좋아요 수
+    function countingLike(review_pk){
+        axios.get('/like/'+ review_pk).then(function(res){
+            document.getElementById('like-num'+review_pk).innerText = res.data.likeNo
+        })
+    }
+</script>

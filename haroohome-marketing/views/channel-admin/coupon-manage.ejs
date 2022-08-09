@@ -1,0 +1,103 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="coupon-contents">
+                    <div class="coupon-title">
+                        <h2 class="coupon-title-h2">쿠폰 관리</h2>
+                    </div>
+                    <div id="channel-coupon-list" class="channel-coupon-list">
+                        <div class="coupon-list-wrap">
+                            <% for(let i=0; i<coupon.length; i++) { %>
+                                <div class="coupon-list" map_pk=<%= coupon[i].map_pk %>>
+                                    <h3><%= coupon[i].coupon_name %></h3>
+                                    <p class="coupon-list-txt"><%= coupon[i].coupon_detail %></p>
+                                    <p class="coupon-list-time"><%= coupon[i].coupon_time %></p>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    <div class="btn-sc-wrap">
+                        <a href="/channel-admin/coupon-reg" class="btn-save-coupon">쿠폰 등록하기</a>
+                        <button type="button" id="use-coupon-btn" class="btn-apply-coupon">쿠폰 적용하기</button>
+                    </div>
+                </div>
+                <div class="m-info-set" style="padding: 0 15px;">
+                    <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+                    <a id="leave-btn" class="user-leave">회원탈퇴</a>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .coupon-list-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+    .coupon-list-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+    .coupon-list-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+<script>
+    // 쿠폰 클릭 시 하이라이트
+    $(function () {
+        $('.coupon-list').on('click',function () {
+            $(this).addClass('select-cp').siblings().removeClass('select-cp')
+        })
+    })
+</script>
+<script>
+    const useCouponBtn = document.getElementById('use-coupon-btn')
+    useCouponBtn.addEventListener('click',function(){
+        useCouponBtn.disabled = true
+        const [selectedCoupon] = document.getElementsByClassName('select-cp')
+        if (!selectedCoupon) {
+            useCouponBtn.disabled = false
+            return false
+        }
+        const map_pk = selectedCoupon.getAttribute('map_pk')
+
+
+        // 00:00:00 형태로 시간을 받아서 서버에 전송(=coupon_time)
+        // 서버에서는 split(':') 사용해서 초단위로 변경 (ex. 1:10:00 -> 3600 * 1 + 60 * 10 = 4200)
+        // 초단위로 변경한 값을 db에 넣게됨
+        const [couponListItem] = selectedCoupon.getElementsByClassName('coupon-list-time')
+        const coupon_time = couponListItem.innerText
+
+        if(confirm("해당 쿠폰을 사용하시겠습니까?")) {
+            axios.put('/coupon/' + map_pk, {
+                coupon_time: coupon_time
+            }).then(function (res) {
+                const state = res.data.state
+                switch (state) {
+                    case 'SUCCESS':
+                        alert('쿠폰이 사용되었습니다.')
+                        location.reload()
+                        break
+                    case 'EXIST':
+                        alert('라이브 방송 중에는 쿠폰 사용이 불가합니다.\n' +
+                            '방송 종료 후 쿠폰을 사용해주세요.')
+                        location.reload()
+                        break
+                    case 'FAIL':
+                        useCouponBtn.disabled = false
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err) {
+                console.error(err)
+                alert('서버에 이상이 생겼습니다.')
+            })
+        }
+    })
+</script>

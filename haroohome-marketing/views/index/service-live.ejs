@@ -1,0 +1,115 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/service.css">
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/css/swiper.css">
+<!-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.css" /> -->
+<!-- <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" /> -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.1/js/swiper.js"></script>
+<!-- <script src="https://unpkg.com/swiper/swiper-bundle.js"></script> -->
+<!-- <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script> -->
+</head>
+
+<body>
+  <div class="service-vod">
+    <!-- 서비스페이지 - 헤더 -->
+    <div class="service-header container" style="max-width: 1200px;">
+      <div class="service-header-logo">
+        <h1 class="header-logo">
+          <a href="/">
+            <img src="/images/service/service-logo.svg" alt="logo">
+          </a>
+        </h1>
+      </div>
+      <div class="service-login">
+        <a href="/tutorial/login" class="service-login-btn">로그인</a>
+      </div>
+    </div>
+    <div class="vod-circle">
+      <span class="vod-circle1"></span>
+      <span class="vod-circle2"></span>
+      <span class="vod-circle3"></span>
+      <span class="vod-circle4"></span>
+    </div>
+    <!-- 서비스페이지 - 인기있는 영상 -->
+    <div class="vod-inner">
+      <div class="vod-text">
+        <h2>라이브 팩토리에서만 볼 수 있는 Live쇼핑</h2>
+        <p>현재 라이브 팩토리에서 가장 인기있는<br>라이브 영상들 입니다.</p>
+      </div>
+      <div class="swiper-container vod-slider">
+        <div class="swiper-wrapper">
+            <% for(let i= 0; i < lives.length; i++){ %>
+            <div class="swiper-slide">
+                <a href="/broadcast/live/<%=lives[i].live_pk%>">
+                    <div class="live-slide">
+                        <div class="live-slide-img">
+                            <img src="<%= lives[i].live_thumbnail %>">
+                            <span class="live-span">현재 <%= lives[i].live_ccu %>명 시청중</span>
+                        </div>
+                        <h4 class="live-slide-tit"><%= lives[i].live_title %></h4>
+                        <div class="live-slide-ui">
+                            <div class="ui-img">
+                                <img src="<%= lives[i].mem_img %>">
+                            </div>
+                            <h5><%= lives[i].mem_nickname %></h5>
+                            <% if(lives[i].factory_img) { %>
+                            <span class="ui-pactory-logo"><img src="<%= lives[i].factory_img %>"></span>
+                            <% } %>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            <% } %>
+        </div>
+        <div class="gradi-l"></div>
+        <div class="gradi-r"></div>
+      </div>
+      <!-- <div class="swiper-button-prev" style="width: 44px;"></div>
+      <div class="swiper-button-next" style="width: 44px;"></div> -->
+    </div>
+  </div>
+  <%- include("../include/common-footer") %>
+  <div class="btn-top"><a href="#">본문 위로 올라가기</a></div>
+</body>
+</html>
+
+
+<script>
+  // 인기동영상 슬라이더
+const swiper = new Swiper('.vod-slider', {
+  loop: true,
+  autoplay: {
+    delay: '2000',
+  },
+  slidesPerView: 'auto',
+  navigation: {
+    nextEl: '.swiper-button-next',
+    prevEl: '.swiper-button-prev',
+  },
+})
+  
+  // 탑버튼
+  const front = {
+    scrollTop: 0,
+    btnTop: null,
+    init: function () {
+      front.btnTop = $('.btn-top')
+    },
+    toggleBtnTop: function () {
+      if (front.scrollTop >= 600) {
+        front.btnTop.fadeIn(200)
+      } else {
+        front.btnTop.fadeOut(200)
+      }
+    },
+  }
+
+  $(document).ready(function () {
+    front.init()
+
+    $(window).scroll(function () {
+      front.scrollTop = $(this).scrollTop()
+      front.toggleBtnTop()
+    })
+  })
+</script>

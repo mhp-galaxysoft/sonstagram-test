@@ -1,0 +1,155 @@
+            <link rel="stylesheet" href="/public/css/dd.css">
+            <script src="/public/js/jquery.dd.min.js"></script>
+            <%- include('./main') %>
+            <div class="channel-picture visit-com-tab visit-lnb-tab1">
+                <!-- 상품 후기 배너 -->
+                <div class="recent-review">
+                    <div class="recent-product-img"><img src="<%= product[0].product_img %>" alt=""></div>
+                    <div class="recent-product-text">
+                        <div class="recent-product-title">
+                            <p><%= product[0].product_name%></p>
+                        </div>
+                        <div class="recent-product-title recent-product-price">
+                            <p><%= product[0].product_price %></p>
+                        </div>
+                    </div>
+                    <div class="review-product-right">
+                        <button type="button" class="review-write-btn">상품 후기 작성하기</button>
+                        <button type="button" class="review-prev-btn" onclick="location.href='/channel/main/<%=product[0].chnl_pk%>/product/<%=product_pk%>/review'"><img src="/images/channel/left-arrow.svg" alt=""></button>
+                    </div>
+                </div>
+                <!-- 후기 등록 -->
+                <div class="review-regist">
+                    <p>후기 등록</p>
+                    <div class="review-write-box">
+                        <textarea id="review-contents" class="reg_exp" limitsize="500"></textarea>
+                    </div>
+                    <div class="review-regist-box">
+                        <div class="review-add-file">
+                            <input id="add-photo" type="file" accept=".gif, .jpg, .png, .jpeg">
+                            <label for="add-photo" class="add-photo-btn" id="file-name">사진 추가</label>
+                        </div>
+                        <div><img id="img-delete-btn" src="/images/user-mypage/x-button.svg" alt="" style="display: none;"></div>
+                        <div class="review-add-star">
+                            <div class="rate">
+                                <input type="radio" id="star5" name="rate" value="5" />
+                                <label for="star5" title="text"></label>
+                                <input type="radio" id="star4" name="rate" value="4" />
+                                <label for="star4" title="text"></label>
+                                <input type="radio" id="star3" name="rate" value="3" />
+                                <label for="star3" title="text"></label>
+                                <input type="radio" id="star2" name="rate" value="2" />
+                                <label for="star2" title="text"></label>
+                                <input type="radio" id="star1" name="rate" value="1" />
+                                <label for="star1" title="text"></label>
+                              </div>
+                        </div>
+                        <div class="inquiry-regist-btn">
+                            <button type="button" id="save-btn">후기 등록</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="channel-live-list"></div>
+            </div>
+            <div class="channel-feed visit-com-tab visit-lnb-tab2" id="channel-feed-list">
+            </div>
+            <div class="channel-product visit-com-tab visit-lnb-tab3" id="channel-product-list">
+            </div>
+        </div>
+    </div>
+    </div>
+    <%- include("../include/common-footer") %>
+</body>
+</html>
+<script>
+/*
+    onchange="javascript:document.getElementById('fileName').value = this.value">
+*/
+    const reviewFileBtn = document.getElementById('add-photo') //파일 버튼
+    const fileName = document.getElementById('file-name')
+    const imgDeleteBtn = document.getElementById('img-delete-btn')
+    reviewFileBtn.addEventListener('change', function(){
+        if(!/\.(gif|jpg|jpeg|png)$/i.test(reviewFileBtn.files[0].name)){
+            reviewFileBtn.value = ""
+            fileName.innerText = '사진 추가'
+            imgDeleteBtn.style.display = "none"
+            alert('사진 형식의 파일만 가능합니다.')
+            return false
+        }
+        fileName.innerText = reviewFileBtn.files[0].name
+        imgDeleteBtn.style.display = "block"
+    })
+    imgDeleteBtn.addEventListener('click', function(){
+        reviewFileBtn.value = ""
+        fileName.innerText = '사진 추가'
+        imgDeleteBtn.style.display = "none"
+    })
+
+    const reviewText = document.getElementById('review-contents')
+    let rate = document.getElementsByName('rate')
+    let star
+
+    function checkValues(){
+        if(!reviewText.value){
+            alert("후기 내용을 입력하세요")
+            reviewText.focus()
+            return false
+        }
+
+        for (let i = 0; i < rate.length; i++) {
+            if (rate[i].checked === true) {
+                star = rate[i].value
+                break;
+            }
+        }
+        if(!star){
+            alert("별점을 체크하세요.")
+            return false
+        }
+        saveReviewInfo()
+    }
+
+    function saveReviewInfo(){
+        saveBtn.disabled = true
+        const reviewContents = reviewText.value
+
+        const info = {
+            review_contents : reviewContents,
+            review_star : star,
+            product_pk : '<%= product_pk %>'
+        }
+
+        const formData = new FormData()
+        const file = reviewFileBtn.files[0]
+
+        formData.append('info', JSON.stringify(info))
+        formData.append('img',file)
+
+        axios.post('/review', formData, {
+            headers: {
+                "Content-Type": "multipart/form-data"
+            }
+        }).then(function(res){
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert('후기 등록이 완료되었습니다.')
+                    saveBtn.disabled = false
+                    location.href='/channel/main/<%=product[0].chnl_pk%>/product/<%=product_pk%>/review'
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다')
+                    saveBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            alert('서버에 이상이 생겼습니다')
+            saveBtn.disabled = false
+            console.error(err)
+        })
+    }
+
+    const saveBtn = document.getElementById('save-btn')
+    saveBtn.addEventListener('click',checkValues)
+</script>
+

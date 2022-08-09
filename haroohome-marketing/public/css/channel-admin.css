@@ -1,0 +1,2013 @@
+/* 유저 정보 */
+.user-channel-stats {
+    margin-top: 20px;
+}
+.ch-admin-lnb {
+    overflow: hidden;
+    width: 100%;
+}
+.admin-lnb-list {
+    width: 100%;
+    overflow: hidden;
+    margin-top: 20px;
+}
+.admin-lnb-list > li {
+    float: left;
+    width: 49%;
+    margin-bottom: 7px;
+}
+.admin-lnb-list > li:nth-child(2n) {
+    float: right;
+}
+.admin-lnb-list > li > a {
+    display: block;
+    width: 100%;
+    line-height: 35px;
+    border: 1px solid #f27070;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 13px;
+    float: left;
+    color: #f27070;
+    transition: .3s;
+}
+.admin-lnb-list > li > a:hover {
+    background: #f27070;
+    color: #fff;
+}
+.admin-lnb-list > li.admin-lnb-on a {
+    background: #f27070;
+    color: #fff;
+}
+.admin-contents {
+    float: right;
+    width: 77%;
+    /* height: 700px; */
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 100px;
+}
+.admin-contents-head {
+    padding: 35px 45px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.admin-contents-h2 {
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 40px;
+}
+
+/* 채널 영상 관리 */
+.live-manage-sel {
+    width: 135px;
+    line-height: 36px;
+    font-size: 14px;
+    height: 36px;
+}
+.live-manage-search {
+    position: relative;
+}
+.live-manage-ser {
+    width: 200px;
+    line-height: 34px;
+    font-size: 14px;
+    padding-right: 30px;
+    height: 37px;
+}
+.live-manage-serbtn {
+    background: none;
+    height: 34px;
+    position: absolute;
+    right: 0;
+    top: -6px;
+    width: 30px;
+}
+.live-manage-add {
+    display: block;
+    background: #e73828;
+    text-align: center;
+    color: #fff;
+    width: 180px;
+    line-height: 36px;
+    float: right;
+}
+.admin-contents-body {
+    padding: 35px 43px;
+    height: 517px;
+    overflow: auto;
+}
+
+.live-slide {
+    width: 220px;
+    height: 400px;
+    margin-right: 30px;
+    display: inline-block;
+    vertical-align: top;
+    margin-bottom: 20px;
+}
+.live-slide:nth-child(4n) {
+    margin-right: 0;
+}
+.live-slide a:hover {
+    color: #000;
+}
+.live-slide-img {
+    width: 100%;
+    height: 320px;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    justify-content: center;
+}
+.live-slide-img img {
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    transform: translate(-50% , -50%);
+    top: 50%;
+    left: 50%;
+}
+.live-slide-tit {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    word-break: break-all;
+    width: 100%;
+    height: 34px;
+    white-space: initial;
+    margin-top: 10px;
+    font-size: 14px;
+    display: -webkit-box;
+}
+.live-slide-ui {
+    margin-top: 10px;
+    display: flex;
+    align-items: center;
+}
+.ui-img {
+    width: 18px;
+    height: 18px;
+    border-radius: 2px;
+    overflow: hidden;
+    float: left;
+    margin-right: 5px;
+}
+.ui-img img {
+    width: 100%;
+    height: auto;
+    vertical-align: top;
+}
+.live-slide-ui h5 {
+    font-size: 12px;
+    margin-right: 5px;
+}
+.ui-pactory-logo {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: #fff;
+    overflow: hidden;
+}
+.ui-pactory-logo img {
+    width: 100%;
+    height: auto;
+}
+.live-span {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 10px;
+    width: 137px;
+    padding: 0 10px;
+    line-height: 18px;
+    text-align: right;
+}
+.live-span::before {
+    position: absolute;
+    content: 'LIVE';
+    left: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    background: #e73828;
+    text-align: center;
+}
+.accrue-span {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 10px;
+    padding: 0 10px;
+    line-height: 18px;
+    text-align: center;
+}
+.time-span {
+    position: absolute;
+    right: 10px;
+    bottom: 10px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    font-size: 10px;
+    padding: 0 10px;
+    line-height: 18px;
+    text-align: center;
+}
+
+/* 채널 관리자 마이페이지 - LIVE 채널 영상 생성 */
+.admin-create-body {
+    padding: 35px 45px;
+    overflow: hidden;
+}
+table.liveedit-table {
+    font-size: 14px;
+}
+table.liveedit-table td {
+    word-break: break-all;
+}
+table.liveedit-table th {
+    width: 20%;
+    background: #f9f9f9;
+    vertical-align: middle;
+    text-indent: 10px;
+}
+.liveedit-table-txt {
+    width: 600px;
+    height: 170px;
+    border: 1px solid #e5e5e5;
+    padding: 7px;
+}
+.liveedit-table-selectbox {
+    width: 220px;
+    height: 28px;
+    font-size: 12px;
+}
+.liveedit-table-url {
+    width: 600px;
+    height: 28px;
+    font-size: 12px;
+    border: 1px solid #e5e5e5;
+    padding-left: 7px;
+}
+.plan-cn-addshop {
+    padding: 0 0 0 15px !important;
+    border: none;
+    background: #fff1f1 !important;
+}
+.plan-cn-urlbtn {
+    width: 100%;
+    background: #fff1f1;
+    color: #f27070;
+    text-align: left;
+    line-height: 44px;
+    font-size: 12px;
+    font-weight: bold;
+}
+.liveedit-table .my-mall img {
+    margin-left: 10px;
+}
+
+.admin-create-btn {
+    float: right;
+    margin-top: 40px;
+}
+.create-btn {
+    width: 180px;
+    line-height: 36px;
+    background: #e73828;
+    color: #fff;
+    float: left;
+    margin-right: 10px;
+    text-align: center;
+    font-weight: bold;
+}
+.cancel-btn {
+    display: block;
+    width: 110px;
+    line-height: 36px;
+    text-align: center;
+    color: #fff;
+    background: #606060;
+    float: right;
+}
+.admin-start-btn {
+    width: 180px;
+    line-height: 36px;
+    background: #e73828;
+    color: #fff;
+    float: left;
+    margin-right: 10px;
+    font-weight: bold;
+}
+.create-plan {
+    font-size: 12px;
+}
+.create-plan span {
+    border: 1px solid #e5e5e5;
+    width: 150px;
+    display: inline-block;
+    line-height: 24px;
+    padding-left: 7px;
+}
+.live-slide-vod {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    text-align: center;
+    display: none;
+}
+.vod-replay {
+    width: 150px;
+    line-height: 32px;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
+    font-size: 14px;
+    margin-top: 120px;
+    transition: 0.2s;
+}
+.vod-replay:hover {
+    background: rgba(0, 0, 0, 1);
+}
+.vod-delete {
+    width: 150px;
+    line-height: 32px;
+    background: rgba(231, 56, 40, 0.6);
+    color: #fff;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: 0.2s;
+}
+.vod-delete:hover {
+    background: rgba(231, 56, 40, 0.9);
+}
+.vod-create-btn {
+    width: 150px;
+    line-height: 32px;
+    background: rgba(231, 56, 40, 0.6);
+    color: #fff;
+    font-size: 14px;
+    margin-top: 10px;
+    transition: 0.2s;
+    margin-top: 140px;
+}
+.vod-create-btn:hover {
+    background: rgba(231, 56, 40, 0.9);
+}
+.live-slide:hover .live-slide-vod {
+    display: block;
+}
+
+/* 채널 관리자 마이페이지 - 상품 관리 */
+.user-wl-list li {
+    height: 150px;
+    display: flex;
+    align-items: center;
+    padding: 0 40px;
+}
+.user-wl-img {
+    min-width: 112px;
+    width: 112px;
+    height: 112px;
+    border-radius: 5px;
+    overflow: hidden;
+    margin-right: 30px;
+    position: relative;
+}
+.user-wl-img img {
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    transform: translate(-50% , -50%);
+    top: 50%;
+    left: 50%;
+}
+.user-wl-name {
+    width: 80%;
+}
+.user-wl-name h3 {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+.user-wl-name p {
+    color: #f27070;
+    font-size: 20px;
+    font-weight: bold;
+}
+.user-wl-btn {
+    margin-left: 44px;
+}
+.user-wl-btn a,
+.user-wl-btn button {
+    margin: 6px 0;
+}
+.user-wl-change {
+    display: block;
+    width: 92px;
+    line-height: 32px;
+    border-radius: 5px;
+    background: #f27070;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+}
+.user-wl-del {
+    display: block;
+    width: 92px;
+    line-height: 32px;
+    border-radius: 5px;
+    background: #606060;
+    text-align: center;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+}
+.user-wl-list > li:hover, .user-fw-list > li:hover {
+    background: #f8f8f8;
+}
+
+/* 채널 관리자 - 상품 생성 페이지 */
+.product-create-table {
+    padding: 25px 50px;
+}
+.pd-ct-table th {
+    width: 200px;
+    background: #f9f9f9;
+    font-size: 14px;
+    vertical-align: middle;
+    padding: 0 20px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+}
+.pd-ct-table td {
+    padding: 7px 10px;
+}
+.pd-ct-table input {
+    font-size: 12px;
+    width: 70%;
+    line-height: 26px;
+}
+.pd-ct-table .option-name{
+    width: 44%;
+    margin: 2.5px  0;
+}
+
+.pd-ct-table .option-price{
+    width: 25%;
+    margin: 2.5px 1%;
+}
+
+.product-option-container{
+    display: none;
+}
+
+#product-detail-img {
+    max-width: 100%;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.pd-ct-table tr, .product-option-container tr{
+    border-top: 1px solid #e5e5e5;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.option-add-btn {
+    font-size: 10px;
+    color: #e73828;
+    width: 70%;
+    text-align: left;
+    background-color: #fff1f1;
+    height: 28px;
+    line-height: 28px;
+    padding-left: 10px;
+    margin-top : 4px;
+}
+
+.option-box{
+    display: flex;
+}
+
+.option-remove-btn{
+    margin : auto 5px;
+    cursor: pointer;
+}
+
+/* 채널 관리자 - 고객 관리 페이지 */
+.customer-manage-lnb {
+    overflow: hidden;
+    padding: 15px 45px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.customer-manage-lnb > li {
+    float: left;
+    margin-right: 20px;
+}
+.customer-manage-lnb > li > a {
+    font-size: 18px;
+    color: #e5e5e5;
+}
+.customer-manage-lnb > li.ct-mn-active a {
+    color: #f27070;
+}
+.customer-manage-comment {
+    height: 517px;
+    overflow: auto;
+}
+.user-cm-table {
+    font-size: 12px;
+    text-align: center;
+}
+.user-cm-table thead tr th {
+    color: #929292;
+    line-height: 18px;
+}
+.user-cm-table tbody tr td {
+    line-height: 25px;
+    padding: 8px 0;
+}
+.channel-cm-table {
+    font-size: 12px;
+    text-align: center;
+}
+.channel-cm-table thead tr th {
+    color: #929292;
+    line-height: 18px;
+}
+.channel-cm-table tbody tr td {
+    line-height: 25px;
+    padding: 8px 0;
+}
+.user-cm-td {
+    text-align: left;
+}
+.user-cm-viewbtn {
+    display: block;
+    width: 58px;
+    line-height: 24px;
+    text-align: center;
+    color: #fff;
+    border-radius: 5px;
+    background: #000;
+    margin: 0 auto;
+}
+.user-cm-tr {
+    cursor: pointer;
+}
+/* 채널 관리자 - 고객 관리 - 1:1 문의 페이지 */
+.ct-inquiry-list-wrap {
+    margin-top: -17px;
+}
+.ct-inquiry-list {
+    height: 40px;
+    overflow: hidden;
+    border-bottom: 1px solid #e5e5e5;
+}
+.ct-inquiry-list > a {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+}
+.ct-inquiry-list > a:hover {
+    color: #000;
+}
+.ct-inquiry-que {
+    width: 42px;
+    display: block;
+    text-align: center;
+    line-height: 23px;
+    background: #101101;
+    color: #fff;
+    font-size: 13px;
+    margin: 0 45px;
+}
+.ct-inquiry-name {
+    font-size: 13px;
+    width: 56.3%;
+}
+.ct-inquiry-list p {
+    font-size: 12px;
+}
+.ct-inquiry-day {
+    margin-left: 82px;
+}
+.ct-inquiry-ans {
+    margin-left: 75px;
+}
+.ct-inquiry-reply {
+    min-height: 90px;
+    background: #f9f9f9;
+    width: 100%;
+    border: 1px solid red;
+    display: none;
+}
+.ct-inquiry-lists.inquiry-replay-on .ct-inquiry-reply {
+    display: block;
+}
+
+/* 채널 관리자 - 플랜 변경 페이지 */
+.user-selectbox {
+    width: 220px;
+    height: 28px;
+    font-size: 12px;
+    border: 1px solid #e5e5e5;
+}
+.admin-planlist {
+    margin-top: 25px;
+}
+.admin-planlist > li {
+    display: flex;
+    margin-bottom: 20px;
+    background: url(/images/user-mypage/icon-check.svg) no-repeat 40px 50%;
+    background-size: 27px;
+    width: 100%;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    height: 95px;
+    padding: 0 40px;
+    align-items: center;
+}
+.admin-planlist > li > a {
+    display: block;
+    width: 100%;
+    border: 1px solid #e5e5e5;
+    border-radius: 5px;
+    height: 95px;
+    padding: 0 40px;
+    align-items: center;
+}
+.admin-planlist > li > a {
+    display: block;
+    width: 100%;
+
+}
+.admin-planlist > li > a:hover {
+    border: 1px solid #f27070;
+    color: #000;
+}
+.admin-planlist > li.admin-planlist-on {
+    background: url(/images/user-mypage/icon-check-bg.svg) no-repeat 40px 50%;
+    background-size: 27px;
+    border: 2px solid #f27070;
+    border-radius: 5px;
+}
+.admin-planlist > li.admin-planlist-on a {
+    border: 2px solid #f27070;
+    border-radius: 5px;
+}
+.admin-pl-h4 {
+    width: 35%;
+    margin-left: 40px;
+}
+.admin-pl-h4 h4 {
+    font-size: 20px;
+}
+.admin-pl-txt {
+    width: 45%;
+}
+.admin-pl-txt p {
+    width: 400px;
+}
+.admin-pl-pay {
+    width: 20%;
+}
+.admin-pl-pay p {
+    text-align: right;
+}
+.user-plan-btn {
+    text-align: center;
+    margin-top: 20px;
+}
+.user-plan-ask {
+    display: inline-block;
+    width: 180px;
+    line-height: 47px;
+    text-align: center;
+    color: #fff;
+    background: #e73828;
+    margin: 0 10px;
+}
+.user-plan-cancle {
+    display: inline-block;
+    width: 180px;
+    line-height: 47px;
+    text-align: center;
+    color: #fff;
+    background: #606060;
+    margin: 0 10px;
+}
+.plan-ch-h3 {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 30px;
+}
+.plan-ch-h3 span {
+    color: #f27070;
+    font-weight: 600;
+}
+.plan-ch-btn-wrap {
+    /*float: right;*/
+    margin-top: 40px;
+    width: 100%;
+    font-weight : normal;
+}
+.btn-plan-stop{
+    background-color: #e5e5e5;
+    width: 180px;
+    height: 45px;
+    line-height: 45px;
+    color: #fff;
+    text-align: center;
+    float: left;
+}
+.btn-card-info {
+    background-color: #f27070;
+    width: 180px;
+    height: 45px;
+    line-height: 45px;
+    color: #fff;
+    text-align: center;
+    float: right;
+}
+.btn-change-plan {
+    display: block;
+    background-color: #606060;
+    width: 180px;
+    height: 45px;
+    line-height: 45px;
+    color: #fff;
+    text-align: center;
+    float: right;
+    margin-left: 20px;
+}
+
+/* 채널관리자 - 피드 관리 페이지 */
+.fc-contents-body,
+.feed-contents-body {
+    padding: 35px 38px;
+}
+.admin-feed-box {
+    /* display: inline-block; */
+    float: left;
+    width: 180px;
+    height: 180px;
+    overflow: hidden;
+    margin: 0 8px 12px;
+}
+.admin-feed-img {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    /*flex-wrap: wrap;*/
+    position: relative;
+}
+.admin-feed-img img {
+    min-width: 100%;
+    max-width: 100%;
+    object-fit: cover;
+    vertical-align: bottom;
+}
+.admin-feed-img::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    transition: .2s;
+    opacity: 0;
+}
+.admin-feed-box:hover .admin-feed-img::after {
+    opacity: 1;
+}
+
+/* 채널관리자 - 피드 생성 페이지 */
+.feed-create-img {
+    width: 37%;
+    float: left;
+    overflow: hidden;
+}
+.feed-create-img h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.feed-create-thumb {
+    width: 350px;
+    height: 270px;
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    border: 1px solid #e5e5e5;
+    margin-bottom: 30px;
+}
+.feed-create-thumb img {
+    max-width: 100%;
+    min-height: 100%;
+    object-fit: cover;
+}
+.feed-create-add {
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    padding-left: 85px;
+}
+.feed-create-txt {
+    width: 62%;
+    float: right;
+    overflow: hidden;
+}
+.feed-create-txt h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+}
+.feed-create-txtarea {
+    width: 100%;
+    height: 270px;
+    padding: 10px 10px;
+    margin-bottom: 30px;
+    resize: none;
+    border: 1px solid #e5e5e5;
+}
+.feed-create-uplord {
+    width: 180px;
+    line-height: 45px;
+    background: #e73828;
+    color: #fff;
+    font-weight: bold;
+    float: right;
+}
+.feed-create-cancel {
+    width: 180px;
+    line-height: 45px;
+    background: #606060;
+    color: #fff;
+    float: right;
+    text-align: center;
+    margin-left: 10px;
+}
+
+/* 채널관리자 - 팩토리 초대 권유 페이지 */
+.admin-invite-body {
+    width: 100%;
+    height: 967px;
+    background: url(/images/tutorial/live-bg.svg) 50% 50% #fff1f1;
+}
+.invite-inner {
+    width: 475px;
+    height: 100%;
+    margin: 0 auto;
+    padding-top: 100px;
+}
+.invite-head {
+    text-align: center;
+}
+.invite-logo {
+    display: inline-block;
+}
+.invite-head-p {
+    font-family: 'TmonMonsori',sans-serif;
+    font-size: 1.5em;
+    color: #f27070;
+    margin: 10px 0;
+    word-break: break-all;
+}
+.invite-box {
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.1);
+    background: #fff;
+    margin-top: 10px;
+}
+.invite-box-top {
+    padding: 25px 40px 30px;
+    overflow: hidden;
+    border-bottom: 1px solid #e5e5e5;
+}
+.invite-txt {
+     font-size: 12px;
+    word-break: break-all;
+}
+.invite-txt span {
+    color: #f27070;
+    font-weight: bold;
+}
+.invite-box-bottom {
+    padding: 25px 40px 30px;
+    border-bottom: 1px solid #e5e5e5;
+    overflow: hidden;
+}
+.invite-box-factory {
+    width: 62px;
+    height: 62px;
+    border: 1px solid #e5e5e5;
+    border-radius: 12px;
+    overflow: hidden;
+    float: left;
+    margin-right: 20px;
+}
+.invite-box-factory img {
+    min-width: 100%;
+    max-height: 100%;
+}
+.invite-box-info {
+    float: left;
+    width: 75%;
+}
+.invite-box-info > li {
+    margin-bottom: 10px;
+}
+.invite-box-name {
+    float: left;
+    width: 80px;
+}
+.invite-box-name h3 {
+    font-size: 12px;
+    color: #929292;
+}
+.invite-box-pwrap {
+    width: 100%;
+    padding-left: 79px;
+}
+.invite-box-info p {
+    font-size: 12px;
+    color: #f27070;
+    margin-bottom: 3px;
+    word-break: break-all;
+    padding-left: 80px;
+}
+.invite-btn-wrap {
+    text-align: center;
+    padding: 20px 0 30px 0;
+}
+.invite-btn-accept {
+    width: 110px;
+    height: 30px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+    background: #e73828;
+    color: #fff;
+    margin: 0 5px;
+}
+.invite-btn-refusal {
+    width: 110px;
+    height: 30px;
+    font-size: 12px;
+    text-align: center;
+    font-weight: bold;
+    background: #101101;
+    color: #fff;
+    margin: 0 5px;
+}
+.m-reply-txt,
+.m-cm-table,
+.m-wl-btn {
+    display: none;
+}
+
+/*채널 관리자 - 쿠폰 관리 페이지*/
+.coupon-contents {
+    float: right;
+    width: 77%;
+    height: 600px;
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 100px;
+}
+.coupon-title {
+    padding: 35px 40px 10px;
+    border-bottom: 1px solid #e5e5e5;
+}
+.coupon-title-h2 {
+    font-size: 28px;
+    color: #f27070;
+    font-family: 'TmonMonsori',sans-serif;
+}
+.coupon-list-wrap {
+    padding: 25px 40px;
+    height: 400px;
+    overflow: auto;
+}
+.coupon-list {
+    border: 1px solid #e5e5e5;
+    width: 100%;
+    border-radius: 5px;
+    padding: 35px 25px;
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+.coupon-list h3 {
+    font-size: 20px;
+    font-weight: 500;
+    width: 200px;
+    margin-right: 20px;
+}
+.coupon-list-txt {
+    font-size: 16px;
+    width: 500px;
+}
+.coupon-list-time {
+    font-size: 16px;
+    margin-left: auto;
+    font-weight: bold;
+}
+.btn-save-coupon {
+    font-size: 16px;
+    background: #e73828;
+    color: #fff;
+    text-align: center;
+    line-height: 45px;
+    height: 45px;
+    width: 184px;
+    float: right;
+    margin: 25px 40px 0 0;
+}
+.btn-apply-coupon {
+    font-size: 16px;
+    background: #f27070;
+    color: #fff;
+    text-align: center;
+    line-height: 45px;
+    height: 45px;
+    width: 184px;
+    float: right;
+    margin: 25px 20px 0 0;
+}
+.coupon-reg-wrap {
+    padding: 25px 40px;
+    height: 400px;
+    overflow: auto;
+}
+.coupon-reg-wrap h3 {
+    font-size: 20px;
+}
+.coupon-reg {
+    border: 1px solid #ccc;
+    width: 184px;
+    height: 45px;
+    line-height: 45px;
+    text-align: center;
+    margin-right: 5px;
+}
+.coupon-reg-form {
+    padding: 30px 110px;
+}
+
+.btn-obs {
+    width: 145px;
+    height: 30px;
+    line-height: 30px;
+    background: #b8b8b8;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 12px;
+}
+.live-manage-btn {
+    float: right;
+}
+.btn-start-live {
+    display: block;
+    background: #f27070;
+    text-align: center;
+    color: #fff;
+    width: 180px;
+    line-height: 36px;
+    float: left;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.pd-optione {
+    width: 160px;
+    height: 28px;
+    line-height: 28px;
+    font-size: 14px;
+}
+.coupon-list.select-cp {
+    border: 1px solid #f27070;
+}
+
+/*잔여 방송시간 */
+.channel-livetime-wrap {
+    background: url("/images/channel-admin/livetime-bg.svg") no-repeat;
+    padding: 15px 25px;
+    background-size: cover;
+    border-radius: 15px;
+}
+.channel-livetime-wrap p {
+    color: #fff;
+}
+.channel-livetime-p {
+    margin-top: 10px;
+    font-weight: normal;
+}
+.channel-livetime-p span {
+    font-weight: bold;
+}
+
+/*배송관리 - 환불교환 관리*/
+.delivery-wrap {
+    height: 500px;
+    padding: 25px 40px;
+    overflow: auto;
+}
+.delivery-refund {
+    overflow: hidden;
+    margin-bottom: 30px;
+}
+.refund-info {
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 20px;
+}
+.refund-name {
+    overflow: hidden;
+    float: left;
+}
+.refund-name h3 {
+    font-size: 12px;
+    font-weight: bold;
+    margin-right: 10px;
+    float: left;
+}
+.refund-name p {
+    font-size: 12px;
+    font-weight: normal;
+    float: left;
+}
+.refund-reason {
+    float: right;
+}
+.refund-reason p {
+    font-size: 12px;
+    font-weight: normal;
+}
+.refund-inner-wrap {
+    display: flex;
+    align-items: center;
+}
+.refund-img-wrap {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+}
+.refund-img {
+    width: 110px;
+    height: 110px;
+    border: 1px solid #eee;
+    margin-right: 10px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    overflow: hidden;
+}
+.refund-img img {
+    height: 100%;
+    object-fit: cover;
+    position: absolute;
+    transform: translate(-50% , -50%);
+    top: 50%;
+    left: 50%;
+}
+.refund-txt-area {
+    height: 110px;
+    width: 340px;
+    overflow: auto;
+    font-size: 12px;
+    font-weight: 500;
+    word-break: break-all;
+}
+.refund-btn-wrap {
+    margin-left: auto;
+    display: flex;
+    flex-direction: column;
+}
+.refund-btn-wrap button {
+    margin: 2px 0;
+}
+.btn-refund-agree {
+    width: 130px;
+    height: 32px;
+    line-height: 32px;
+    background: #f27070;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #fff;
+}
+.btn-refund-reject {
+    width: 130px;
+    height: 32px;
+    line-height: 32px;
+    background: #606060;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #fff;
+}
+
+/*배송관리 - 송장번호 입력*/
+.invoice-wrap {
+    height: 500px;
+    overflow: auto;
+}
+.invoice-search-wrap {
+    overflow: hidden;
+    padding: 25px 40px;
+}
+.invoice-search-name {
+    width: 130px;
+    height: 35px;
+    line-height: 35px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+}
+.invoice-search-in {
+    display: flex;
+    align-items: center;
+    float: right;
+}
+.invoice-search-ip {
+    width: 200px;
+    height: 35px;
+    line-height: 35px;
+    border: 1px solid #e5e5e5;
+    font-size: 14px;
+    padding-right: 30px;
+}
+.invoice-search-btn {
+    position: relative;
+    margin-left: 5px;
+}
+.btn-iv-se {
+    background: none;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: 5px;
+}
+.invoice-customer-info {
+    height: 410px;
+    overflow: auto;
+    padding: 0 40px 0;
+}
+.invoice-table {
+    margin-top: 30px;
+}
+.invoice-table tbody tr th {
+    background: #f9f9f9;
+    font-size: 14px;
+    width: 20%;
+}
+.invoice-table tbody tr td {
+    font-size: 14px;
+    word-break: break-all;
+}
+.invoice-send-btn button {
+    width: 130px;
+    height: 32px;
+    line-height: 32px;
+    background: #f27070;
+    border-radius: 5px;
+    font-size: 12px;
+    color: #fff;
+    float: right;
+}
+.invoice-table input {
+    border: none;
+    width: 50%;
+}
+.btn-vod-save {
+    display: block;
+    background: #e73828;
+    text-align: center;
+    color: #fff;
+    width: 180px;
+    line-height: 36px;
+    float: right;
+}
+
+
+
+
+
+
+
+
+@media all and (max-width: 1360px) {
+    /* 내 위시리스트 탭 */
+    .user-wl-list li {
+        height: 90px;
+        padding: 0 15px;
+    }
+    .user-wl-name {
+        max-width: 35%;
+    }
+    .user-wl-name h3 {
+        font-size: 14px;
+        max-width: 200px;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 1.4;
+    }
+    .user-wl-name p {
+        font-size: 14px;
+    }
+    .user-wl-img {
+        width: 42px;
+        height: 42px;
+        min-width: 42px;
+        margin-right: 10px;
+    }
+    .user-wl-btn {
+        display: none;
+    }
+    .user-wl-btn.m-wl-btn {
+        width: 50%;
+    }
+    .m-wl-btn {
+        /* width: 10px; */
+        display: block;
+    }
+    .m-wl-btn .user-wl-change {
+        float: right;
+        width: 70px;
+        line-height: 30px;
+    }
+    .m-wl-btn .user-wl-del {
+        float: right;
+        width: 70px;
+        line-height: 30px;
+        margin-left: 5px;
+    }
+
+    .m-wl-btn img {
+        height: 35px;
+    }
+    .m-user-unBtn.unwish {
+        background: url(/images/mobile/icon-wish-del.svg) no-repeat;
+        background-size: 38px;
+        width: 38px;
+        height: 38px;
+    }
+    .m-user-unBtn.unwish .m-user-unBtn1 {
+        visibility: hidden;
+    }
+    .user-wl-list > li:hover, .user-fw-list > li:hover {
+        background: #fff;
+    }
+
+    /* 내 후기내역 탭 */
+    .user-cm-table {
+        display: none;
+    }
+    .m-cm-table {
+        display: block;
+    }
+    .m-cm-table thead tr th {
+        font-size: 14px;
+        color: #929292;
+    }
+    .m-cm-table tbody tr td {
+        font-size: 14px;
+    }
+
+    /* 내 후기내역 탭 */
+    .iq-reply {
+        display: block;
+        width: 100%;
+    }
+    .iq-name,
+    .iq-answer {
+        display: none;
+    }
+    .iq-head {
+        width: 70px;
+        padding-left: 10px;
+    }
+    .iq-product-name {
+        width: 100%;
+        max-width: 40%;
+        padding: 0;
+    }
+    .iq-product-txt {
+        width: 100%;
+    }
+    .iq-product-con {
+        width: 100%;
+        padding: 0 15px 10px;
+        height: auto;
+    }
+    .iq-day {
+        width: 80px;
+        margin-right: 6%;
+        float: right;
+    }
+    .iq-reply-txt {
+        width: 100%;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        margin: 10px 0 14px;
+    }
+    .m-reply-txt {
+        display: block;
+        float: left;
+        width: 100%;
+        padding: 0 15px 10px;
+    }
+    .iq-sort {
+        float: left;
+        border: 1px solid royalblue;
+    }
+    .reply-n-btn {
+        display: none;
+    }
+    .iq-con-txt {
+        white-space: unset;
+    }
+    .iq-reply-ip {
+        padding: 0 15px;
+        width: 100%;
+    }
+    .iq-reply-area {
+        width: 100%;
+    }
+    .iq-btn-wrap {
+        width: 100%;
+        float: left;
+        padding: 0 15px;
+    }
+    .reply-btn {
+        width: 95px;
+        line-height: 35px;
+        font-size: 12px;
+        background: #e73828;
+        color: #fff;
+        text-align: center;
+        float: right;
+        margin: -20px 0 10px 0;
+    }
+
+    /* 채널관리자 회원설정 */
+    .liveedit-table-txt,
+    .liveedit-table-selectbox {
+        width: 100%;
+        border: none;
+    }
+    .liveedit-table-url {
+        width: 70%;
+        border: none;
+    }
+    table.liveedit-table th {
+        width: 30%;
+        text-indent: 0;
+    }
+    .user-edit h3 {
+        padding: 0 15px;
+    }
+    .admin-lnb-list {
+        margin-top: 0;
+        margin-bottom: 20px;
+    }
+
+    /* 채널관리자 탭 */
+    .admin-contents {
+        width: 100%;
+        margin-bottom: 60px;
+    }
+    .admin-contents-head {
+        padding: 15px;
+        overflow: hidden;
+    }
+    .admin-contents-h2-modifi {
+        float: left;
+        line-height: 30px;
+    }
+    .feed-create-uplord {
+        background: #e73828;
+        color: #fff;
+        font-size: 16px;
+        font-weight: normal;
+    }
+    .feed-delete-upload {
+        color: #bbb;
+        border: 1px solid #bbb;
+        background: none;
+        font-size: 12px;
+    }
+    .live-manage-sel {
+        width: 48%;
+        float: left;
+        margin-bottom: 10px;
+    }
+    .m-manage-sel {
+        float: right;
+    }
+    .live-manage-ser {
+        width: 48%;
+        margin-bottom: 10px;
+    }
+    .live-manage-add {
+        width: 48%;
+        font-size: 14px;
+    }
+    .m-wl-btn {
+        margin-left: auto;
+    }
+    .product-create-table {
+        padding: 0;
+    }
+    .pd-ct-table th {
+        width: 30%;
+    }
+    /*.pd-ct-table input {*/
+    /*    border: none*/
+    /*}*/
+    .admin-contents-body {
+        width: 100%;
+        height: auto;
+    }
+    .customer-manage-lnb {
+        padding: 15px;
+    }
+    .user-selectbox {
+        width: 100%;
+        margin-top: 15px;
+    }
+    .admin-planlist > li {
+        margin-bottom: 20px;
+        background: url(/images/user-mypage/icon-check.svg) no-repeat 10px 8%;
+        background-size: 20px;
+        padding: 0 10px;
+        height: 200px;
+        display: block;
+        overflow: hidden;
+    }
+    .admin-planlist > li > a {
+        padding: 0 10px;
+        height: auto;
+        display: block;
+    }
+    .user-pl-h4,
+    .admin-pl-h4 {
+        margin: 14px 0 0 35px;
+        font-size: 16px;
+    }
+    .user-pl-txt,
+    .admin-pl-txt {
+        float: left;
+        margin: 15px 0 0 0;
+        width: 70%;
+        font-size: 12px;
+    }
+    /*.user-pl-pay,*/
+    /*.admin-pl-pay {*/
+    /*    float: right;*/
+    /*    margin: 15px 0 0 0;*/
+    /*    font-size: 13px;*/
+    /*    width: 30%;*/
+    /*    text-align: center;*/
+    /*}*/
+    .admin-planlist > li.admin-planlist-on {
+        background: url(/images/user-mypage/icon-check-bg.svg) no-repeat 10px 8%;
+        background-size: 20px;
+    }
+    .user-plan-btn {
+        margin-bottom: 30px;
+    }
+    .user-plan-ask {
+        line-height: 37px;
+        font-size: 14px;
+    }
+    .user-plan-cancle {
+        line-height: 37px;
+        font-size: 14px;
+    }
+    .feed-contents-body {
+        padding: 0 !important;
+    }
+    .admin-feed-box {
+        margin: 0;
+    }
+    .admin-feed-box {
+        width: 33%;
+        height: 120px;
+    }
+    .fc-contents-body {
+        padding: 15px;
+    }
+    .feed-create-img {
+        float: inherit;
+        width: 100%;
+        margin-top: 15px;
+    }
+    .feed-create-thumb {
+        width: 100%;
+    }
+    .feed-create-add {
+        padding-left: 35px;
+    }
+    .feed-create-img h3 {
+        display: none;
+    }
+    .feed-create-uplord {
+       float: right;
+    }
+    .feed-create-txt {
+        width: 100%;
+        margin-bottom: 30px;
+    }
+    .feed-create-txt h3 {
+        font-size: 16px;
+        margin-bottom: 0;
+        background: #f9f9f9;
+        line-height: 38px;
+        padding: 0 15px;
+    }
+    .feed-create-cancel {
+        width: 45%;
+        line-height: 36px;
+        float: left;
+        margin-left: 0;
+    }
+    .feed-create-uplord {
+        width: 45%;
+        line-height: 36px;
+        float: right;
+    }
+    .invite-inner {
+        width: 90%;
+    }
+    .invite-box-bottom {
+        padding: 15px 15px 20px;
+    }
+    .invite-box-info {
+        width: 100%;
+        padding: 0 20px 0 10%;
+    }
+    .invite-box-factory {
+        margin-bottom: 10px;
+        display: inline-block;
+        float: unset;
+        margin-right: 0;
+    }
+    .invite-head-p {
+        display: none;
+    }
+
+    .admin-contents-body {
+        padding: 0 15px;
+        overflow: hidden;
+    }
+    .admin-contents-body .live-slide:nth-child(2n) {
+        margin-right: 0;
+    }
+    .live-slide {
+        width: 47%;
+        height: 350px;
+        margin-right: 10px;
+    }
+    .live-slide-img {
+        height: 250px;
+    }
+    .live-span {
+        width: 111px;
+        left: 5px;
+        padding: 0 2px 0 0;
+    }
+    .live-span::before {
+        width: 30px;
+    }
+    .admin-create-body {
+        padding: 0;
+    }
+    .live-thumbnail1 {
+        width: 100%;
+    }
+    .m-live-select {
+        width: 80%;
+    }
+    .admin-create-btn {
+        margin-top: 10px;
+        margin: 20px 0;
+        overflow: hidden;
+        padding: 0 15px;
+        float: inherit;
+    }
+    .admin-create-btn {
+        padding: 0 25px;
+    }
+    .create-btn {
+        width: 45%;
+    }
+    .cancel-btn {
+        width: 45%;
+    }
+    .liveedit-table-txt {
+        font-size: 12px;
+    }
+    .create-plan span {
+        width: 100px;
+    }
+    .m-before-btn {
+        display: none;
+    }
+    .admin-start-btn {
+        width: 45%;
+    }
+    .admin-create-btn {
+        display: block;
+    }
+    /* .user-wl-list .m-p-btn {
+        width: 45%;
+    } */
+    .coupon-contents {
+        width: 100%;
+    }
+    .btn-sc-wrap {
+        text-align: center;
+    }
+    .btn-save-coupon {
+        display: inline-block;
+        float: unset;
+        margin: 40px 0 0 0;
+    }
+    .coupon-reg-form {
+        display: flex;
+        justify-content: space-around;
+    }
+    .coupon-reg {
+        width: 25%;
+        padding: 0;
+    }
+    .ivt-wrap {
+        overflow: hidden;
+        width: 100%;
+        text-align: center;
+    }
+    .channel-livetime-wrap {
+        max-width: 49%;
+    }
+}
+
+@media all and ( max-width: 767px )  {
+    .user-plan-ask {
+        line-height: 37px;
+        width: 70px;
+        font-size: 14px;
+    }
+    .user-plan-cancle {
+        line-height: 37px;
+        font-size: 14px;
+        width: 70px;
+    }
+    .coupon-list-wrap {
+        padding: 10px 10px;
+    }
+    .coupon-list {
+        display: block;
+        padding: 15px 15px;
+    }
+    .coupon-list h3 {
+        width: 100%;
+        font-weight: bold;
+        margin-bottom: 30px;
+        font-size: 16px;
+    }
+    .coupon-list-txt {
+        margin-bottom: 20px;
+        width: 100%;
+        font-size: 14px;
+    }
+    .coupon-title {
+        padding: 35px 15px 10px;
+    }
+    .coupon-reg-wrap {
+        padding: 65px 15px 15px;
+    }
+    .coupon-reg-wrap h3 {
+        font-size: 16px;
+    }
+    .coupon-reg-form {
+        padding: 30px 0px;
+        display: flex;
+        justify-content: space-around;
+    }
+    .coupon-reg {
+        width: 25%;
+    }
+    .user-wl-list li {
+        display: block;
+        height: auto;
+        padding: 10px 15px;
+    }
+    .user-wl-img {
+        float: left;
+    }
+    .user-wl-name {
+        max-width: unset;
+        width: unset;
+    }
+    .user-wl-name h3 {
+        font-size: 14px;
+         max-width: unset;
+         white-space: unset;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        line-height: 1.4;
+        height: 21px;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+    .user-ani-li > li:first-child > .user-wl-name h3 {
+        width: 43%;
+    }
+
+    .m-wl-btn {
+        display: flex;
+        margin-top: 10px;
+    }
+    .m-user-unBtn {
+        background: #e73828;
+        width: 33%;
+    }
+    .m-user-chBtn {
+        width: 33%;
+        background: #ffd252;
+        display: block;
+        border-radius: 5px;
+        text-align: center;
+    }
+    .user-wl-buy {
+        width: 33%;
+        margin-left: 3px;
+        line-height: 36px;
+    }
+
+    .channel-livetime-wrap {
+        margin-bottom: 20px;
+        max-width: 100%;
+    }
+    .channel-livetime-wrap p {
+        font-size: 16px;
+    }
+    .channel-livetime-p {
+        margin-top: 5px;
+    }
+    .coupon-contents {
+        position: relative;
+    }
+    .btn-sc-wrap {
+        position: absolute;
+        top: 55px;
+        width: 100%;
+        padding: 0 15px;
+    }
+    .btn-save-coupon {
+        width: 100%;
+        height: 36px;
+        line-height: 36px;
+        font-size: 14px;
+    }
+    .btn-apply-coupon {
+        width: 100%;
+        margin: 10px 0 0 0;
+        font-size: 14px;
+        height: 36px;
+        line-height: 36px;
+    }
+    .channel-coupon-list {
+        margin-top: 110px;
+    }
+    .pd-optione {
+        width: 70%;
+    }
+
+    .delivery-wrap {
+        padding: 15px 15px;
+    }
+    .refund-name {
+        width: 100%;
+    }
+    .refund-img-wrap {
+        margin-right: 0;
+    }
+    .refund-img {
+        margin: 0 4px;
+    }
+    .refund-reason {
+        float: left;
+        margin-top: 10px;
+    }
+    .refund-inner-wrap {
+        display: block;
+    }
+    .refund-txt-area {
+        width: 100%;
+        margin-top: 5px;
+        height: 60px;
+    }
+    .refund-btn-wrap {
+        display: block;
+        text-align: center;
+    }
+    .refund-btn-wrap button {
+        display: inline-block;
+        width: 120px;
+    }
+    .invoice-search-wrap {
+        padding: 15px;
+    }
+    .invoice-search-name {
+        width: 40%;
+    }
+    .invoice-search-ip {
+        width: 100%;
+    }
+    .invoice-customer-info {
+        padding: 0 15px;
+    }
+    .invoice-table tbody tr th {
+        width: 30%;
+    }
+    .invoice-send-btn {
+        text-align: center;
+        overflow: hidden;
+        width: 100%;
+    }
+    .invoice-send-btn button {
+        display: inline-block;
+        float: unset;
+    }
+    .invoice-table input {
+        border: none;
+        width: 100%;
+    }
+    .live-manage-btn {
+        float: unset;
+    }
+    .btn-start-live {
+        width: 100%;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    .btn-vod-save {
+        width: 100%;
+        font-size: 14px;
+    }
+    .live-manage-ed {
+        margin-right: 8px;
+    }
+    .admin-contents-body {
+        padding: 15px;
+    }
+    .btn-card-info,
+    .btn-change-plan,
+    .btn-plan-stop {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+@media all and ( max-width: 375px ) {
+    .admin-feed-box {
+        height: 105px;
+    }
+    .admin-feed-img {
+        height: 105px;
+    }
+    /* .channel-visit-search {
+        padding: 40px 15px;
+    } */
+}
+
+@media all and (max-width:320px) {
+    .m-wl-btn .user-wl-del {
+        width: 53px;
+    }
+    .m-wl-btn .user-wl-change {
+        width: 53px;
+    }
+    .user-wl-list .m-p-btn {
+        width: 45%;
+    }
+    .admin-feed-box {
+        height: 90px;
+    }
+    .admin-feed-img {
+        height: 90px;
+    }
+}

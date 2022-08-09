@@ -1,0 +1,139 @@
+<!-- 상품 후기 배너 -->
+<div class="recent-review">
+    <div class="recent-product-img"><img src="<%= productInfo.product_img %>" alt=""></div>
+    <div class="recent-product-text">
+        <div class="recent-product-title">
+            <p><%= productInfo.product_name %></p>
+        </div>
+        <div class="recent-product-title recent-product-price">
+            <p><%= productInfo.product_price %>원</p>
+        </div>
+    </div>
+    <div class="review-product-right">
+        <% if(typeof user.mem_pk !== 'undefined') { %>
+        <button type="button" class="review-write-btn" onclick="location.href='inquiry/newInquiry'">
+            상품 문의 작성하기
+        </button>
+        <% } %>
+        <button type="button" class="review-prev-btn" onclick="location.href='/channel/main/<%= productInfo.chnl_pk %>/product'">
+            <img src="/images/channel/left-arrow.svg" alt="">
+        </button>
+    </div>
+</div>
+<!-- 문의 내역 -->
+<div class="user-inquiry">
+    <div class="user-cm-list">
+        <!-- 문의내역 테이블 주석처리 -->
+        <p>문의 내역</p>
+        <table class="table user-cm-table" style="margin-bottom: 0;">
+            <thead>
+            <tr>
+                <th>정보</th>
+                <th style="width: 52%;">문의 내용</th>
+                <th style="width: 12%;">닉네임</th>
+                <th style="width: 12%;">날짜</th>
+                <th style="width: 12%;">답변여부</th>
+            </tr>
+            </thead>
+        </table>
+        <!-- 모바일용 1:1 문의 테이블 -->
+        <table class="table m-cm-table" style="margin-bottom: 0;">
+            <thead>
+            <tr>
+                <th style="padding-left: 20px; width: 15%;">정보</th>
+                <th style="width: 40%; text-align: center;">문의 내용</th>
+                <th style="width: 40%; text-align: center;">날짜</th>
+            </tr>
+            </thead>
+        </table>
+        <% for (let i = 0; i < inquiry.length; i++) {%>
+        <div class="iq-item">
+            <div class="iq-question">
+                <a href="javascript:void(0)">
+                    <div class="iq-head">
+                        <div class="iq-head-txt">
+                            질문
+                        </div>
+                    </div>
+                    <div class="iq-product-name">
+                        <div class="iq-product-txt">
+                            <%= inquiry[i].inquiry_contents %>
+                        </div>
+                    </div>
+                    <div class="iq-name">
+                        <div class="iq-name-txt">
+                            <%= inquiry[i].mem_nickname %>
+                        </div>
+                    </div>
+                    <div class="iq-day">
+                        <div class="iq-name-txt">
+                            <%= inquiry[i].inq_create_time%>
+                        </div>
+                    </div>
+                    <div class="iq-answer">
+                        <% if( inquiry[i].response_contents) {%>
+                        <div class="iq-name-txt">
+                            답변완료
+                        </div>
+                        <% } else {%>
+                                <div class="iq-name-txt">
+                                    미답변
+                                </div>
+                        <% } %>
+                    </div>
+                </a>
+            </div>
+            <% if (inquiry[i].response_contents) {%>
+            <div class="iq-reply">
+                <div class="iq-reply-box">
+                    <div class="iq-head">
+                        <div class="iq-reply-tit">
+                            답변
+                        </div>
+                    </div>
+                    <div class="iq-product-name">
+                        <div class="iq-reply-txt">
+                            <%= inquiry[i].response_contents %>
+                        </div>
+                    </div>
+                    <div class="iq-name">
+                        <div class="iq-name-txt">
+                            <%= inquiry[i].chnl_mem_nickname%>
+                        </div>
+                    </div>
+                    <div class="iq-day">
+                        <div class="iq-name-txt">
+                            <%= inquiry[i].res_create_time %>
+                        </div>
+                    </div>
+                </div>
+                <div class="m-reply-txt">
+                    <div class="iq-name-txt" style="margin: 0; font-weight: bold;">
+                        <%= inquiry[i].chnl_mem_nickname%>
+                    </div>
+                </div>
+            </div>
+            <% } %>
+            <% } %>
+        </div>
+    </div>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

@@ -1,0 +1,38 @@
+<div class="admin-contents-body" style="padding: 0">
+    <ul class="user-wl-list user-ani-li" style="overflow: unset;">
+        <% for(let i = 0; i < products.length; i++){ %>
+            <li>
+                <div class="user-wl-img">
+                    <img src="<%= products[i].product_img %>">
+                </div>
+                <div class="user-wl-name">
+                    <h3><%= products[i].product_name %></h3>
+                    <p><%= products[i].product_price %></p>
+                </div>
+                <div class="user-wl-btn m-wl-btn m-p-btn" style="display: block;">
+                    <button type="button" class="user-wl-del" onclick="deleteProduct(<%= products[i].product_pk%>)">삭제하기</button>
+                    <a href="modification/<%= products[i].product_pk %>" class="user-wl-change">수정하기</a>
+                </div>
+            </li>
+        <% } %>
+    </ul>
+</div>
+<div style="width:100%;">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

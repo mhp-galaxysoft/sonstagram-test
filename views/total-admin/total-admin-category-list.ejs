@@ -1,0 +1,62 @@
+<div class="user-table">
+    <div class="table-wrap">
+        <table class="table user-list-table">
+            <caption>카테고리관리 테이블</caption>
+            <colgroup>
+                <col style="width:15%">
+                <col style="width:30%">
+                <col style="width:15%">
+                <col style="width:30%">
+                <col style="width:15%">
+            </colgroup>
+            <thead>
+                <tr>
+                    <th scope="col" class="btn-list-array" onclick="changeOrderType(<%= pageNo %>)">등록일</th>
+                    <th scope="col">카테고리 이름</th>
+                    <th scope="col">카테고리 사용 채널 수</th>
+                    <th scope="col"></th>
+                    <th scope="col">편집</th>
+                </tr>
+            </thead>
+            <tbody>
+            <% for(let i=0; i<category.length; i++){ %>
+                <tr>
+                    <td><%= category[i].category_created %></td>
+                    <td><%= category[i].category_name %></td>
+                    <% if(category[i].category_cnt) { %>
+                        <td><%= category[i].category_cnt %> 개</td>
+                    <% } else { %>
+                        <td>0 개</td>
+                    <% } %>
+                    <td></td>
+                    <td><p class="ta-ct-edit" data-toggle="modal" data-target="#updateCategoryModal" onclick="updateCategoryCheck(<%= category[i].category_pk %>)">수정</p>
+                        <% if(category[i].category_cnt) { %>
+                        <p class="ta-ct-edit" style="color: #e73828" data-toggle="modal" data-target="#useCategory" onclick="deleteCategoryCheck(<%= category[i].category_pk %>)">삭제</p></td>
+                        <% } else { %>
+                        <p class="ta-ct-edit" style="color: #e73828" data-toggle="modal" data-target="#deleteCategoryModal" onclick="deleteCategoryCheck(<%= category[i].category_pk %>)">삭제</p></td>
+                        <% } %>
+                </tr>
+            <% } %>
+            </tbody>
+        </table>
+    </div>
+    <div style="width:100%;">
+        <nav>
+            <ul class="pagination justify-content-center">
+                <% if(yn_prev === 1) { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+                <% } %>
+                <% for(let page = startPage; page <= endPage; page++) { %>
+                    <% if(page == pageNo) { %>
+                        <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                    <% } else { %>
+                        <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                    <% } %>
+                <% } %>
+                <% if(yn_next === 1) { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </div>
+</div>

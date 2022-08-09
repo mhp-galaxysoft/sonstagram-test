@@ -1,0 +1,616 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+<style>
+    .plan-md-dialog {
+        max-width: 690px;
+        margin: 10rem auto;
+    }
+
+    .plan-md-header {
+        padding: 29px 40px 15px;
+    }
+
+    .admin-plan-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .plan-md-body {
+        padding: 29px 40px 15px;
+    }
+
+    .plan-md-membership {
+        /* border: 1px solid red; */
+        margin-bottom: 25px;
+    }
+
+    .plan-md-membership h6 {
+        font-size: 18px;
+        font-weight: bold;
+    }
+
+    .plan-md-nowmem {
+        border: 1px solid #e5e5e5;
+        width: 100%;
+        height: 90px;
+        border-radius: 5px;
+        display: flex;
+        align-items: center;
+        padding: 0 35px;
+        overflow: hidden;
+        justify-content: space-between;
+        font-size: 16px;
+        font-weight: 600;
+    }
+
+    .plan-md-now-h {
+        font-weight: bold;
+        font-size: 20px;
+        width: 20%;
+    }
+
+    .plan-md-txt {
+        width: 260px;
+    }
+
+    .plan-md-pay {
+        font-weight: bold;
+        font-size: 20px;
+    }
+
+    .plan-md-btn {
+        width: 180px;
+        line-height: 45px;
+        background: #e73828;
+        padding: 0;
+        color: #fff;
+        font-weight: bold;
+        border-radius: 0;
+    }
+
+    .plan-md-btn:hover {
+        color: #fff;
+    }
+
+    .plan-md-footer {
+        padding: 15px 40px 20px;
+    }
+
+    /* 모달 모바일 플랜 변경 */
+    @media all and (max-width: 767px) {
+        .plan-md-header {
+            padding: 20px 20px;
+        }
+
+        .plan-md-body {
+            padding: 29px 20px 15px;
+        }
+
+        .plan-md-membership h6 {
+            font-size: 14px;
+        }
+
+        .plan-md-now-h {
+            font-weight: bold;
+            font-size: 12px;
+        }
+
+        .plan-md-txt {
+            width: 40%;
+            font-size: 12px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .plan-md-pay {
+            font-size: 12px;
+            padding-left: 12px;
+        }
+
+        .plan-md-nowmem {
+            padding: 0 10px;
+            height: 60px;
+        }
+
+        .plan-md-footer {
+            margin: 0 auto;
+        }
+
+        .plan-md-btn {
+            line-height: 37px;
+        }
+    }
+</style>
+<!--플랜 신청 모달-->
+<style>
+    .plan-agree-dialog {
+        margin: 10rem auto;
+        max-width: 600px;
+    }
+    .plan-agree-header {
+        padding: 29px 40px 15px;
+    }
+    .plan-agree-body {
+        padding: 15px 40px 15px;
+    }
+    .md-plan-ip {
+        border: 1px solid #e5e5e5;
+        width: 70%;
+        height: 28px;
+        line-height: 28px;
+    }
+    .md-plan-sel {
+        border: 1px solid #e5e5e5;
+        width: 40%;
+        height: 28px;
+        line-height: 28px;
+    }
+    .liveedit-table tbody tr td {
+        padding: 7px 0 7px 10px;
+    }
+    .modal-body .plan-agree-label {
+        width: 100%;
+        font-weight: 500;
+    }
+</style>
+</head>
+<body>
+    <%- include("../include/admin-header") %>
+    <div class="user-body">
+        <div class="user-mypage">
+            <%- include("../include/mypage/mypage-profile") -%>
+            <div class="admin-contents">
+                <div class="admin-contents-head">
+                    <% if(user.channel.current_plan_pk){ %>
+                    <h2 class="admin-contents-h2" style="margin: 0;">플랜 변경</h2>
+                    <% }else{ %>
+                    <h2 class="admin-contents-h2" style="margin: 0;">플랜 신청</h2>
+                    <% } %>
+                </div>
+                <div class="admin-contents-body">
+                    <select class="user-selectbox">
+                        <option>정액제</option>
+<!--                        <option>구독권</option>-->
+                    </select>
+                    <div class="user-planwrap">
+                        <ul class="admin-planlist">
+                            <% for(let i = 0 ; i < plans.length; i++) { %>
+                                <li id="plan_<%= plans[i].plan_pk %>" class="admin-plan" plan_pk="<%= plans[i].plan_pk %>">
+                                    <h4 class="user-pl-h4 plan-name"><%= plans[i].plan_name %></h4>
+                                    <p class="user-pl-pay plan-detail"><%= plans[i].plan_detail %></p>
+                                    <p class="user-pl-txt plan-capacity">동시접속자:<%= plans[i].plan_capacity %>명</p>
+                                    <p class="user-pl-pay plan-limited-time" plan_time="<%= plans[i].plan_limited_time %>">스트리밍 시간(월):<%= plans[i].plan_limited_time %>시간</p>
+                                    <p class="user-pl-pay plan-charge" style="font-size: 18px; font-weight: bold;">월 <%= plans[i].plan_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") %>원</p>
+                                    <p class="plan-int-price" style="display: none;"><%= plans[i].plan_charge.toString() %></p>
+                                </li>
+                            <% } %>
+                        </ul>
+                    </div>
+                    <div class="user-plan-btn">
+<!--                        <button id="plan-subscription-btn" class="user-plan-ask" data-toggle="modal">단건 결제하기</button>-->
+                        <button id="plan-subscription-btn" class="user-plan-ask" data-toggle="modal">정기 결제하기</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="m-info-set" style="padding: 0 15px;">
+            <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+            <a id="leave-btn" class="user-leave">회원탈퇴</a>
+        </div>
+    </div>
+</body>
+<% if(!user.channel.current_plan_pk){ %>
+<div class="modal fade" id="plan-start-modal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog plan-agree-dialog">
+        <div class="modal-content">
+            <div class="modal-header plan-agree-header">
+                <h5 class="modal-title" id="staticBackdropLabel" style="font-weight: bold;">플랜 결제</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body plan-agree-body">
+                <div class="plan-md-membership">
+                    <div class="plan-md-nowmem">
+                        <div>
+                            <h7 id="plan-name">Starter</h7>
+                        </div>
+                        <p id="plan-detail">라이브 커머스 100명 수용 가능</p>
+                        <p id="plan-price">월 30,000원</p>
+                    </div>
+                </div>
+                <table class="table liveedit-table">
+                    <tbody>
+                    <tr>
+                        <th>카드번호</th>
+                        <td>
+                            <input id="card-number" type="text" class="md-plan-ip reg_exp" reg_type="num" maxlength="16">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>만료날짜(MM/YY)</th>
+                        <td>
+                            <input id="card-expired-date" type="text" class="md-plan-ip reg_exp" maxlength="5">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>카드이름</th>
+                        <td>
+                            <input id="card-name" type="text" class="md-plan-ip reg_exp" reg_type="string" limitsize="100" >
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>생년</th>
+                        <td>
+                            <input id="birth-year" type="text" class="md-plan-ip reg_exp" reg_type="num" maxlength="4">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>생월</th>
+                        <td>
+                            <select id="birth-month" class="md-plan-sel">
+                                <% for(let i = 1; i <= 12; i++){ %>
+                                <option value="<%=i%>"><%=i%>월</option>
+                                <% } %>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr style="border-bottom: 1px solid #e8e8e8;">
+                        <th>생일</th>
+                        <td>
+                            <select id="birth-day" class="md-plan-sel">
+                                <% for(let i = 1; i <= 31; i++){ %>
+                                <option value="<%=i%>"><%=i%></option>
+                                <% } %>
+                            </select>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+                <input id="planAgree" type="checkbox" style="display: none">
+                <label class="plan-agree-label" for="planAgree">본인의 개인 정보를 결제 서비스업체에 제공하는 데에 동의합니다.</label>
+            </div>
+            <div class="modal-footer">
+                <button id="plan-pay-btn" type="button" class="plan-md-btn">신청하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<%} else{ %>
+<div class="modal fade" id="plan-change-modal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog plan-md-dialog">
+        <div class="modal-content">
+            <div class="modal-header plan-md-header">
+                <h5 class="modal-title admin-plan-h5" id="staticBackdropLabel">플랜 변경 확인</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body plan-md-body">
+                <div class="plan-md-membership">
+                    <h6>결제 예정 멤버십</h6>
+                    <% if(scheduled_plan){ %>
+                    <div class="plan-md-nowmem">
+                        <div class="plan-md-now-h">
+                            <h7><%= scheduled_plan.plan_name %></h7>
+                        </div>
+                        <p class="plan-md-txt">라이브 커머스 <%= scheduled_plan.plan_capacity %>명 수용 가능</p>
+                        <p class="plan-md-pay">월 <%= scheduled_plan.plan_charge.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")%>원</p>
+                    </div>
+                    <% }else{ %>
+                    <div class="plan-md-nowmem">
+                        <div class="plan-md-now-h">
+                            <h7>없음</h7>
+                        </div>
+                    </div>
+                    <% } %>
+                </div>
+                <div class="plan-md-membership">
+                    <h6>변경할 멤버십</h6>
+                    <div class="plan-md-nowmem">
+                        <div class="plan-md-now-h">
+                            <h7 id="plan-name">Starter</h7>
+                        </div>
+                        <p id="plan-detail" class="plan-md-txt">라이브 커머스 100명 수용 가능</p>
+                        <p id="plan-price" class="plan-md-pay">월 30,000원</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer plan-md-footer">
+                <button id="plan-pay-btn" type="button" class="btn plan-md-btn">신청하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+<% } %>
+<%- include("../include/common-footer") %>
+</html>
+<script src="https://cdn.bootpay.co.kr/js/bootpay-3.3.2.min.js" type="application/javascript"></script>
+<script>
+    // 플랜 클릭 효과
+    $('.admin-plan').on('click', function () {
+        $(this).addClass('admin-planlist-on').siblings().removeClass('admin-planlist-on')
+    })
+
+    // 정기 결제하기
+    const planSubscriptionBtn = document.getElementById('plan-subscription-btn')
+    planSubscriptionBtn.addEventListener('click',function(){
+        const [selectedPlan] = document.getElementsByClassName('admin-planlist-on')
+        if(selectedPlan){
+            const [userPlanName]        = selectedPlan.getElementsByClassName('plan-name')
+            const [userPlanCapacity]    = selectedPlan.getElementsByClassName('plan-capacity')
+            const [userPlanCharge]      = selectedPlan.getElementsByClassName('plan-charge')
+            const [userPlanIntPrice]    = selectedPlan.getElementsByClassName('plan-int-price')
+
+            const planName   = document.getElementById('plan-name')
+            const planDetail = document.getElementById('plan-detail')
+            const planPrice  = document.getElementById('plan-price')
+            const requestedPrice = userPlanIntPrice.innerText
+
+            planName.innerText = userPlanName.innerText
+            planDetail.innerText = '라이브 커머스 ' + userPlanCapacity.innerText.replace(/[^0-9]*/, "") + ' 수용 가능'
+            const productName = userPlanCapacity.innerText.replace(/[^0-9]*/, "") + ' 수용 가능 플랜'
+            planPrice.innerText = userPlanCharge.innerText
+
+            <% if(user.channel.current_plan_pk){ %>
+            // $('#plan-change-modal').modal('show')
+            <% }else{ %>
+            // $('#plan-start-modal').modal('show')
+            <% } %>
+
+            alert(requestedPrice);
+            return false;
+
+            BootPay.request({
+                price: requestedPrice, //실제 결제되는 가격
+                application_id: "61678abf7b5ba4002152c503",
+                name: productName, //결제창에서 보여질 이름
+                pg: 'nicepay',
+                method: 'card', //결제수단, 입력하지 않으면 결제수단 선택부터 화면이 시작합니다.
+                show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
+                items: [
+                    {
+                        item_name: '나는 아이템', //상품명
+                        qty: 1, //수량
+                        unique: '123', //해당 상품을 구분짓는 primary key
+                        price: 1000, //상품 단가
+                        cat1: 'TOP', // 대표 상품의 카테고리 상, 50글자 이내
+                        cat2: '티셔츠', // 대표 상품의 카테고리 중, 50글자 이내
+                        cat3: '라운드 티', // 대표상품의 카테고리 하, 50글자 이내
+                    }
+                ],
+                user_info: {
+                    username: '사용자 이름',
+                    email: '사용자 이메일',
+                    addr: '사용자 주소',
+                    phone: '010-1234-4567'
+                },
+                order_id: '고유order_id_1234', //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
+                params: {callback1: '그대로 콜백받을 변수 1', callback2: '그대로 콜백받을 변수 2', customvar1234: '변수명도 마음대로'},
+                account_expire_at: '2020-10-25', // 가상계좌 입금기간 제한 ( yyyy-mm-dd 포멧으로 입력해주세요. 가상계좌만 적용됩니다. )
+                extra: {
+                    start_at: '2019-05-10', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
+                    end_at: '2022-05-10', // 정기결제 만료일 -  기간 없음 - 무제한
+                    vbank_result: 1, // 가상계좌 사용시 사용, 가상계좌 결과창을 볼지(1), 말지(0), 미설정시 봄(1)
+                    quota: '0', // 결제금액이 5만원 이상시 할부개월 허용범위를 설정할 수 있음, [0(일시불), 2개월, 3개월] 허용, 미설정시 12개월까지 허용,
+                    theme: 'purple', // [ red, purple(기본), custom ]
+                    custom_background: '#00a086', // [ theme가 custom 일 때 background 색상 지정 가능 ]
+                    custom_font_color: '#ffffff' // [ theme가 custom 일 때 font color 색상 지정 가능 ]
+                }
+            }).error(function (data) {
+                //결제 진행시 에러가 발생하면 수행됩니다.
+                console.log(data);
+            }).cancel(function (data) {
+                //결제가 취소되면 수행됩니다.
+                console.log(data);
+            }).ready(function (data) {
+                // 가상계좌 입금 계좌번호가 발급되면 호출되는 함수입니다.
+                console.log(data);
+            }).confirm(function (data) {
+                //결제가 실행되기 전에 수행되며, 주로 재고를 확인하는 로직이 들어갑니다.
+                //주의 - 카드 수기결제일 경우 이 부분이 실행되지 않습니다.
+                console.log(data);
+                var enable = true; // 재고 수량 관리 로직 혹은 다른 처리
+                if (enable) {
+                    BootPay.transactionConfirm(data); // 조건이 맞으면 승인 처리를 한다.
+                } else {
+                    BootPay.removePaymentWindow(); // 조건이 맞지 않으면 결제 창을 닫고 결제를 승인하지 않는다.
+                }
+            }).close(function (data) {
+                // 결제창이 닫힐때 수행됩니다. (성공,실패,취소에 상관없이 모두 수행됨)
+                console.log(data);
+            }).done(function (data) {
+                //결제가 정상적으로 완료되면 수행됩니다
+                //비즈니스 로직을 수행하기 전에 결제 유효성 검증을 하시길 추천합니다.
+                console.log(data);
+            });
+        }
+    })
+
+    const planSubscriptionRebilBtn = document.getElementById('plan-subscription-rebil-btn')
+    planSubscriptionRebilBtn.addEventListener('click',function(){
+        const [selectedPlan] = document.getElementsByClassName('admin-planlist-on')
+        if(selectedPlan){
+            const [userPlanName]        = selectedPlan.getElementsByClassName('plan-name')
+            const [userPlanCapacity]    = selectedPlan.getElementsByClassName('plan-capacity')
+            const [userPlanCharge]      = selectedPlan.getElementsByClassName('plan-charge')
+            const [userPlanIntPrice]      = selectedPlan.getElementsByClassName('plan-int-price')
+
+            const planName = document.getElementById('plan-name')
+            const planDetail = document.getElementById('plan-detail')
+            const planPrice = document.getElementById('plan-price')
+            const requestedPrice = userPlanIntPrice.innerText
+
+            planName.innerText = userPlanName.innerText
+            planDetail.innerText = '라이브 커머스 ' + userPlanCapacity.innerText.replace(/[^0-9]*/, "") + ' 수용 가능'
+            const productName = userPlanCapacity.innerText.replace(/[^0-9]*/, "") + ' 수용 가능 플랜'
+            planPrice.innerText = userPlanCharge.innerText
+
+            <% if(user.channel.current_plan_pk){ %>
+            // $('#plan-change-modal').modal('show')
+            <% }else{ %>
+            // $('#plan-start-modal').modal('show')
+            <% } %>
+
+            console.log(requestedPrice)
+
+            BootPay.request({
+                price: 0, // 0으로 해야 한다.
+                application_id: "61678abf7b5ba4002152c503",
+                name: productName, //결제창에서 보여질 이름
+                pg: 'nicepay',
+                method: 'card_rebill', // 빌링키를 받기 위한 결제 수단
+                show_agree_window: 0, // 부트페이 정보 동의 창 보이기 여부
+                user_info: {
+                    username: '사용자 이름',
+                    email: '사용자 이메일',
+                    addr: '사용자 주소',
+                    phone: '010-1234-4567'
+                },
+                order_id: '고유order_id_1234', //고유 주문번호로, 생성하신 값을 보내주셔야 합니다.
+                params: {callback1: '그대로 콜백받을 변수 1', callback2: '그대로 콜백받을 변수 2', customvar1234: '변수명도 마음대로'},
+                extra: {
+                    start_at: '2019-05-10', // 정기 결제 시작일 - 시작일을 지정하지 않으면 그 날 당일로부터 결제가 가능한 Billing key 지급
+                    end_at: '2022-05-10' // 정기결제 만료일 -  기간 없음 - 무제한
+                }
+            }).error(function (data) {
+                //결제 진행시 에러가 발생하면 수행됩니다.
+                console.log(data);
+            }).cancel(function (data) {
+                //결제가 취소되면 수행됩니다.
+                console.log(data);
+            }).done(function (data) {
+                // 빌링키를 정상적으로 가져오면 해당 데이터를 불러옵니다.
+                console.log(data);
+            });
+        }
+    })
+
+
+    <% if(!user.channel.current_plan_pk){ %>
+    const cardNumber        = document.getElementById('card-number')
+    const cardExpiredDate   = document.getElementById('card-expired-date')
+    const cardName          = document.getElementById('card-name')
+    const birthYear         = document.getElementById('birth-year')
+    const birthMonth        = document.getElementById('birth-month')
+    const birthDay          = document.getElementById('birth-day')
+    const agreeBtn          = document.getElementById('planAgree')
+
+    cardExpiredDate.onkeypress = function(event){
+        if(event.keyCode !== 8){
+            if(cardExpiredDate.value.length === 2){
+                cardExpiredDate.value += '/'
+            }
+        }
+    }
+
+    const planPayBtn = document.getElementById('plan-pay-btn')
+    planPayBtn.addEventListener('click',function(){
+        if(cardNumber.value.length !== 16){
+            alert("카드 번호를 정확히 입력해주세요.")
+            cardNumber.focus()
+            return false
+        }
+        if(cardExpiredDate.value.length !== 5){
+            alert("카드 만료 날짜를 정확히 입력해주세요.")
+            cardExpiredDate.value = ""
+            cardExpiredDate.focus()
+            return false
+        }
+
+        const date = cardExpiredDate.value.split('/')
+        console.log(date)
+        if(!(1 <= Number(date[0]) && Number(date[0]) <= 12 ) || !(21<= Number(date[1]) && Number(date[1])<=50)){
+            alert("카드 만료 날짜를 정확히 입력해주세요.")
+            cardExpiredDate.value = ""
+            cardExpiredDate.focus()
+            return false
+        }
+
+        if(!cardName.value){
+            alert("카드 이름을 입력해주세요.")
+            cardName.focus()
+            return false
+        }
+        if( !(1900 <= Number(birthYear.value) && Number(birthYear.value) <= 2014) ){
+            alert("생일을 정확하게 입력해주세요.")
+            birthYear.value = ""
+            birthYear.focus()
+            return false
+        }
+        if(!agreeBtn.checked){
+            alert("개인 정보 동의에 수락하세요.")
+            return false
+        }
+
+        subscribePlan()
+    })
+    <% }else{ %>
+    const planPayBtn = document.getElementById('plan-pay-btn')
+    planPayBtn.addEventListener('click',function(){
+        subscribePlan()
+    })
+    <% } %>
+
+    function subscribePlan(){
+        planPayBtn.disabled = true
+
+        const [selectedPlan] = document.getElementsByClassName('admin-planlist-on')
+        <% if(user.channel.current_plan_pk){ %>
+        axios.put('/channel-admin/plans/subscription',{
+            planInfo:{
+                scheduled_plan_pk : selectedPlan.getAttribute('plan_pk')
+            }
+        }).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'FAIL':
+                    alert("서버에 이상이 생겼습니다.")
+                    planPayBtn.disabled = false
+                    break
+                case "SUCCESS":
+                    alert("플랜 변경이 완료되었습니다.")
+                    location.replace('/channel-admin/plans/info')
+                    break
+            }
+        }).catch(function (err){
+            console.error(err)
+            alert("서버에 이상이 생겼습니다.")
+            planPayBtn.disabled = false
+        })
+        <% }else{ %>
+        // 00:00:00 형태의 string
+        const planLimitedTime = selectedPlan.getElementsByClassName('plan-limited-time')
+        axios.post('/channel-admin/plans/subscription',{
+            planInfo : {
+                current_plan_pk : selectedPlan.getAttribute('plan_pk'),
+                scheduled_plan_pk : selectedPlan.getAttribute('plan_pk'),
+                ps_card_number : cardNumber.value,
+                ps_card_expired_date : cardExpiredDate.value,
+                ps_card_name : cardName.value,
+                ps_birth_year : birthYear.value,
+                ps_birth_month : birthMonth.options[birthMonth.selectedIndex].value,
+                ps_birth_day : birthDay.options[birthDay.selectedIndex].value
+            },
+            additionalTime : planLimitedTime[0].getAttribute('plan_time')
+        }).then(function(res){
+            const state = res.data.state
+            switch (state){
+                case 'FAIL':
+                    alert("서버에 이상이 생겼습니다.")
+                    planPayBtn.disabled = false
+                    break
+                case "SUCCESS":
+                    alert("플랜 신청이 완료되었습니다.")
+                    location.replace('/channel-admin/plans/info')
+                    break
+            }
+        }).catch(function (err){
+            console.error(err)
+            alert("서버에 이상이 생겼습니다.")
+            planPayBtn.disabled = false
+        })
+        <% } %>
+    }
+</script>

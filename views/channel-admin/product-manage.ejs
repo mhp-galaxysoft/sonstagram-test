@@ -1,0 +1,91 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2">상품 관리</h2>
+                        <select id="product-sort-type" class="live-manage-sel">
+                            <option value="RECENT">최근 게시 순</option>
+                            <option value="EXPENSIVE">가격 높은 순</option>
+                            <option value="CHEAP">가격 낮은 순</option>
+                        </select>
+                        <em class="live-manage-search">
+                            <input id="product-search-text" class="live-manage-ser m-manage-ser" style="transform: translateX(8%);" type="text" onkeydown="enterSearch()">
+                            <button id="product-search-btn" class="live-manage-serbtn" style="right: -9px;" type="submit" onclick="setValue()">
+                                <img src="/images/channel-admin/icon-search.svg">
+                            </button>
+                        </em>
+                        <a class="live-manage-add" href="/channel-admin/products/newproduct">상품 생성</a>
+                    </div>
+                    <div id="product-list"></div>
+                </div>
+                <div class="m-info-set" style="padding: 0 15px;">
+                    <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+                    <a id="leave-btn" class="user-leave">회원탈퇴</a>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<style>
+    .page-product.active{
+        background: blue;
+    }
+</style>
+<script>
+    // 검색 기능
+    const productSortType      = document.getElementById('product-sort-type')
+    const productSearchText    = document.getElementById('product-search-text')
+    const productSearchBtn     = document.getElementById('product-search-btn')
+    const productContents      = document.getElementById('product-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const sort    = productSortType.options[productSortType.selectedIndex].value
+        const keyword = productSearchText.value
+        const url = '/product/list?' + 'pageNo=' + page + '&keyword=' + keyword + '&sort=' + sort
+        axios.get(url).then(function(res){
+            productContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    productSearchText.addEventListener('keydown',enterSearch)
+    productSearchBtn.addEventListener('click',getList)
+    productSortType.addEventListener('change',getList)
+
+    function deleteProduct(product_pk){
+        if(confirm('정말로 삭제하시겠습니까?')){
+            axios.delete('/product/'+product_pk).then(function(res){
+                const state = res.data.state
+                switch (state){
+                    case 'SUCCESS':
+                        alert('정상적으로 삭제되었습니다.')
+                        location.reload()
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function(err){
+                alert('서버에 이상이 생겼습니다.')
+            })
+        }
+    }
+</script>

@@ -1,0 +1,47 @@
+<div class="user-cm-list">
+    <% for (let i = 0; i < review.length; i++) {%>
+        <div class="user-inquiry-list">
+            <div class="inquiry-top">
+                <div class="inquiry-star">
+                    <% for ( let j = 0; j < review[i].review_star; j++ ){%>
+                        <div class="list-star"><img src="/images/broadcast/icon-star.svg" alt="별"></div>
+                    <% } %>
+                    <% for (let j = 0; j < (5-review[i].review_star); j++ ) { %>
+                        <div class="list-star"><img src="/images/broadcast/icon-starr.svg" alt="별"></div>
+                    <% } %>
+                </div>
+                <div class="inquiry-title">
+                    <p><%= review[i].product_name %></p>
+                </div>
+                <div class="inquiry-date">
+                    <p><%= review[i].create_time %></p>
+                </div>
+            </div>
+            <div class="review-img-box">
+                <img src="<%= review[i].review_img %>">
+            </div>
+            <div class="inquiry-bottom">
+                <p><%= review[i].review_contents %></p>
+            </div>
+        </div>
+    <% } %>
+</div>
+<div class="pag-style">
+    <nav>
+        <ul class="pagination justify-content-center">
+            <% if(yn_prev === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)-1 %>)">이전</a></li>
+            <% } %>
+            <% for(let page = startPage; page <= endPage; page++) { %>
+                <% if(page == pageNo) { %>
+                    <li class="page-item active"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } else { %>
+                    <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= page %>)"><%= page %></a></li>
+                <% } %>
+            <% } %>
+            <% if(yn_next === 1) { %>
+                <li class="page-item"><a class="page-link" href="javascript:void(0);" onclick="getList(<%= parseInt(pageNo)+1 %>)">다음</a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>

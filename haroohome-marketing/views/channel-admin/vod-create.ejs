@@ -1,0 +1,55 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <%- include("../include/admin-header") %>
+        <div class="user-body">
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") -%>
+                <div class="admin-contents">
+                    <div class="admin-contents-head">
+                        <h2 class="admin-contents-h2" style="margin: 0;">VOD 생성</h2>
+                    </div>
+                    <div id="vod-list"></div>
+                </div>
+            </div>
+        </div>
+    </body>
+    <%- include("../include/common-footer") %>
+</html>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const url = '/vod/list/create?' + 'pageNo=' + page
+        axios.get(url).then(function(res){
+            const vodContents = document.getElementById('vod-list')
+            vodContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+</script>
+<script>
+    function createVod(buttonElement, vod_pk){
+        buttonElement.disabled = true
+        axios.post('/vod/'+vod_pk).then(function (res){
+            const state = res.data.state
+            switch (state){
+                case 'SUCCESS':
+                    buttonElement.disabled = false
+                    alert('vod가 생성되었습니다.')
+                    location.href = '/channel-admin/video/vod/manage'
+                    break
+                case 'FAIL':
+                    buttonElement.disabled = false
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function(err){
+            buttonElement.disabled = false
+            console.error(err)
+        })
+    }
+</script>

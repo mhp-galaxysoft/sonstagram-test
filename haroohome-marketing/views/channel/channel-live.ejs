@@ -1,0 +1,49 @@
+                <%- include('./main') %>
+                <script>
+                    $('.visit-lnb-1').addClass('visit-lnb-active')
+                </script>
+                <div class="channel-picture">
+                    <div class="channel-visit-search" style="padding: 0;">
+                        <h3>영상 목록 👀</h3>
+                        <div class="channel-live-topbar">
+                            <input id="live-search-text" class="channel-search n-channel-search" type="text">
+                            <a id="live-search-btn" class="channel-search-btn"></a>
+                        </div>
+                    </div>
+                    <div class=" visit-com-tab visit-lnb-tab1" id="live-list"></div>
+                </div>
+            </div>
+        </div>
+        <%- include("../include/common-footer") %>
+    </body>
+</html>
+<script>
+    // 검색 기능
+    const liveSearchText    = document.getElementById('live-search-text')
+    const liveSearchBtn     = document.getElementById('live-search-btn')
+    const liveContents      = document.getElementById('live-list')
+</script>
+<script>
+    (getList)(1)
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        const keyword = liveSearchText.value
+        const url = '/channel/channel-live-list/<%= info.chnl_pk %>?' + 'pageNo=' + page + '&keyword=' + keyword
+
+        axios.get(url).then(function(res){
+            liveContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function enterSearch(){
+        if(window.event.keyCode === 13){
+            getList(1)
+        }
+    }
+
+    liveSearchText.addEventListener('keydown',enterSearch)
+    liveSearchBtn.addEventListener('click',getList)
+</script>

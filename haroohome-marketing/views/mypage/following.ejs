@@ -1,0 +1,132 @@
+<%- include("../include/head") %>
+<%- include("../include/mypage/mypage-css") %>
+</head>
+    <body>
+        <div class="user-body">
+            <%- include("../include/common-header") %>
+            <div class="user-mypage">
+                <%- include("../include/mypage/mypage-profile") %>
+                <div class="user-contents">
+                    <div class="user-lnbwrap">
+                        <ul class="user-lnb">
+                            <li class="lnb-active">
+                                <a href="/mypage/following">팔로잉한 채널</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/wish">내 위시리스트</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/review">내 후기내역</a>
+                            </li>
+                            <li>
+                                <a href="/mypage/inquiry">내 1:1 문의</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div id="follow-list"></div>
+                                <!--<div class="m-fw-btn">
+                                    <button type="button" class="m-user-unBtn">
+                                        <img class="m-user-unBtn1" src="/images/mobile/icon-check.svg" alt="팔로우">
+                                    </button>
+                                    <a href="javascript:void(0)" class="m-user-chBtn">
+                                        <img src="/images/mobile/icon-visit.svg" alt="채널 방문하기">
+                                    </a>
+                                </div>-->
+                </div>
+                <%- include("../include/mypage/m-info-set") %>
+            </div>
+<!--		<script src="https://livefactory.kr/js/mini-player.js?accessKey=4481976d-e356-4781-9424-def08a95d296"></script>-->
+            <%- include("../include/common-footer") %>
+        </div>
+    </body>
+</html>
+<script>
+    $(function() {
+        $('.m-user-unBtn').on('click',function() {
+            $(this).toggleClass('unfollow')
+        })
+    })
+</script>
+<script>
+
+    (getFollowList(1))
+    function getFollowList(page) {
+        axios.get('/mypage/following-list?pageNo=' + page).then(function (res) {
+            const followList = document.getElementById('follow-list')
+            followList.innerHTML = res.data
+        })
+    }
+
+    // 팔로잉 처리
+    function following(chnl_pk){
+        axios.post('/follow/' + chnl_pk).then(function (res) {
+            const state = res.data.state
+            switch(state){
+                case 'SUCCESS':
+                    const followBtn = document.getElementById('follow-btn'+chnl_pk)
+                    const followBtnMobile = document.getElementById('m-'+'follow-btn'+chnl_pk)
+
+                    followBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-check.svg')
+                    followBtn.innerText = '팔로잉 취소'
+                    followBtn.className = 'user-unBtn-un'
+
+                    followBtn.onclick = function(){
+                        unfollowing(chnl_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    }
+                    followBtnMobile.onclick = function(){
+                        unfollowing(chnl_pk)
+                        this.removeEventListener('click',arguments.callee)
+                    }
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    break
+            }
+        }).catch(function (err) {
+            alert('서버에 이상이 생겼습니다.')
+            console.error(err)
+        })
+    }
+    // 언팔로잉 처리
+    function unfollowing(chnl_pk){
+        const followBtn = document.getElementById('follow-btn'+chnl_pk)
+        const followBtnMobile = document.getElementById('m-'+'follow-btn'+chnl_pk)
+        if(confirm('팔로우를 끊으시겠습니까?')){
+            axios.delete('/follow/'+ chnl_pk).then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        alert('팔로우가 끊어졌습니다.')
+                        followBtnMobile.firstElementChild.setAttribute('src','/images/mobile/icon-unfollow.svg')
+                        followBtn.innerText = '팔로잉'
+                        followBtn.className = 'user-unBtn'
+                        followBtn.onclick = function(){
+                            following(chnl_pk)
+                            this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                        }
+                        followBtnMobile.onclick = function(){
+                            following(chnl_pk)
+                            this.removeEventListener('click',arguments.callee) //이벤트 리스너 제거
+                        }
+                        break
+                    case 'FAIL':
+                        alert('서버에 이상이 생겼습니다.')
+                        break
+                }
+            }).catch(function (err){
+                alert('서버에 이상이 생겼습니다.')
+                console.error(err)
+            })
+        }else {
+            followBtn.onclick = function(){
+                unfollowing(chnl_pk)
+                this.removeEventListener('click',arguments.callee)
+            }
+            followBtnMobile.onclick = function(){
+                unfollowing(chnl_pk)
+                this.removeEventListener('click',arguments.callee)
+            }
+        }
+    }
+</script>

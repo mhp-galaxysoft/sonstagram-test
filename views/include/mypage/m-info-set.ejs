@@ -1,0 +1,59 @@
+<div class="m-info-set" style="padding: 0 15px;">
+    <% if(!user.factory_pk) { %>
+        <a class="user-password" href="/mypage/profile/password">비밀번호 변경</a>
+    <% } %>
+    <a id="m-leave-btn" class="user-leave">회원탈퇴</a>
+</div>
+<script>
+    const mLeaveBtn = document.getElementById('m-leave-btn')
+    function clickLeaveBtn () {
+        <% if(user.factory_pk) { %>
+        const factory_result = confirm("회원 탈퇴를 요청하시겠습니까?\n관리자 승인 후 고객님의 모든 정보는 삭제됩니다.")
+        if(factory_result) {
+            axios.get('/factory-admin/leave').then(function (res) {
+                const state = res.data.state
+                switch (state) {
+                    case 'SUCCESS':
+                        alert("지금까지 라이브 팩토리를 이용해주셔서 감사합니다.")
+                        location.replace('/')
+                        break
+                    case 'FAIL':
+                        alert("서버 문제로 탈퇴에 실패했습니다.")
+                        break
+                }
+            }).catch(function (err) {
+                alert("서버 문제로 탈퇴에 실패했습니다.")
+                console.error(err)
+            })
+        }
+        <% } else { %>
+        const flag_pumkin = <%= user.flag_pumkin %>
+        const user_result = confirm("회원 탈퇴를 진행하시겠습니까?\n회원 탈퇴 후 고객님의 모든 정보는 삭제됩니다.")
+        if(user_result){
+            axios.get('/auth/leave').then(function(res){
+                const state = res.data.state
+                switch(state){
+                    case 'SUCCESS':
+                        if(flag_pumkin === 0) {
+                            alert("지금까지 라이브 팩토리를 이용해주셔서 감사합니다.")
+                            location.replace('/')
+                        } else {
+                            alert("지금까지 펌킨 라이브를 이용해주셔서 감사합니다.")
+                            location.replace('/pumkin/login')
+                        }
+                        break
+                    case 'FAIL':
+                        alert("서버 문제로 탈퇴에 실패했습니다.")
+                        break
+                }
+            }).catch(function (err){
+                alert("서버 문제로 탈퇴에 실패했습니다.")
+                console.error(err)
+            })
+        }
+        <% } %>
+    }
+
+    mLeaveBtn.addEventListener('click', clickLeaveBtn)
+</script>
+

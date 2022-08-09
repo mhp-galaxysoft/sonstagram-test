@@ -1,0 +1,431 @@
+<%- include("../include/head") %>
+<link rel="stylesheet" href="/css/total-admin.css">
+</head>
+<body>
+    <div class="total-admin">
+        <%- include("total-admin-head") %>
+        <div class="total-admin-user">
+            <div class="user-manage">
+                <h3 style="font-weight: bold;">쿠폰 생성</h3>
+                <div class="factory-btn-wrap">
+                    <button type="button" class="factory-create-btn" data-toggle="modal" data-target="#newcouponModal">새 쿠폰 생성</button>
+                    <button type="button" id="delete-coupon-modal-btn" class="factory-widthdraw-btn">쿠폰 삭제</button>
+                </div>
+            </div>
+            <!-- 유저관리 테이블 -->
+            <div id="coupon-table"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+
+</html>
+
+
+<style>
+    .newcoupon-dialog {
+        max-width: 650px;
+        margin: 10rem auto;
+    }
+    .newcoupon-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+    .newcoupon-table tbody tr th {
+        background: #f9f9f9;
+        font-size: 14px;
+    }
+    .newcoupon-table tbody tr td {
+        font-size: 14px;
+        padding: 7px 0 0 7px;
+    }
+    .newcoupon-table tbody tr td select {
+        width: 130px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+    }
+    .newcoupon-table tbody tr td textarea {
+        width: 360px;
+        height: 170px;
+        border: 1px solid #e5e5e5;
+        padding: 5px;
+        resize: none;
+    }
+    .cp-input {
+        width: 265px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+    }
+    .cp-input-n {
+        width: 60px;
+        height: 28px;
+        line-height: 28px;
+        padding-left: 5px;
+        margin-right: 5px ;
+    }
+    .newcoupon-footer {
+        text-align: center;
+        display: block;
+    }
+    .btn-newcoupon {
+        width: 123px;
+        height: 38px;
+        line-height: 38px;
+        background: #e73828;
+        display: inline-block;
+        font-size: 14px;
+        color: #fff;
+    }
+</style>
+<!-- 쿠폰 등록 모달 -->
+<div class="modal fade" id="newcouponModal" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog newcoupon-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title newcoupon-h5">새 쿠폰 생성</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table newcoupon-table">
+                    <tbody>
+                        <tr>
+                            <th scope="row">쿠폰이름</th>
+                            <td><input id="coupon-name" class="cp-input reg_exp" type="text" reg_type="string" limitsize="30"></td>
+                        </tr>
+                        <tr>
+                            <th scope="row">쿠폰번호</th>
+                            <td>
+                                <% for(let i=0; i<4; i++) { %>
+                                <input id="coupon-number-<%=i%>" class="cp-input-n coupon-number reg_exp" type="text" limitsize="4" disabled>
+                                <% } %>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">쿠폰설명</th>
+                            <td>
+                                <input id="coupon-detail" class="cp-input reg_exp" type="text" reg_type="string" limitsize="100">
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">쿠폰시간</th>
+                            <td>
+                                <select id="coupon-time">
+                                    <option value="05:00:00">5시간</option>
+                                    <option value="00:05:00">5분</option>
+                                    <option value="00:00:05">5초</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">쿠폰 지급방식</th>
+                            <td>
+                                <select id="coupon-type">
+                                    <option value="0">가입시</option>
+                                    <option value="1">이벤트</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr style="border-bottom: 1px solid #dee2e6;">
+                            <th scope="row">쿠폰사용방식</th>
+                            <td style="display: flex;">
+                                <select id="coupon-user">
+                                    <option value="0">단일 유저</option>
+                                    <option value="1">모든 유저</option>
+                                </select>
+                                <input id="coupon-user-input" class="cp-input reg_exp" type="text" style="margin-left: 5px; width: 150px;" reg_type="num">
+                            </td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer newcoupon-footer">
+                <button type="button" id="btn-newcoupon" class="btn-newcoupon">생성하기</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- 스크롤 스타일 -->
+<style>
+    .table-wrap::-webkit-scrollbar {
+        width: 7px;
+    }
+
+    .table-wrap::-webkit-scrollbar-track {
+        background: none;
+    }
+
+    .table-wrap::-webkit-scrollbar-thumb {
+        background: #FFBABA;
+    }
+</style>
+
+<!-- 쿠폰 삭제 모달 -->
+<style>
+    .stopcp-header {
+        display: block;
+        text-align: center;
+    }
+    .stopcp-h5 {
+        font-size: 20px;
+        font-weight: bold;
+    }
+</style>
+<div class="modal fade" id="stopcpModal" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog liveend-dialog">
+        <div class="modal-content">
+            <div class="modal-header stopcp-header">
+                <button type="button" class="close liveend-close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <div style="height: 20px"></div>
+                <h5 class="modal-title stopcp-h5">생성하신 쿠폰을 정말로 삭제하시겠습니까?</h5>
+                <p style="font-size: 14px; color: #e73828; margin: 15px 0 20px 0">* 현재 쿠폰을 사용하고 있는 유저가 존재할 수 있습니다.</p>
+            </div>
+            <div class="modal-footer liveend-footer">
+                <button type="button" class="btn liveend-agree" id="delete-coupon-btn">예</button>
+                <button type="button" class="btn liveend-cancel" data-dismiss="modal">아니요</button>
+            </div>
+        </div>
+    </div>
+</div>
+<style>
+    .modal-open .modal {
+    }
+    .liveend-dialog {
+        max-width: 690px;
+        margin: 18em auto;
+    }
+    .liveend-header {
+        border: none;
+        padding-top: 30px;
+    }
+    .liveend-h5 {
+        font-weight: bold;
+        text-indent: 190px;
+    }
+    .liveend-header .liveend-close {
+        padding: 0 1rem;
+    }
+    .liveend-footer {
+        border: none;
+        justify-content: center;
+        padding-bottom: 20px;
+    }
+    .btn:hover {
+        color: #fff;
+    }
+    .liveend-agree {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #e73828;
+        font-size: 16px;
+        padding: 0;
+    }
+    .liveend-cancel {
+        width: 180px;
+        line-height: 45px;
+        color: #fff;
+        background: #606060;
+        font-size: 16px;
+        padding: 0;
+    }
+</style>
+<script src="/js/regexp.js"></script>
+<script>
+    const couponContents    = document.getElementById('coupon-table')
+    const couponName        = document.getElementById('coupon-name')
+    const couponNumber      = document.getElementsByClassName('coupon-number')
+    const couponDetail      = document.getElementById('coupon-detail')
+    const newCouponBtn      = document.getElementById('btn-newcoupon')
+    const couponUserInput   = document.getElementById('coupon-user-input')
+    const couponUser        = document.getElementById('coupon-user')
+    const couponTime        = document.getElementById('coupon-time')
+    const couponType        = document.getElementById('coupon-type')
+    let   orderType
+    let   categoryPk
+</script>
+<script>
+    (getList(1))
+
+    function getList(page){
+        if(isNaN(page)) page = 1
+        if(!orderType) orderType = 'LATEST'
+        const url = '/total-admin/coupon-list?' + 'pageNo=' + page + '&orderType=' + orderType
+
+        axios.get(url).then(function(res){
+            couponContents.innerHTML = res.data
+        }).catch(function(err){
+            console.error(err)
+        })
+    }
+
+    function changeOrderType(pageNo) {
+        if(orderType === 'LATEST') {
+            orderType = 'OLDEST'
+        } else {
+            orderType = 'LATEST'
+        }
+
+        getList(pageNo)
+    }
+</script>
+
+<!--새 쿠폰 생성-->
+<script>
+    function createCouponNumber() {
+        const reg_exp = RegExp(/[^a-zA-Z0-9]/gi)
+        let uuidv4 = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+            var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8)
+            return v.toString(16)
+        })
+
+        if (reg_exp.test(uuidv4)) {
+            uuidv4 = uuidv4.replace(reg_exp, '')
+        }
+        uuidv4 = uuidv4.substr(0, 16).toUpperCase()
+
+        for(let i=0; i<4; i++){
+            couponNumber[i].value = uuidv4.substr(i*4, 4)
+        }
+    }
+
+    function changeUserInput() {
+        const coupon_user = couponType.options[couponUser.selectedIndex].index
+        if(coupon_user === 0){
+            for(let i=0; i<4; i++){
+                couponNumber[i].value = ''
+                couponNumber[i].disabled = true
+            }
+            couponUserInput.disabled = false
+        } else {
+            createCouponNumber()
+            couponUserInput.disabled = true
+        }
+    }
+
+    function checkValues() {
+        const coupon_user = couponType.options[couponUser.selectedIndex].index
+        if(!couponName.value){
+            alert('쿠폰 이름을 입력하세요.')
+            couponName.focus()
+            return false
+        }
+        else if(!couponDetail.value){
+            alert('쿠폰 설명을 입력하세요.')
+            couponDetail.focus()
+            return false
+        }
+        else if(coupon_user === 0){
+            if(!couponUserInput.value){
+                alert('생성할 쿠폰의 개수를 입력하세요.')
+                couponUserInput.focus()
+                return false
+            }
+        }
+
+        createCoupon()
+    }
+
+    function createCoupon(){
+        newCouponBtn.disabled = true
+
+        const coupon_time = couponTime.options[couponTime.selectedIndex].value
+        const coupon_type = couponType.options[couponType.selectedIndex].index
+        const coupon_user = couponType.options[couponUser.selectedIndex].index
+
+        let coupon_number = ''
+        if(couponNumber) {
+            for(let i=0; i<4; i++){
+                coupon_number += couponNumber[i].value
+            }
+        }
+
+        axios.post('/total-admin/coupon-number', {
+            coupon : {
+                coupon_name     : couponName.value,
+                coupon_number   : coupon_number,
+                coupon_detail   : couponDetail.value,
+                coupon_time     : coupon_time,
+                coupon_type     : coupon_type,
+                coupon_user     : coupon_user,
+                coupon_user_num : couponUserInput.value
+            }
+        }).then(function (res) {
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert('쿠폰이 생성되었습니다.')
+                    couponName.value = ''
+                    couponDetail.value = ''
+                    couponUserInput.value = ''
+                    newCouponBtn.disabled = false
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    newCouponBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            alert('서버에 이상이 생겼습니다.')
+            newCouponBtn.disabled = false
+        })
+    }
+
+    newCouponBtn.addEventListener('click', checkValues)
+    couponUser.addEventListener('change', changeUserInput)
+</script>
+<script>
+    let selectedCoupon = []
+    const deleteCouponModalBtn = document.getElementById('delete-coupon-modal-btn')
+    deleteCouponModalBtn.addEventListener('click',function(){
+        const checkboxes = $.makeArray($('input[type=checkbox]'))
+        selectedCoupon = $.map(checkboxes,function(checkbox){
+            if(checkbox.checked){
+                return checkbox.getAttribute('pk')
+            }
+        })
+
+        // 쿠폰을 선택하지 않았을 때
+        if(selectedCoupon.length === 0) {
+            alert('삭제할 쿠폰을 선택해주세요.')
+            return false
+        }
+        else{
+            $('#stopcpModal').modal('show')
+        }
+    })
+
+    const deleteCouponBtn = document.getElementById('delete-coupon-btn')
+    deleteCouponBtn.addEventListener('click',function(){
+        deleteCouponBtn.disabled = true
+        axios.delete('/total-admin/coupon',{ data : {selectedCoupon}}).then(function(res){
+            const state = res.data.state
+            switch(state) {
+                case 'SUCCESS':
+                    alert('해당 쿠폰이 삭제되었습니다.')
+                    deleteCouponBtn.disabled = false
+                    location.reload()
+                    break
+                case 'FAIL':
+                    alert('서버에 이상이 생겼습니다.')
+                    deleteCouponBtn.disabled = false
+                    break
+            }
+        }).catch(function(err){
+            console.error(err)
+            deleteCouponBtn.disabled = false
+            alert('서버에 이상이 생겼습니다.')
+        })
+    })
+</script>
